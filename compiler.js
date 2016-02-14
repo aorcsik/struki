@@ -1,37 +1,61 @@
 var token_patterns = [
     {type: "",             pattern: /\s+/},
+    {type: "BOOL[%]",      pattern: /(I|H)/},
     {type: "FLOAT[%]",     pattern: /-?[0-9]*\.[0-9]+/},
     {type: "INTEGER[%]",   pattern: /-?[0-9]+/},
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/},
+
     {type: "OPERATOR_BRO", pattern: /\[/},
     {type: "OPERATOR_BRC", pattern: /\]/},
     {type: "OPERATOR_PRO", pattern: /\(/},
     {type: "OPERATOR_PRC", pattern: /\)/},
+
     {type: "OPERATOR_SUM", pattern: /\+/},
     {type: "OPERATOR_SUB", pattern: /-/},
     {type: "OPERATOR_DIV", pattern: /\//},
     {type: "OPERATOR_MUL", pattern: /\*/},
     {type: "OPERATOR_MOD", pattern: /%/},
+
     {type: "OPERATOR_SET", pattern: /:=/},
+
     {type: "OPERATOR_LTE", pattern: /<=/},
     {type: "OPERATOR_GTE", pattern: />=/},
     {type: "OPERATOR_NE",  pattern: /<>/},
     {type: "OPERATOR_LT",  pattern: /</},
     {type: "OPERATOR_GT",  pattern: />/},
     {type: "OPERATOR_EQ",  pattern: /=/},
+    {type: "OPERATOR_AND", pattern: /&/},
+    {type: "OPERATOR_OR",  pattern: /\|/},
     {type: "OPERATOR_NOT", pattern: /!/}
 ];
 
 var expression_patterns = [
+    {pattern: /BOOL\[(.*?)\]/, operator: "bool"},
     {pattern: /FLOAT\[(.*?)\]/, operator: "float"},
     {pattern: /INTEGER\[(.*?)\]/, operator: "int"},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var"},
+
     {pattern: /OPERATOR_PROEXPRESSION\[(\d+)\]OPERATOR_PRC/, operator: "exp"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROEXPRESSION\[(\d+)\]OPERATOR_BRC/, operator: "array_index"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROOPERATOR_BRC/, operator: "array_push"},
+
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MULEXPRESSION\[(\d+)\]/, operator: "mul"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DIVEXPRESSION\[(\d+)\]/, operator: "div"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MODEXPRESSION\[(\d+)\]/, operator: "mod"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUMEXPRESSION\[(\d+)\]/, operator: "sum"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUBEXPRESSION\[(\d+)\]/, operator: "sub"},
+
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEXPRESSION\[(\d+)\]/,  operator: "gt"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEEXPRESSION\[(\d+)\]/, operator: "gte"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LTEXPRESSION\[(\d+)\]/,  operator: "lt"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LTEEXPRESSION\[(\d+)\]/, operator: "lte"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_EQEXPRESSION\[(\d+)\]/,  operator: "eq"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_NEEXPRESSION\[(\d+)\]/,  operator: "ne"},
+
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_ANDEXPRESSION\[(\d+)\]/, operator: "and"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_OREXPRESSION\[(\d+)\]/,  operator: "or"},
+    {pattern: /OPERATOR_NOTEXPRESSION\[(\d+)\]/,                    operator: "not"},
+
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SETEXPRESSION\[(\d+)\]/, operator: "set"},
 ];
 
@@ -67,10 +91,13 @@ StructogramCellParser.prototype.parse = function(code) {
             return this.parse(code.replace(result[0], "EXPRESSION[" + expression_num + "]"));
         }
     }
+    if (!code.match(/^EXPRESSION\[\d+\]$/)) {
+        throw "Compile Error: unresolved tokens '" + code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";") + "'";
+    }
 };
 
 StructogramCellParser.prototype.evaluate = function(context) {
-    this.expressions[this.expression_counter - 1].evaluate(context, this.expressions);
+    return this.expressions[this.expression_counter - 1].evaluate(context, this.expressions);
 };
 
 function Expression(operator, result) {
@@ -79,9 +106,12 @@ function Expression(operator, result) {
 }
 
 Expression.prototype.evaluate = function(context, expressions) {
-    var a, b;
+    var a, b, c, array_index_expression;
     if (this.operator == "exp") {
         return expressions[this.result[1]].evaluate(context, expressions);
+    } else if (this.operator == "bool") {
+        if (this.result[1] == "I") return true;
+        if (this.result[1] == "H") return false;
     } else if (this.operator == "float") {
         return parseFloat(this.result[1]);
     } else if (this.operator == "int") {
@@ -112,14 +142,59 @@ Expression.prototype.evaluate = function(context, expressions) {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
         return a / b;
+    } else if (this.operator == "mod") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a % b;
+    } else if (this.operator == "gt") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a > b;
+    } else if (this.operator == "gte") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a >= b;
+    } else if (this.operator == "lt") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a < b;
+    } else if (this.operator == "lte") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a <= b;
+    } else if (this.operator == "eq") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a == b;
+    } else if (this.operator == "ne") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a != b;
+    } else if (this.operator == "and") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a && b;
+    } else if (this.operator == "or") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        b = expressions[this.result[2]].evaluate(context, expressions);
+        return a || b;
+    } else if (this.operator == "not") {
+        a = expressions[this.result[1]].evaluate(context, expressions);
+        return !a;
     } else if (this.operator == "set") {
         if (expressions[this.result[1]].operator == "var") {
             a = expressions[this.result[1]].result[1];
             b = expressions[this.result[2]].evaluate(context, expressions);
             context.setVariable(a, b);
-        }
-        else if (expressions[this.result[1]].operator == "array_index") {
-            var array_index_expression = expressions[this.result[1]];
+        } else if (expressions[this.result[1]].operator == "array_push") {
+            array_index_expression = expressions[this.result[1]];
+            if (expressions[array_index_expression.result[1]].operator == "var") {
+                a = expressions[array_index_expression.result[1]].result[1];
+                c = expressions[this.result[2]].evaluate(context, expressions);
+                context.getVariable(a).push(c);
+            }
+        } else if (expressions[this.result[1]].operator == "array_index") {
+            array_index_expression = expressions[this.result[1]];
             if (expressions[array_index_expression.result[1]].operator == "var") {
                 a = expressions[array_index_expression.result[1]].result[1];
                 b = expressions[array_index_expression.result[2]].evaluate(context, expressions);
@@ -151,6 +226,10 @@ Context.prototype.getVariable = function(name) {
 var ct = new Context();
 ct.setVariable("x", 1);
 ct.setVariable("a", []);
-var pc = new StructogramCellParser("a[x - 1] := (1 - x) * 3");
+var pc = new StructogramCellParser("a[] := (1 + x) * 3");
+pc.evaluate(ct);
+pc = new StructogramCellParser("a[] := (1 + x) * 6");
 pc.evaluate(ct);
 console.log(ct.getVariable("a"));
+pc = new StructogramCellParser("!(I | H)");
+console.log(pc.evaluate(ct));
