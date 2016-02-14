@@ -116,90 +116,107 @@ Expression.prototype.evaluate = function(context, expressions) {
         return parseFloat(this.result[1]);
     } else if (this.operator == "int") {
         return parseInt(this.result[1], 10);
-    } else if (this.operator == "var") {
-        a = this.result[1];
-        return context.getVariable(a);
-    } else if (this.operator == "array_index") {
-        keys = this.evaluateArrayIndex(this, context, expressions);
-        return context.getArrayValue(keys);
     } else if (this.operator == "sum") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a + b;
+        if (typeof a === "number" && typeof b === "number") return a + b;
+        else throw "Compile Error: + operator requires number operands";
     } else if (this.operator == "sub") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a - b;
+        if (typeof a === "number" && typeof b === "number") return a - b;
+        else throw "Compile Error: - operator requires number operands";
     } else if (this.operator == "mul") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a * b;
+        if (typeof a === "number" && typeof b === "number") return a * b;
+        else throw "Compile Error: * operator requires number operands";
     } else if (this.operator == "div") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a / b;
+        if (typeof a === "number" && typeof b === "number")
+            if (b !== 0) return a / b;
+            else throw "Compile Error: division by zero";
+        else throw "Compile Error: / operator requires number operands";
     } else if (this.operator == "mod") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a % b;
+        if (typeof a === "number" && typeof b === "number")
+            if (b !== 0) return a % b;
+            else throw "Compile Error: division by zero";
+        else throw "Compile Error: % operator requires number operands";
     } else if (this.operator == "gt") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a > b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a > b;
+        else throw "Compile Error: > operator requires boolean operands";
     } else if (this.operator == "gte") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a >= b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a >= b;
+        else throw "Compile Error: >= operator requires boolean operands";
     } else if (this.operator == "lt") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a < b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a < b;
+        else throw "Compile Error: < operator requires boolean operands";
     } else if (this.operator == "lte") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a <= b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a <= b;
+        else throw "Compile Error: <= operator requires boolean operands";
     } else if (this.operator == "eq") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a == b;
+        if (typeof a === typeof b) return a == b;
+        else throw "Compile Error: = operator requires operands of the same type";
     } else if (this.operator == "ne") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a != b;
+        if (typeof a === typeof b) return a != b;
+        else throw "Compile Error: <> operator requires operands of the same type";
     } else if (this.operator == "and") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a && b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a && b;
+        else throw "Compile Error: & operator requires boolean operands";
     } else if (this.operator == "or") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        return a || b;
+        if (typeof a === "boolean" && typeof b === "boolean") return a || b;
+        else throw "Compile Error: | operator requires boolean operands";
     } else if (this.operator == "not") {
         a = expressions[this.result[1]].evaluate(context, expressions);
-        return !a;
+        if (typeof a === "boolean") return !a;
+        else throw "Compile Error: ! operator requires boolean operand";
+    } else if (this.operator == "var") {
+        return context.getVariable(this.result[1]);
+    } else if (this.operator == "array_index") {
+        keys = this.evaluateArrayIndex(this, context, expressions);
+        return context.getArrayValue(keys);
     } else if (this.operator == "set") {
         if (expressions[this.result[1]].operator == "var") {
             a = expressions[this.result[1]].result[1];
             b = expressions[this.result[2]].evaluate(context, expressions);
-            context.setVariable(a, b);
+            return context.setVariable(a, b);
         } else if (expressions[this.result[1]].operator == "array_push") {
             value = expressions[this.result[2]].evaluate(context, expressions);
             array_index_expression = expressions[this.result[1]];
             if (expressions[array_index_expression.result[1]].operator == "var") {
                 a = expressions[array_index_expression.result[1]].result[1];
-                context.getVariable(a).push(value);
+                return context.getVariable(a).push(value);
             } else if (expressions[array_index_expression.result[1]].operator == "array_index") {
                 keys = this.evaluateArrayIndex(expressions[array_index_expression.result[1]], context, expressions);
-                context.getArrayValue(keys).push(value);
+                return context.getArrayValue(keys).push(value);
             }
         } else if (expressions[this.result[1]].operator == "array_index") {
             value = expressions[this.result[2]].evaluate(context, expressions);
             keys = this.evaluateArrayIndex(expressions[this.result[1]], context, expressions);
-            context.setArrayValue(keys, value);
+            return context.setArrayValue(keys, value);
         }
-        else throw "Syntax Error: left operand is not a variable";
+        throw "Syntax Error: left operand is not a valid variable or array syntax";
     }
-    else throw "Syntax Error: what??? " + this.operator;
+    throw "Syntax Error: cannot use " + this.operator + " operator here";
 };
 
 Expression.prototype.evaluateArrayIndex = function(expression, context, expressions) {
@@ -217,41 +234,52 @@ function Context() {
     this.variables = {};
 }
 
-Context.prototype.setVariable = function(name, value) {
+Context.prototype.defineVariable = function(name, value) {
     this.variables[name] = value;
 };
 
+Context.prototype.setVariable = function(name, value) {
+    if (this.variables[name] !== undefined) this.variables[name] = value;
+    else throw "Compile Error: undefined variable '" + name + "'";
+};
+
 Context.prototype.getVariable = function(name) {
-    if (this.variables[name] !== undefined) {
-        return this.variables[name];
-    }
-    throw "Compile Error: undefined variable '" + name + "'";
+    if (this.variables[name] !== undefined) return this.variables[name];
+    else throw "Compile Error: undefined variable '" + name + "'";
 };
 
 Context.prototype.getArrayValue = function(keys) {
     var array = this.getVariable(keys[0]);
+    var name = keys[0];
     for (var i = 1; i < keys.length - 1; i++) {
-        array = array[keys[i]];
+        if (array.constructor === Array) array = array[keys[i]];
+        else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+        name += "[" + keys[i] + "]";
     }
-    return array[keys[i]];
+    if (array.constructor === Array) return array[keys[i]];
+    else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
 };
 
 Context.prototype.setArrayValue = function(keys, value) {
     var array = this.getVariable(keys[0]);
+    var name = keys[0];
     for (var i = 1; i < keys.length - 1; i++) {
-        array = array[keys[i]];
+        if (array.constructor === Array) array = array[keys[i]];
+        else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+        name += "[" + keys[i] + "]";
     }
-    array[keys[i]] = value;
+    if (array.constructor === Array) array[keys[i]] = value;
+    else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
 };
 
 
 var ct = new Context();
-ct.setVariable("x", 1);
-ct.setVariable("a", [[],[]]);
+ct.defineVariable("x", 1);
+ct.defineVariable("a", [[],[]]);
 var pc = new StructogramCellParser("a[1][] := (1 + x) * 3");
 pc.evaluate(ct);
 pc = new StructogramCellParser("a[0][] := (1 + a[1][0]) * 6");
 pc.evaluate(ct);
 console.log(ct.getVariable("a"));
-pc = new StructogramCellParser("!(I | H)");
+pc = new StructogramCellParser("!(2 = 2)");
 console.log(pc.evaluate(ct));
