@@ -26,7 +26,9 @@ var token_patterns = [
     {type: "OPERATOR_EQ",  pattern: /=/},
     {type: "OPERATOR_AND", pattern: /&/},
     {type: "OPERATOR_OR",  pattern: /\|/},
-    {type: "OPERATOR_NOT", pattern: /!/}
+    {type: "OPERATOR_NOT", pattern: /!/},
+
+    {type: "OPERATOR_LST", pattern: /,/}
 ];
 
 var expression_patterns = [
@@ -35,6 +37,7 @@ var expression_patterns = [
     {pattern: /INTEGER\[(.*?)\]/, operator: "int"},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var"},
 
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PROEXPRESSION\[(\d+)\]OPERATOR_PRC/, operator: "func"},
     {pattern: /OPERATOR_PROEXPRESSION\[(\d+)\]OPERATOR_PRC/, operator: "exp"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROEXPRESSION\[(\d+)\]OPERATOR_BRC/, operator: "array_index"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROOPERATOR_BRC/, operator: "array_push"},
@@ -57,6 +60,7 @@ var expression_patterns = [
     {pattern: /OPERATOR_NOTEXPRESSION\[(\d+)\]/,                    operator: "not"},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SETEXPRESSION\[(\d+)\]/, operator: "set"},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LSTEXPRESSION\[(\d+)\]/, operator: "list"}
 ];
 
 function StructogramCellParser(code) {
@@ -106,7 +110,7 @@ function Expression(operator, result) {
 }
 
 Expression.prototype.evaluate = function(context, expressions) {
-    var a, b, c, array_index_expression, keys, value;
+    var a, b, c, array_index_expression, keys, value, func;
     if (this.operator == "exp") {
         return expressions[this.result[1]].evaluate(context, expressions);
     } else if (this.operator == "bool") {
@@ -191,6 +195,18 @@ Expression.prototype.evaluate = function(context, expressions) {
         else throw "Compile Error: ! operator requires boolean operand";
     } else if (this.operator == "var") {
         return context.getVariable(this.result[1]);
+    } else if (this.operator == "func") {
+        if (expressions[this.result[1]].operator == "var") {
+            if (expressions[this.result[2]].operator == "list") {
+                value = expressions[this.result[2]].evaluate(context, expressions);
+            } else {
+                value = [expressions[this.result[2]].evaluate(context, expressions)];
+            }
+            return context.applyFunction(expressions[this.result[1]].result[1], value);
+        }
+        throw "Syntax Error: left operand is not a valid function name";
+    } else if (this.operator == "list") {
+        return this.evaluateList(this, context, expressions);
     } else if (this.operator == "array_index") {
         keys = this.evaluateArrayIndex(this, context, expressions);
         return context.getArrayValue(keys);
@@ -219,6 +235,23 @@ Expression.prototype.evaluate = function(context, expressions) {
     throw "Syntax Error: cannot use " + this.operator + " operator here";
 };
 
+Expression.prototype.evaluateList = function(list, context, expressions) {
+    var sublist, flatlist = [];
+    if (expressions[list.result[1]].operator == "list") {
+        sublist = this.evaluateList(expressions[list.result[1]], context, expressions);
+        sublist.forEach(function(item) { flatlist.push(item); });
+    } else {
+        flatlist.push(expressions[list.result[1]].evaluate(context, expressions));
+    }
+    if (expressions[list.result[2]].operator == "list") {
+        sublist = this.evaluateList(expressions[list.result[2]], context, expressions);
+        sublist.forEach(function(item) { flatlist.push(item); });
+    } else {
+        flatlist.push(expressions[list.result[2]].evaluate(context, expressions));
+    }
+    return flatlist;
+};
+
 Expression.prototype.evaluateArrayIndex = function(expression, context, expressions) {
     var keys;
     if (expressions[expression.result[1]].operator == "var") {
@@ -232,10 +265,19 @@ Expression.prototype.evaluateArrayIndex = function(expression, context, expressi
 
 function Context() {
     this.variables = {};
+    this.functions = {
+        "sqrt": Math.sqrt,
+        "print": function() { console.log.apply(this, arguments); }
+    };
 }
 
 Context.prototype.defineVariable = function(name, value) {
     this.variables[name] = value;
+};
+
+Context.prototype.applyFunction = function(name, params) {
+    if (this.functions[name] !== undefined) return this.functions[name].apply(this, params);
+    else throw "Compile Error: undefined function '" + name + "'";
 };
 
 Context.prototype.setVariable = function(name, value) {
@@ -272,14 +314,16 @@ Context.prototype.setArrayValue = function(keys, value) {
     else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
 };
 
+Context.prototype.evaluate = function(code) {
+    var pc = new StructogramCellParser(code);
+    pc.evaluate(this);
+};
 
 var ct = new Context();
 ct.defineVariable("x", 1);
 ct.defineVariable("a", [[],[]]);
-var pc = new StructogramCellParser("a[1][] := (1 + x) * 3");
-pc.evaluate(ct);
-pc = new StructogramCellParser("a[0][] := (1 + a[1][0]) * 6");
-pc.evaluate(ct);
-console.log(ct.getVariable("a"));
-pc = new StructogramCellParser("!(2 = 2)");
-console.log(pc.evaluate(ct));
+
+ct.evaluate("a[1][] := (1 + x) * sqrt(16)");
+ct.evaluate("a[0][] := (1 + a[1][0]) * 6");
+ct.evaluate("print(a)");
+ct.evaluate("print(!(2 = 2))");
