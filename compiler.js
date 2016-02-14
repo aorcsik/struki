@@ -106,7 +106,7 @@ function Expression(operator, result) {
 }
 
 Expression.prototype.evaluate = function(context, expressions) {
-    var a, b, c, array_index_expression;
+    var a, b, c, array_index_expression, keys, value;
     if (this.operator == "exp") {
         return expressions[this.result[1]].evaluate(context, expressions);
     } else if (this.operator == "bool") {
@@ -120,12 +120,8 @@ Expression.prototype.evaluate = function(context, expressions) {
         a = this.result[1];
         return context.getVariable(a);
     } else if (this.operator == "array_index") {
-        if (expressions[this.result[1]].operator == "var") {
-            a = expressions[this.result[1]].result[1];
-            b = expressions[this.result[2]].evaluate(context, expressions);
-            return context.getVariable(a)[b];
-        }
-        throw "Syntax Error: not an array";
+        keys = this.evaluateArrayIndex(this, context, expressions);
+        return context.getArrayValue(keys);
     } else if (this.operator == "sum") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
@@ -187,24 +183,34 @@ Expression.prototype.evaluate = function(context, expressions) {
             b = expressions[this.result[2]].evaluate(context, expressions);
             context.setVariable(a, b);
         } else if (expressions[this.result[1]].operator == "array_push") {
+            value = expressions[this.result[2]].evaluate(context, expressions);
             array_index_expression = expressions[this.result[1]];
             if (expressions[array_index_expression.result[1]].operator == "var") {
                 a = expressions[array_index_expression.result[1]].result[1];
-                c = expressions[this.result[2]].evaluate(context, expressions);
-                context.getVariable(a).push(c);
+                context.getVariable(a).push(value);
+            } else if (expressions[array_index_expression.result[1]].operator == "array_index") {
+                keys = this.evaluateArrayIndex(expressions[array_index_expression.result[1]], context, expressions);
+                context.getArrayValue(keys).push(value);
             }
         } else if (expressions[this.result[1]].operator == "array_index") {
-            array_index_expression = expressions[this.result[1]];
-            if (expressions[array_index_expression.result[1]].operator == "var") {
-                a = expressions[array_index_expression.result[1]].result[1];
-                b = expressions[array_index_expression.result[2]].evaluate(context, expressions);
-                c = expressions[this.result[2]].evaluate(context, expressions);
-                context.getVariable(a)[b] = c;
-            }
+            value = expressions[this.result[2]].evaluate(context, expressions);
+            keys = this.evaluateArrayIndex(expressions[this.result[1]], context, expressions);
+            context.setArrayValue(keys, value);
         }
         else throw "Syntax Error: left operand is not a variable";
     }
     else throw "Syntax Error: what??? " + this.operator;
+};
+
+Expression.prototype.evaluateArrayIndex = function(expression, context, expressions) {
+    var keys;
+    if (expressions[expression.result[1]].operator == "var") {
+        keys = [expressions[expression.result[1]].result[1]];
+    } else if (expressions[expression.result[1]].operator == "array_index"){
+        keys = this.evaluateArrayIndex(expressions[expression.result[1]], context, expressions);
+    } else throw "Syntax Error: bad array syntax";
+    keys.push(expressions[expression.result[2]].evaluate(context, expressions));
+    return keys;
 };
 
 function Context() {
@@ -222,13 +228,29 @@ Context.prototype.getVariable = function(name) {
     throw "Compile Error: undefined variable '" + name + "'";
 };
 
+Context.prototype.getArrayValue = function(keys) {
+    var array = this.getVariable(keys[0]);
+    for (var i = 1; i < keys.length - 1; i++) {
+        array = array[keys[i]];
+    }
+    return array[keys[i]];
+};
+
+Context.prototype.setArrayValue = function(keys, value) {
+    var array = this.getVariable(keys[0]);
+    for (var i = 1; i < keys.length - 1; i++) {
+        array = array[keys[i]];
+    }
+    array[keys[i]] = value;
+};
+
 
 var ct = new Context();
 ct.setVariable("x", 1);
-ct.setVariable("a", []);
-var pc = new StructogramCellParser("a[] := (1 + x) * 3");
+ct.setVariable("a", [[],[]]);
+var pc = new StructogramCellParser("a[1][] := (1 + x) * 3");
 pc.evaluate(ct);
-pc = new StructogramCellParser("a[] := (1 + x) * 6");
+pc = new StructogramCellParser("a[0][] := (1 + a[1][0]) * 6");
 pc.evaluate(ct);
 console.log(ct.getVariable("a"));
 pc = new StructogramCellParser("!(I | H)");
