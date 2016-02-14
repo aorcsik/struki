@@ -41,6 +41,7 @@ var expression_patterns = [
     {pattern: /OPERATOR_PROEXPRESSION\[(\d+)\]OPERATOR_PRC/, operator: "exp"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROEXPRESSION\[(\d+)\]OPERATOR_BRC/, operator: "array_index"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BROOPERATOR_BRC/, operator: "array_push"},
+    {pattern: /OPERATOR_BROEXPRESSION\[(\d+)\]OPERATOR_BRC/, operator: "array"},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MULEXPRESSION\[(\d+)\]/, operator: "mul"},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DIVEXPRESSION\[(\d+)\]/, operator: "div"},
@@ -124,7 +125,8 @@ Expression.prototype.evaluate = function(context, expressions) {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
         if (typeof a === "number" && typeof b === "number") return a + b;
-        else throw "Compile Error: + operator requires number operands";
+        if (a.constructor === Array && b.constructor === Array) return a.concat(b);
+        else throw "Compile Error: + operator requires number or array operands";
     } else if (this.operator == "sub") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
@@ -197,14 +199,12 @@ Expression.prototype.evaluate = function(context, expressions) {
         return context.getVariable(this.result[1]);
     } else if (this.operator == "func") {
         if (expressions[this.result[1]].operator == "var") {
-            if (expressions[this.result[2]].operator == "list") {
-                value = expressions[this.result[2]].evaluate(context, expressions);
-            } else {
-                value = [expressions[this.result[2]].evaluate(context, expressions)];
-            }
+            value = this.evaluateList(expressions[this.result[2]], context, expressions);
             return context.applyFunction(expressions[this.result[1]].result[1], value);
         }
         throw "Syntax Error: left operand is not a valid function name";
+    } else if (this.operator == "array") {
+        return this.evaluateList(expressions[this.result[1]], context, expressions);
     } else if (this.operator == "list") {
         return this.evaluateList(this, context, expressions);
     } else if (this.operator == "array_index") {
@@ -237,17 +237,13 @@ Expression.prototype.evaluate = function(context, expressions) {
 
 Expression.prototype.evaluateList = function(list, context, expressions) {
     var sublist, flatlist = [];
-    if (expressions[list.result[1]].operator == "list") {
+    if (list.operator == "list") {
         sublist = this.evaluateList(expressions[list.result[1]], context, expressions);
         sublist.forEach(function(item) { flatlist.push(item); });
-    } else {
-        flatlist.push(expressions[list.result[1]].evaluate(context, expressions));
-    }
-    if (expressions[list.result[2]].operator == "list") {
         sublist = this.evaluateList(expressions[list.result[2]], context, expressions);
         sublist.forEach(function(item) { flatlist.push(item); });
     } else {
-        flatlist.push(expressions[list.result[2]].evaluate(context, expressions));
+        flatlist.push(list.evaluate(context, expressions));
     }
     return flatlist;
 };
@@ -327,3 +323,5 @@ ct.evaluate("a[1][] := (1 + x) * sqrt(16)");
 ct.evaluate("a[0][] := (1 + a[1][0]) * 6");
 ct.evaluate("print(a)");
 ct.evaluate("print(!(2 = 2))");
+ct.evaluate("x := [1, 2, 3] + [4]");
+ct.evaluate("print(x)");
