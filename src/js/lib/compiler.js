@@ -268,6 +268,7 @@ function Context() {
 }
 
 Context.prototype.defineVariable = function(name, value) {
+    if (value === undefined) value = null;
     this.variables[name] = value;
 };
 
