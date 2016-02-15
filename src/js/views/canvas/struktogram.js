@@ -23,8 +23,11 @@ define([
         main_sequence: null,
 
         initialize: function() {
-            console.log("Struktogram Canvas View initialized");
+            var self = this;
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
+            this.listenTo(this.model, 'change', function(e) {
+                self.render();
+            });
         },
 
         onClose: function() {},
@@ -43,6 +46,7 @@ define([
 
         render: function() {
             var ctx = this.el.getContext('2d');
+            ctx.clearRect(0, 0, this.el.width, this.el.height);
             this.main_sequence.render(ctx, this.design, 0, 0);
             var final_width = this.main_sequence.getSize().width;
             var final_height = this.main_sequence.getSize().height;
@@ -52,7 +56,7 @@ define([
             });
             this.main_sequence.render(ctx, this.design, 4.5, 4.5, final_width);
 
-            $("body").append(this.getDownloadLink());
+            // $("body").append(this.getDownloadLink());
 
             return this;
         }

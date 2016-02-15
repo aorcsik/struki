@@ -26,7 +26,7 @@ define([
             return this.branch_sequence;
         },
 
-        render: function(ctx, design, x, y, fix_width, else_text) {
+        render: function(ctx, design, x, y, fix_width, else_text, solo) {
             ctx.font = design.font_size + "px " + design.font_family;
             var text = this.model.get("condition").get("code") || else_text;
             var m = ctx.measureText(text);
@@ -38,7 +38,7 @@ define([
                     ctx.fillText(
                         text,
                         x + design.margin.left,
-                        y + this.size.height + design.font_size - 3 + design.margin.top);                ctx.beginPath();
+                        y + this.size.height + design.font_size - 3 + design.margin.top);
                     ctx.beginPath();
                     ctx.moveTo(x + fix_width, y + this.size.height);
                     ctx.lineTo(x + fix_width - 10, y + design.font_size + design.margin.top + design.margin.bottom);
@@ -52,7 +52,7 @@ define([
                 } else {
                     ctx.fillText(
                         text,
-                        x + 10 + design.margin.left,
+                        x + solo ? Math.floor((solo - m.width) / 2) : 10 + design.margin.left,
                         y + this.size.height + design.font_size - 3 + design.margin.top);                ctx.beginPath();
                     ctx.beginPath();
                     ctx.moveTo(x, y + this.size.height);

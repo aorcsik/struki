@@ -32,9 +32,9 @@ define([
             loop.get("sequence").addCommand(new Command({'code': "a:=a+1"}));
 
             var branching = new Branching();
-            var branch = new Branch({'condition': new Condition({'code': "x = 1"})});
-            branch.get("sequence").addCommand(new Command({'code': "x:=1"}));
-            branching.addBranch(branch);
+            branching.get("branches")[0].set("condition", new Condition({'code': "x = 1"}));
+            branching.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
+            branching.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1"}));
             struki.get("sequence").addCommand(branching);
 
             struki.get("sequence").addCommand(loop);
@@ -42,6 +42,20 @@ define([
             var struktogram = new StruktogramCanvasView({'model': struki});
             $("body").append(struktogram.$el);
             struktogram.render();
+
+            var cmd = null;
+            var i = 0;
+            window.setInterval(function() {
+                if (cmd === null) {
+                    cmd = new Command({'code': "x:=" + i++});
+                    struki.get("sequence").addCommand(cmd);
+                } else {
+                    struki.get("sequence").removeCommand(cmd);
+                    cmd = null;
+                }
+                // var c = branch.get("sequence").get("commands")[0].get("code");
+                // branch.get("sequence").get("commands")[0].set("code", c + "3");
+            }, 500);
         }
     });
 

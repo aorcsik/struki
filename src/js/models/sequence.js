@@ -8,8 +8,27 @@ define([
         initialize: function() {
             this.set("commands", []);
         },
-        addCommand: function(command) {
-            this.get("commands").push(command);
+        addCommand: function(command, idx) {
+            var self = this;
+            if (idx === undefined || idx > this.get("commands").length) {
+                this.get("commands").push(command);
+                this.trigger('change:add', command, this.get("commands").length - 1);
+            } else {
+                this.get("commands").splice(idx, 0, command);
+                this.trigger('change:add', command, idx);
+            }
+            this.trigger('change', this);
+            this.listenTo(command, 'change', function(e) {
+                self.trigger('change', e);
+            });
+        },
+        removeCommand: function(command) {
+            var idx = this.get("commands").indexOf(command);
+            if (idx > -1) {
+                this.get("commands").splice(idx, 1);
+                this.trigger('change:remove', command, idx);
+                this.trigger('change', this);
+            }
         }
     });
     return Sequence;

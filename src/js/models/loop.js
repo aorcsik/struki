@@ -12,7 +12,14 @@ define([
             "test_after": false
         },
         initialize: function() {
+            var self = this;
             this.set("sequence", new Sequence());
+            this.listenTo(this.get("sequence"), 'change', function(e) {
+                self.trigger('change', e);
+            });
+            this.listenTo(this.get("condition"), 'change', function(e) {
+                self.trigger('change', e);
+            });
         }
     });
     return Loop;
