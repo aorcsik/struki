@@ -4,20 +4,20 @@ define([
     'backbone'
 ], function($, _, Backbone){
     var SequenceView = Backbone.View.extend({
+        size: null,
         commands: [],
 
         initialize: function() {
+            this.size = {
+                'width': 0,
+                'height': 0
+            };
             this.commands = [];
         },
         onClose: function() {},
 
         addCommand: function(command) {
             this.commands.push(command);
-        },
-
-        size: {
-            'width': 0,
-            'height': 0
         },
 
         getSize: function(ctx, design) {

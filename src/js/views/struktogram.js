@@ -5,9 +5,11 @@ define([
     'views/loop',
     'views/command',
     'views/sequence',
+    'views/branching',
+    'views/branch',
     'models/command',
     'models/condition'
-], function($, _, Backbone, LoopView, CommandView, SequenceView, Command, Condition){
+], function($, _, Backbone, LoopView, CommandView, SequenceView, BranchingView, BranchView, Command, Condition){
     var StruktogramView = Backbone.View.extend({
         tagName: "canvas",
         attributes: {
@@ -41,12 +43,22 @@ define([
 
             var loop = new LoopView({'model': new Condition({'code': "a < 2"})});
             loop.getSequence().addCommand(new CommandView({'model': new Command({'code': "a:=a+1"})}));
+
+
+            var branching = new BranchingView();
+            var branch = new BranchView({'model': new Condition({'code': "x = 1"})});
+            branch.getSequence().addCommand(new CommandView({'model': new Command({'code': "x:=1"})}));
+            branching.addBranch(branch);
+            /* branch = new BranchView({'model': new Condition({'code': "x = 2 & y= 10"})});
+            branch.getSequence().addCommand(new CommandView({'model': new Command({'code': "x:=1"})}));
+            branching.addBranch(branch); */
+            loop.getSequence().addCommand(branching);
+
             this.main_sequence.addCommand(loop);
 
             var ctx = this.el.getContext('2d');
-            this.main_sequence.render(ctx, this.design, 50, 50);
-            console.log(this.main_sequence.getSize());
-            this.main_sequence.render(ctx, this.design, 50, 50, this.main_sequence.getSize().width);
+            this.main_sequence.render(ctx, this.design, 50.5, 50.5);
+            this.main_sequence.render(ctx, this.design, 50.5, 50.5, this.main_sequence.getSize().width);
             return this;
         }
     });
