@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/branch'
-], function($, _, Backbone, BranchView){
-    var BranchingView = Backbone.View.extend({
+    'views/canvas/branch'
+], function($, _, Backbone, BranchCanvasView){
+    var BranchingCanvasView = Backbone.View.extend({
         size: null,
         branches: null,
         else_branch: null,
@@ -13,21 +13,15 @@ define([
                 'width': 0,
                 'height': 0
             };
-            this.branches = [];
-            this.else_branch = new BranchView();
+            this.branches = this.model.get("branches").map(function(branch) {
+                return new BranchCanvasView({'model': branch});
+            });
+            this.else_branch = new BranchCanvasView({'model': this.model.get("else_branch")});
         },
         onClose: function() {},
 
         getSize: function(ctx, design) {
             return this.size;
-        },
-
-        getBranch: function(idx) {
-            return this.branches[idx];
-        },
-
-        getElseBranch: function() {
-            return this.else_branch;
         },
 
         addBranch: function(branch) {
@@ -66,5 +60,5 @@ define([
             return this;
         }
     });
-    return BranchingView;
+    return BranchingCanvasView;
 });

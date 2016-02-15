@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone'
 ], function($, _, Backbone){
-    var CommandView = Backbone.View.extend({
+    var CommandCanvasView = Backbone.View.extend({
         size: null,
         initialize: function() {
             this.size = {
@@ -36,5 +36,5 @@ define([
             return this;
         }
     });
-    return CommandView;
+    return CommandCanvasView;
 });

@@ -1,10 +1,11 @@
 define([
+    'require',
     'jquery',
     'underscore',
     'backbone',
-    'views/sequence'
-], function($, _, Backbone, SequenceView){
-    var LoopView = Backbone.View.extend({
+    'views/canvas/sequence'
+], function(require, $, _, Backbone, SequenceCanvasView){
+    var LoopCanvasView = Backbone.View.extend({
         size: null,
         loop_sequence: null,
         initialize: function() {
@@ -12,7 +13,8 @@ define([
                 'width': 0,
                 'height': 0
             };
-            this.loop_sequence = new SequenceView();
+            var SequenceCanvasView = require('views/canvas/sequence');
+            this.loop_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
         },
         onClose: function() {},
 
@@ -32,7 +34,7 @@ define([
             this.size.width = 0;
             if (!this.model.get("test_after")) {
                 if (fix_width) ctx.fillText(
-                    this.model.get("code"),
+                    this.model.get("condition").get("code"),
                     x + design.margin.left,
                     y + this.size.height + design.font_size - 3 + design.margin.top);
                 this.size.height += design.font_size + design.margin.top + design.margin.bottom;
@@ -67,5 +69,5 @@ define([
             return this;
         }
     });
-    return LoopView;
+    return LoopCanvasView;
 });

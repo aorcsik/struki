@@ -1,10 +1,11 @@
 define([
+    'require',
     'jquery',
     'underscore',
     'backbone',
-    'views/sequence'
-], function($, _, Backbone, SequenceView){
-    var BranchView = Backbone.View.extend({
+    'views/canvas/sequence'
+], function(require, $, _, Backbone, SequenceCanvasView){
+    var BranchCanvasView = Backbone.View.extend({
         size: null,
         branch_sequence: null,
         initialize: function() {
@@ -12,7 +13,8 @@ define([
                 'width': 0,
                 'height': 0
             };
-            this.branch_sequence = new SequenceView();
+            var SequenceCanvasView = require('views/canvas/sequence');
+            this.branch_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
         },
         onClose: function() {},
 
@@ -26,7 +28,7 @@ define([
 
         render: function(ctx, design, x, y, fix_width, else_text) {
             ctx.font = design.font_size + "px " + design.font_family;
-            var text = this.model ? this.model.get("code") : else_text;
+            var text = this.model.get("condition").get("code") || else_text;
             var m = ctx.measureText(text);
 
             this.size.height = 0;
@@ -86,5 +88,5 @@ define([
             return this;
         }
     });
-    return BranchView;
+    return BranchCanvasView;
 });

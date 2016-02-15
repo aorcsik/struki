@@ -1,9 +1,12 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone){
-    var SequenceView = Backbone.View.extend({
+    'backbone',
+    'views/canvas/loop',
+    'views/canvas/command',
+    'views/canvas/branching'
+], function($, _, Backbone, LoopCanvasView, CommandCanvasView, BranchingCanvasView) {
+    var SequenceCanvasView = Backbone.View.extend({
         size: null,
         commands: [],
 
@@ -12,13 +15,13 @@ define([
                 'width': 0,
                 'height': 0
             };
-            this.commands = [];
+            this.commands = this.model.get("commands").map(function(command) {
+                if (command.type == "loop") return new LoopCanvasView({'model': command});
+                if (command.type == "command") return new CommandCanvasView({'model': command});
+                if (command.type == "branching") return new BranchingCanvasView({'model': command});
+            });
         },
         onClose: function() {},
-
-        addCommand: function(command) {
-            this.commands.push(command);
-        },
 
         getSize: function(ctx, design) {
             return this.size;
@@ -35,5 +38,5 @@ define([
             return this;
         }
     });
-    return SequenceView;
+    return SequenceCanvasView;
 });

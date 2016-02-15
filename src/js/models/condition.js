@@ -5,8 +5,7 @@ define([
 ], function($, _, Backbone) {
     var Condition = Backbone.Model.extend({
         defaults: {
-            "code": "I",
-            "test_after": false
+            "code": "I"
         }
     });
     return Condition;
