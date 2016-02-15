@@ -35,7 +35,7 @@ define([
             if (!this.model.get("test_after")) {
                 if (fix_width) ctx.fillText(
                     this.model.get("condition").get("code"),
-                    x + design.margin.left,
+                    x + Math.floor((fix_width - m.width) / 2),
                     y + this.size.height + design.font_size - 3 + design.margin.top);
                 this.size.height += design.font_size + design.margin.top + design.margin.bottom;
                 this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
@@ -55,7 +55,7 @@ define([
             if (this.model.get("test_after")) {
                 if (fix_width) ctx.fillText(
                     this.model.get("code"),
-                    x + design.margin.left,
+                    x + Math.floor((fix_width - m.width) / 2),
                     y + this.size.height + design.font_size - 3 + design.margin.top);
                 this.size.height += design.font_size + design.margin.top + design.margin.bottom;
                 this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
