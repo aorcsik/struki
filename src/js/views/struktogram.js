@@ -37,6 +37,18 @@ define([
 
         },
 
+        getDownloadLink: function() {
+            var img = this.el.toDataURL("image/png");
+            if (navigator.msSaveBlob) {
+                var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");
+                return $("<a href='javascript:;'>Download...</a>").on("click", function() {
+                    navigator.msSaveBlob(blob, "structogram.png");
+                });
+            } else {
+                return $("<a href='" + img + "' target='_blank' download='structogram.png'>Download...</a>");
+            }
+        },
+
         render: function() {
             this.main_sequence.addCommand(new CommandView({'model': new Command({'code': "x:=3"})}));
             this.main_sequence.addCommand(new CommandView({'model': new Command({'code': "y:=4+5-6"})}));
@@ -57,8 +69,15 @@ define([
             this.main_sequence.addCommand(loop);
 
             var ctx = this.el.getContext('2d');
-            this.main_sequence.render(ctx, this.design, 50.5, 50.5);
-            this.main_sequence.render(ctx, this.design, 50.5, 50.5, this.main_sequence.getSize().width);
+            this.main_sequence.render(ctx, this.design, 0, 0);
+
+            var final_width = this.main_sequence.getSize().width;
+            var final_height = this.main_sequence.getSize().height;
+            this.$el.attr({"width": final_width + 9, "height": final_height + 9});
+            this.main_sequence.render(ctx, this.design, 4.5, 4.5, final_width);
+
+            $("body").append(this.getDownloadLink());
+
             return this;
         }
     });
