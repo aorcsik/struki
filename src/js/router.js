@@ -43,7 +43,7 @@ define([
             $("body").append(struktogram.$el);
             struktogram.render();
 
-            var cmd = null;
+            /* var cmd = null;
             var i = 0;
             window.setInterval(function() {
                 if (cmd === null) {
@@ -55,7 +55,7 @@ define([
                 }
                 // var c = branch.get("sequence").get("commands")[0].get("code");
                 // branch.get("sequence").get("commands")[0].set("code", c + "3");
-            }, 500);
+            }, 500); */
         }
     });
 
