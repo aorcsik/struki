@@ -2,8 +2,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone) {
+    'backbone',
+    'views/struktogram'
+], function($, _, Backbone, StruktogramView) {
 
     var Router = Backbone.Router.extend({
 
@@ -16,7 +17,9 @@ define([
             '*actions': 'defaultAction'
         },
         defaultAction: function (actions) {
-
+            var struktogram = new StruktogramView();
+            $("body").append(struktogram.$el);
+            struktogram.render();
         }
     });
 
