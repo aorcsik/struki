@@ -20,9 +20,9 @@ define([
             "font_family": "Ubuntu Mono",
             "font_size": 14,
             "margin": {
-                "top": 5,
+                "top": 7,
                 "right": 10,
-                "bottom": 5,
+                "bottom": 7,
                 "left": 10
             }
         },
