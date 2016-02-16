@@ -46,20 +46,6 @@ define([
             main.get("struktogram").get("sequence").addCommand(branching);
 
             main.get("struktogram").get("sequence").addCommand(loop);
-
-            /* var cmd = null;
-            var i = 0;
-            window.setInterval(function() {
-                if (cmd === null) {
-                    cmd = new Command({'code': "x:=" + i++});
-                    struki.get("sequence").addCommand(cmd);
-                } else {
-                    struki.get("sequence").removeCommand(cmd);
-                    cmd = null;
-                }
-                // var c = branch.get("sequence").get("commands")[0].get("code");
-                // branch.get("sequence").get("commands")[0].set("code", c + "3");
-            }, 500); */
         }
     });
 
