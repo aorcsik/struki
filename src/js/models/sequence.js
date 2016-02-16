@@ -23,10 +23,12 @@ define([
             });
         },
         removeCommand: function(command) {
-            var idx = this.get("commands").indexOf(command);
-            if (idx > -1) {
-                this.get("commands").splice(idx, 1);
-                this.trigger('change:remove', command, idx);
+            this.removeCommandByIndex(this.get("commands").indexOf(command));
+        },
+        removeCommandByIndex: function(idx) {
+            if (idx > -1 && idx < this.get("commands").length) {
+                var removed = this.get("commands").splice(idx, 1);
+                this.trigger('change:remove', removed[0], idx);
                 this.trigger('change', this);
             }
         }

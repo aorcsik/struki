@@ -5,27 +5,9 @@ define([
     'views/canvas/sequence'
 ], function($, _, Backbone, SequenceCanvasView){
     var StruktogramCanvasView = Backbone.View.extend({
-        tagName: "canvas",
-        attributes: {
-            "width": 800,
-            "height": 600
-        },
-        design: {
-            "font_family": "Ubuntu Mono",
-            "font_size": 14,
-            "margin": {
-                "top": 7,
-                "right": 10,
-                "bottom": 7,
-                "left": 10
-            }
-        },
-        main_sequence: null,
         size: null,
         position: null,
-        events: {
-            "click": "onClickHandler"
-        },
+        main_sequence: null,
 
         initialize: function() {
             var self = this;
@@ -38,19 +20,12 @@ define([
                 "y": 0
             };
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
-            this.listenTo(this.model, 'change', function(e) {
-                self.render();
-            });
         },
 
         onClose: function() {},
 
-        onClickHandler: function(e) {
-            this.onEvent({
-                'type': "click",
-                'x': e.pageX - this.$el.offset().left,
-                'y': e.pageY - this.$el.offset().top
-            });
+        getSize: function(ctx, design) {
+            return this.size;
         },
 
         onEvent: function(event) {
@@ -64,18 +39,6 @@ define([
                 }
             }
             return false;
-        },
-
-        getDownloadLink: function() {
-            var img = this.el.toDataURL("image/png");
-            if (navigator.msSaveBlob) {
-                var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");
-                return $("<a href='javascript:;'>Download...</a>").on("click", function() {
-                    navigator.msSaveBlob(blob, "structogram.png");
-                });
-            } else {
-                return $("<a href='" + img + "' target='_blank' download='structogram.png'>Download...</a>");
-            }
         },
 
         roundRectPath: function(ctx, x, y, width, height, radius) {
@@ -102,54 +65,46 @@ define([
             ctx.stroke();
         },
 
-        render: function() {
-            var ctx = this.el.getContext('2d');
-            ctx.clearRect(0, 0, this.el.width, this.el.height);
-            this.main_sequence.render(ctx, this.design, 0, 0);
+        render: function(ctx, design, x, y, fix_width) {
+            this.position.x = x;
+            this.position.y = y;
+
+            this.main_sequence.render(ctx, design, x, y);
             this.size.width = this.main_sequence.getSize().width;
             this.size.height = this.main_sequence.getSize().height;
 
-            this.position.x = 4.5;
-            this.position.y = 4.5;
-
-            ctx.font = this.design.font_size + "px " + this.design.font_family;
+            ctx.font = design.font_size + "px " + design.font_family;
             var text = this.model.get("name");
             var m = ctx.measureText(text);
 
-            var label_width = m.width + this.design.margin.right + this.design.margin.left;
-            var label_height = this.design.font_size + this.design.margin.top + this.design.margin.bottom;
+            var label_width = m.width + design.margin.right + design.margin.left;
+            var label_height = design.font_size + design.margin.top + design.margin.bottom;
             this.size.width = Math.max(this.size.width, label_width);
             this.size.height += label_height + 10;
 
-            this.$el.attr({
-                "width": this.size.width + 9,
-                "height": this.size.height + 9
-            });
+            if (fix_width) {
 
-            var x = this.position.x;
-            var y = this.position.y;
-            this.strokeRoundRect(ctx,
-                x + Math.floor((this.size.width - label_width) / 2),
-                y,
-                label_width,
-                label_height,
-                Math.ceil(label_height / 2));
-            ctx.font = this.design.font_size + "px " + this.design.font_family;
-            ctx.fillText(
-                text,
-                this.position.x + Math.floor((this.size.width - label_width) / 2) + this.design.margin.left,
-                this.position.y + this.design.font_size - 3 + this.design.margin.top);
-            ctx.beginPath();
-            ctx.moveTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height);
-            ctx.lineTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height + 10);
-            ctx.stroke();
-            y += label_height + 10;
+                this.strokeRoundRect(ctx,
+                    x + Math.floor((this.size.width - label_width) / 2),
+                    y,
+                    label_width,
+                    label_height,
+                    Math.ceil(label_height / 2));
+                ctx.font = design.font_size + "px " + design.font_family;
+                ctx.fillText(
+                    text,
+                    this.position.x + Math.floor((this.size.width - label_width) / 2) + design.margin.left,
+                    this.position.y + design.font_size - 3 + design.margin.top);
+                ctx.beginPath();
+                ctx.moveTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height);
+                ctx.lineTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height + 10);
+                ctx.stroke();
+                y += label_height + 10;
 
-            this.main_sequence.render(ctx, this.design,
-                x + Math.max(0, Math.floor((label_width - this.main_sequence.getSize().width) / 2)),
-                y, this.main_sequence.getSize().width);
-
-            // $("body").append(this.getDownloadLink());
+                this.main_sequence.render(ctx, design,
+                    x + Math.max(0, Math.floor((label_width - this.main_sequence.getSize().width) / 2)),
+                    y, this.main_sequence.getSize().width);
+            }
 
             return this;
         }
