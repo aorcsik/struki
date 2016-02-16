@@ -183,13 +183,15 @@ define([
             }
 
             if (this.branch_sequence.commands.length === 0) {
-                if (fix_width) ctx.strokeRect(
-                    x,
-                    y + this.size.height,
-                    this.size.width,
-                    design.font_size + design.margin.top + design.margin.bottom);
-                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
-                this.lines[line++] = design.font_size + design.margin.top + design.margin.bottom;
+                height = design.font_size + design.margin.top + design.margin.bottom;
+                if (fix_width) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + this.size.height);
+                    ctx.lineTo(x + this.size.width, y + this.size.height);
+                    ctx.stroke();
+                }
+                this.size.height += height;
+                this.lines[line++] = height;
             } else {
                 this.branch_sequence.render(ctx, design, line, x, y + this.size.height, fix_width, lines);
                 this.size.height += this.branch_sequence.getSize().height;

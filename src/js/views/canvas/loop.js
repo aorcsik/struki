@@ -74,7 +74,7 @@ define([
                     if (fix_width) {
                         ctx.fillText(
                             text_lines[i],
-                            x + design.margin.left,
+                            x + Math.floor((fix_width - m.width) / 2),
                             y + this.size.height + height - 3);
                     }
                 }
@@ -83,13 +83,14 @@ define([
                 this.lines[line++] = height;
             }
             if (this.loop_sequence.commands.length === 0) {
+                height = design.font_size + design.margin.top + design.margin.bottom;
                 if (fix_width) ctx.strokeRect(
                     20 + x,
                     y + this.size.height,
                     this.size.width - 20,
-                    design.font_size + design.margin.top + design.margin.bottom);
-                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
-                this.lines[line++] = design.font_size + design.margin.top + design.margin.bottom;
+                    height);
+                this.size.height += height;
+                this.lines[line++] = height;
             } else {
                 this.loop_sequence.render(ctx, design, line, x + 20, y + this.size.height, fix_width - 20, lines);
                 this.size.height += this.loop_sequence.getSize().height;
