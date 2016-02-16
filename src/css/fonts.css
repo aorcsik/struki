@@ -1,0 +1,39 @@
+@font-face {
+    font-family: "Ubuntu Mono";
+    src: url("../fonts/UbuntuMono-B.eot?") format("eot"),
+         url("../fonts/UbuntuMono-B.woff") format("woff"),
+         url("../fonts/UbuntuMono-B.ttf") format("truetype"),
+         url("../fonts/UbuntuMono-B.svg#UbuntuMono-Bold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Ubuntu Mono";
+    src: url("../fonts/UbuntuMono-R.eot?") format("eot"),
+         url("../fonts/UbuntuMono-R.woff") format("woff"),
+         url("../fonts/UbuntuMono-R.ttf") format("truetype"),
+         url("../fonts/UbuntuMono-R.svg#UbuntuMono-Regular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Ubuntu";
+    src: url("../fonts/Ubuntu-Bold.eot?") format("eot"),
+         url("../fonts/Ubuntu-Bold.woff") format("woff"),
+         url("../fonts/Ubuntu-Bold.ttf") format("truetype"),
+         url("../fonts/Ubuntu-Bold.svg#Ubuntu-Bold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Ubuntu";
+    src: url("../fonts/Ubuntu-Regular.eot?") format("eot"),
+         url("../fonts/Ubuntu-Regular.woff") format("woff"),
+         url("../fonts/Ubuntu-Regular.ttf") format("truetype"),
+         url("../fonts/Ubuntu-Regular.svg#Ubuntu") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
