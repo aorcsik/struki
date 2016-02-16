@@ -34,7 +34,18 @@ define([
             this.size.height = 0;
             this.size.width = 0;
             if (fix_width) {
-                if (!text || text == "else") {
+                if (!text) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + fix_width, y + this.size.height);
+                    ctx.lineTo(x + fix_width - 20, y + design.font_size + design.margin.top + design.margin.bottom);
+                    ctx.stroke();
+                    ctx.font = 14 + "px " + design.font_family;
+                    ctx.fillText(
+                        "H",
+                        x + fix_width - 10,
+                        y + design.font_size + design.margin.top + design.margin.bottom - 3);
+                    ctx.font = design.font_size + "px " + design.font_family;
+                } else if (text == "else") {
                     ctx.fillText(
                         text,
                         x + design.margin.left,
@@ -43,16 +54,33 @@ define([
                     ctx.moveTo(x + fix_width, y + this.size.height);
                     ctx.lineTo(x + fix_width - 10, y + design.font_size + design.margin.top + design.margin.bottom);
                     ctx.stroke();
-                    if (text == "else") {
-                        ctx.beginPath();
-                        ctx.moveTo(x, y + this.size.height);
-                        ctx.lineTo(x, y + design.font_size + design.margin.top + design.margin.bottom);
-                        ctx.stroke();
-                    }
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + this.size.height);
+                    ctx.lineTo(x, y + design.font_size + design.margin.top + design.margin.bottom);
+                    ctx.stroke();
+                } else if (solo) {
+                    ctx.fillText(
+                        text,
+                        x + Math.floor((solo - m.width) / 2),
+                        y + this.size.height + design.font_size - 3 + design.margin.top);                ctx.beginPath();
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + this.size.height);
+                    ctx.lineTo(x + 20, y + design.font_size + design.margin.top + design.margin.bottom);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + this.size.height);
+                    ctx.lineTo(x, y + design.font_size + design.margin.top + design.margin.bottom);
+                    ctx.stroke();
+                    ctx.font = 14 + "px " + design.font_family;
+                    ctx.fillText(
+                        "I",
+                        x + 3,
+                        y + design.font_size + design.margin.top + design.margin.bottom - 3);
+                    ctx.font = design.font_size + "px " + design.font_family;
                 } else {
                     ctx.fillText(
                         text,
-                        x + solo ? Math.floor((solo - m.width) / 2) : 10 + design.margin.left,
+                        x + 10 + design.margin.left,
                         y + this.size.height + design.font_size - 3 + design.margin.top);                ctx.beginPath();
                     ctx.beginPath();
                     ctx.moveTo(x, y + this.size.height);
