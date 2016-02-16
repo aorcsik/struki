@@ -53,8 +53,9 @@ define([
             return this.lines;
         },
 
-        render: function(ctx, design, x, y, fix_width) {
-            this.lines = 0;
+        render: function(ctx, design, line, x, y, fix_width, lines) {
+            var key;
+            this.lines = {};
             this.position.x = x;
             this.position.y = y;
             var branch_fix_width, else_branch_fix_width, solo = 0;
@@ -75,21 +76,39 @@ define([
                     branch_fix_width = Math.floor(fix_width * this.branches[i].getSize().width / old_size.width);
                     else_branch_fix_width -= branch_fix_width;
                 }
-                this.branches[i].render(ctx, design, x + this.size.width, y, branch_fix_width, null, solo);
+                this.branches[i].render(ctx, design, line, x + this.size.width, y, branch_fix_width, lines, null, solo);
                 this.size.width += this.branches[i].getSize().width;
                 this.size.height = Math.max(this.size.height, this.branches[i].getSize().height);
-                this.lines = Math.max(this.lines, this.branches[i].getLines());
+                for (key in this.branches[i].getLines()) {
+                    if (this.lines[key]) this.lines[key] = Math.max(this.lines[key], this.branches[i].getLines()[key]);
+                    else this.lines[key] = this.branches[i].getLines()[key];
+                }
             }
             var else_text = this.branches.length > 1 ? "else" : "";
-            this.else_branch.render(ctx, design, x + this.size.width, y, else_branch_fix_width, else_text);
+            this.else_branch.render(ctx, design, line, x + this.size.width, y, else_branch_fix_width, lines, else_text, null);
             this.size.width += this.else_branch.getSize().width;
             this.size.height = Math.max(this.size.height, this.else_branch.getSize().height);
-            this.lines = Math.max(this.lines, this.else_branch.getLines());
-            if (fix_width) ctx.strokeRect(
-                x,
-                y,
-                fix_width || this.size.width,
-                this.size.height);
+            for (key in this.else_branch.getLines()) {
+                if (this.lines[key]) this.lines[key] = Math.max(this.lines[key], this.else_branch.getLines()[key]);
+                else this.lines[key] = this.else_branch.getLines()[key];
+            }
+
+            this.size.height = 0;
+            for (key in this.lines) {
+                this.size.height += this.lines[key];
+            }
+
+            if (fix_width) {
+                this.size.height = 0;
+                for (key in this.lines) {
+                    this.size.height += lines[key];
+                }
+                ctx.strokeRect(
+                    x,
+                    y,
+                    fix_width || this.size.width,
+                    this.size.height);
+            }
             return this;
         }
     });

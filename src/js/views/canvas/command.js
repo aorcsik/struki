@@ -4,7 +4,7 @@ define([
     'backbone'
 ], function($, _, Backbone){
     var CommandCanvasView = Backbone.View.extend({
-        lines: 1,
+        lines: [],
         size: null,
         position: null,
         initialize: function() {
@@ -38,34 +38,39 @@ define([
             return this.lines;
         },
 
-        render: function(ctx, design, x, y, fix_width) {
-            this.lines = 0;
-            this.position.x = x;
-            this.position.y = y;
-            this.size.width = 0;
-            this.size.height = 0;
+        render: function(ctx, design, line, x, y, fix_width, lines) {
+
             ctx.font = design.font_size + "px " + design.font_family;
             var text = this.model.get("code");
-            var lines = text.split("\n").map(function(line) {
+            var text_lines = text.split("\n").map(function(line) {
                 return line.replace(/^\s+|\s+$/, "");
             }).filter(function(line) {
                 return line !== "";
             });
-            var m;
-            this.size.height = design.margin.top;
-            for (var i = 0; i < lines.length; i++) {
-                m = ctx.measureText(lines[i]);
+            var m, height;
+
+            this.lines = {};
+            this.position.x = x;
+            this.position.y = y;
+            this.size.width = 0;
+            this.size.height = 0;
+
+            height = design.margin.top;
+            for (var i = 0; i < text_lines.length; i++) {
+                m = ctx.measureText(text_lines[i]);
                 this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
-                this.size.height += design.font_size + (i > 0 ? design.margin.top + design.margin.bottom : 0);
+                height += design.font_size + (i > 0 ? 3 : 0);
                 if (fix_width) {
                     ctx.fillText(
-                        lines[i],
+                        text_lines[i],
                         x + design.margin.left,
-                        y + this.size.height - 3);
+                        y + this.size.height + height - 3);
                 }
-                this.lines += 1;
             }
-            this.size.height += design.margin.bottom;
+            height += design.margin.bottom;
+            this.size.height += lines && lines[line] || height;
+            this.lines[line] = this.size.height;
+
             if (fix_width) {
                 ctx.strokeRect(
                     x,

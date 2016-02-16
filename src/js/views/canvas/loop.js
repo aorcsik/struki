@@ -6,7 +6,7 @@ define([
     'views/canvas/sequence'
 ], function(require, $, _, Backbone, SequenceCanvasView){
     var LoopCanvasView = Backbone.View.extend({
-        lines: 1,
+        lines: null,
         size: null,
         position: null,
         loop_sequence: null,
@@ -49,22 +49,38 @@ define([
             return this.loop_sequence;
         },
 
-        render: function(ctx, design, x, y, fix_width) {
-            this.lines = 1;
+        render: function(ctx, design, line, x, y, fix_width, lines) {
+            var m, i, height;
+
+            ctx.font = design.font_size + "px " + design.font_family;
+            var text = this.model.get("condition").get("code");
+            var text_lines = text.split("\n").map(function(line) {
+                return line.replace(/^\s+|\s+$/, "");
+            }).filter(function(line) {
+                return line !== "";
+            });
+
+            this.lines = {};
             this.position.x = x;
             this.position.y = y;
-            ctx.font = design.font_size + "px " + design.font_family;
-            var m = ctx.measureText(this.model.get("code"));
-
             this.size.height = 0;
             this.size.width = 0;
             if (!this.model.get("test_after")) {
-                if (fix_width) ctx.fillText(
-                    this.model.get("condition").get("code"),
-                    x + Math.floor((fix_width - m.width) / 2),
-                    y + this.size.height + design.font_size - 3 + design.margin.top);
-                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
-                this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
+                height = design.margin.top;
+                for (i = 0; i < text_lines.length; i++) {
+                    m = ctx.measureText(text_lines[i]);
+                    this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
+                    height += design.font_size + (i > 0 ? 3 : 0);
+                    if (fix_width) {
+                        ctx.fillText(
+                            text_lines[i],
+                            x + design.margin.left,
+                            y + this.size.height + height - 3);
+                    }
+                }
+                height += design.margin.bottom;
+                this.size.height += lines && lines[line] || height;
+                this.lines[line++] = height;
             }
             if (this.loop_sequence.commands.length === 0) {
                 if (fix_width) ctx.strokeRect(
@@ -73,20 +89,33 @@ define([
                     this.size.width - 20,
                     design.font_size + design.margin.top + design.margin.bottom);
                 this.size.height += design.font_size + design.margin.top + design.margin.bottom;
-                this.lines += 1;
+                this.lines[line++] = design.font_size + design.margin.top + design.margin.bottom;
             } else {
-                this.loop_sequence.render(ctx, design, x + 20, y + this.size.height, fix_width - 20);
+                this.loop_sequence.render(ctx, design, line, x + 20, y + this.size.height, fix_width - 20, lines);
                 this.size.height += this.loop_sequence.getSize().height;
                 this.size.width = fix_width || Math.max(this.size.width, 20 + this.loop_sequence.getSize().width);
-                this.lines += this.loop_sequence.getLines();
+                for (var key in this.loop_sequence.getLines()) {
+                    this.lines[key] = this.loop_sequence.getLines()[key];
+                    line = key;
+                }
+                line++;
             }
             if (this.model.get("test_after")) {
-                if (fix_width) ctx.fillText(
-                    this.model.get("code"),
-                    x + Math.floor((fix_width - m.width) / 2),
-                    y + this.size.height + design.font_size - 3 + design.margin.top);
-                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
-                this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
+                height = design.margin.top;
+                for (i = 0; i < text_lines.length; i++) {
+                    m = ctx.measureText(text_lines[i]);
+                    this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
+                    height += design.font_size + (i > 0 ? design.margin.top + design.margin.bottom : 0);
+                    if (fix_width) {
+                        ctx.fillText(
+                            text_lines[i],
+                            x + design.margin.left,
+                            y + this.size.height + height - 3);
+                    }
+                }
+                height += design.margin.bottom;
+                this.size.height += lines && lines[line] || height;
+                this.lines[line++] = height;
             }
 
             if (fix_width) ctx.strokeRect(

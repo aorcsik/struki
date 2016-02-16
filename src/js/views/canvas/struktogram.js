@@ -5,7 +5,7 @@ define([
     'views/canvas/sequence'
 ], function($, _, Backbone, SequenceCanvasView){
     var StruktogramCanvasView = Backbone.View.extend({
-        lines: 0,
+        lines: null,
         size: null,
         position: null,
         main_sequence: null,
@@ -70,12 +70,12 @@ define([
             ctx.stroke();
         },
 
-        render: function(ctx, design, x, y, fix_width) {
-            this.lines = 0;
+        render: function(ctx, design, line, x, y, fix_width) {
+            this.lines = {};
             this.position.x = x;
             this.position.y = y;
 
-            this.main_sequence.render(ctx, design, x, y);
+            this.main_sequence.render(ctx, design, line, x, y);
             this.size.width = this.main_sequence.getSize().width;
             this.size.height = this.main_sequence.getSize().height;
             this.lines = this.main_sequence.getLines();
@@ -108,9 +108,9 @@ define([
                 ctx.stroke();
                 y += label_height + 10;
 
-                this.main_sequence.render(ctx, design,
+                this.main_sequence.render(ctx, design, line,
                     x + Math.max(0, Math.floor((label_width - this.main_sequence.getSize().width) / 2)),
-                    y, this.main_sequence.getSize().width);
+                    y, this.main_sequence.getSize().width, this.lines);
             }
 
             return this;

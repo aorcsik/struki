@@ -57,14 +57,14 @@ define([
         render: function() {
             var ctx = this.el.getContext('2d');
             ctx.clearRect(0, 0, this.el.width, this.el.height);
-            this.struktogram.render(ctx, this.design, 0, 0);
+            this.struktogram.render(ctx, this.design, 0, 0, 0);
 
             this.$el.attr({
                 "width": this.struktogram.getSize().width + 9,
                 "height": this.struktogram.getSize().height + 9
             });
 
-            this.struktogram.render(ctx, this.design, 4.5, 4.5, this.struktogram.getSize().width);
+            this.struktogram.render(ctx, this.design, 0, 4.5, 4.5, this.struktogram.getSize().width);
 
             // $("body").append(this.getDownloadLink());
         }
