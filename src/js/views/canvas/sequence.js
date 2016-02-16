@@ -8,6 +8,7 @@ define([
 ], function($, _, Backbone, LoopCanvasView, CommandCanvasView, BranchingCanvasView) {
     var SequenceCanvasView = Backbone.View.extend({
         size: null,
+        position: null,
         commands: [],
 
         initialize: function() {
@@ -15,6 +16,10 @@ define([
             this.size = {
                 'width': 0,
                 'height': 0
+            };
+            this.position = {
+                "x": 0,
+                "y": 0
             };
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
@@ -25,6 +30,18 @@ define([
             });
         },
         onClose: function() {},
+
+        onEvent: function(event) {
+            if (event.x > this.position.x && event.x < this.position.x + this.size.width) {
+                if (event.y > this.position.y && event.y < this.position.y + this.size.height) {
+                    this.commands.forEach(function(command) {
+                        command.onEvent(event);
+                    });
+                    return true;
+                }
+            }
+            return false;
+        },
 
         updateCommands: function() {
             var self = this;
@@ -44,6 +61,8 @@ define([
         },
 
         render: function(ctx, design, x, y, fix_width) {
+            this.position.x = x;
+            this.position.y = y;
             this.size.width = 0;
             this.size.height = 0;
             for (var i = 0; i < this.commands.length; i++) {

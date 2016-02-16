@@ -7,16 +7,34 @@ define([
 ], function(require, $, _, Backbone, SequenceCanvasView){
     var BranchCanvasView = Backbone.View.extend({
         size: null,
+        position: null,
         branch_sequence: null,
         initialize: function() {
             this.size = {
                 'width': 0,
                 'height': 0
             };
+            this.position = {
+                "x": 0,
+                "y": 0
+            };
             var SequenceCanvasView = require('views/canvas/sequence');
             this.branch_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
         },
         onClose: function() {},
+
+        onEvent: function(event) {
+            if (event.x > this.position.x && event.x < this.position.x + this.size.width) {
+                if (event.y > this.position.y && event.y < this.position.y + this.size.height) {
+                    if (!this.branch_sequence.onEvent(event)) {
+                        this.trigger(event.type, this);
+                        console.log(event.type, this);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        },
 
         getSize: function(ctx, design) {
             return this.size;
@@ -27,6 +45,8 @@ define([
         },
 
         render: function(ctx, design, x, y, fix_width, else_text, solo) {
+            this.position.x = x;
+            this.position.y = y;
             ctx.font = design.font_size + "px " + design.font_family;
             var text = this.model.get("condition").get("code") || else_text;
             var m = ctx.measureText(text);

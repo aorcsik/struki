@@ -6,12 +6,17 @@ define([
 ], function($, _, Backbone, BranchCanvasView){
     var BranchingCanvasView = Backbone.View.extend({
         size: null,
+        position: null,
         branches: null,
         else_branch: null,
         initialize: function() {
             this.size = {
                 'width': 0,
                 'height': 0
+            };
+            this.position = {
+                "x": 0,
+                "y": 0
             };
             this.branches = this.model.get("branches").map(function(branch) {
                 return new BranchCanvasView({'model': branch});
@@ -26,11 +31,26 @@ define([
         },
         onClose: function() {},
 
+        onEvent: function(event) {
+            if (event.x > this.position.x && event.x < this.position.x + this.size.width) {
+                if (event.y > this.position.y && event.y < this.position.y + this.size.height) {
+                    this.branches.forEach(function(branch) {
+                        branch.onEvent(event);
+                    });
+                    this.else_branch.onEvent(event);
+                    return true;
+                }
+            }
+            return false;
+        },
+
         getSize: function(ctx, design) {
             return this.size;
         },
 
         render: function(ctx, design, x, y, fix_width) {
+            this.position.x = x;
+            this.position.y = y;
             var branch_fix_width, else_branch_fix_width, solo = 0;
             var old_size = {
                 'width': this.size.width,
