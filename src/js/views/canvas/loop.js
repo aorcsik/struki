@@ -6,6 +6,7 @@ define([
     'views/canvas/sequence'
 ], function(require, $, _, Backbone, SequenceCanvasView){
     var LoopCanvasView = Backbone.View.extend({
+        lines: 1,
         size: null,
         position: null,
         loop_sequence: null,
@@ -36,8 +37,12 @@ define([
             return false;
         },
 
-        getSize: function(ctx, design) {
+        getSize: function() {
             return this.size;
+        },
+
+        getLines: function() {
+            return this.lines;
         },
 
         getSequence: function() {
@@ -45,6 +50,7 @@ define([
         },
 
         render: function(ctx, design, x, y, fix_width) {
+            this.lines = 1;
             this.position.x = x;
             this.position.y = y;
             ctx.font = design.font_size + "px " + design.font_family;
@@ -65,12 +71,14 @@ define([
                     20 + x,
                     y + this.size.height,
                     this.size.width - 20,
-                    10);
-                this.size.height += 10;
+                    design.font_size + design.margin.top + design.margin.bottom);
+                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
+                this.lines += 1;
             } else {
                 this.loop_sequence.render(ctx, design, x + 20, y + this.size.height, fix_width - 20);
                 this.size.height += this.loop_sequence.getSize().height;
                 this.size.width = fix_width || Math.max(this.size.width, 20 + this.loop_sequence.getSize().width);
+                this.lines += this.loop_sequence.getLines();
             }
             if (this.model.get("test_after")) {
                 if (fix_width) ctx.fillText(

@@ -42,7 +42,8 @@ define([
             var branching = new Branching();
             branching.get("branches")[0].set("condition", new Condition({'code': "x = 1"}));
             branching.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
-            branching.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1"}));
+            branching.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
+            branching.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1\nx"}));
             main.get("struktogram").get("sequence").addCommand(branching);
 
             main.get("struktogram").get("sequence").addCommand(loop);

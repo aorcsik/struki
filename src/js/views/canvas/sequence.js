@@ -7,6 +7,7 @@ define([
     'views/canvas/branching'
 ], function($, _, Backbone, LoopCanvasView, CommandCanvasView, BranchingCanvasView) {
     var SequenceCanvasView = Backbone.View.extend({
+        lines: 0,
         size: null,
         position: null,
         commands: [],
@@ -56,11 +57,16 @@ define([
             if (command.type == "branching") return new BranchingCanvasView({'model': command});
         },
 
-        getSize: function(ctx, design) {
+        getSize: function() {
             return this.size;
         },
 
+        getLines: function() {
+            return this.lines;
+        },
+
         render: function(ctx, design, x, y, fix_width) {
+            this.lines = 0;
             this.position.x = x;
             this.position.y = y;
             this.size.width = 0;
@@ -69,6 +75,7 @@ define([
                 this.commands[i].render(ctx, design, x, y + this.size.height, fix_width);
                 this.size.height += this.commands[i].getSize(ctx, design).height;
                 this.size.width = fix_width || Math.max(this.size.width, this.commands[i].getSize(ctx, design).width);
+                this.lines += this.commands[i].getLines();
             }
             return this;
         }

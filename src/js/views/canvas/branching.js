@@ -5,6 +5,7 @@ define([
     'views/canvas/branch'
 ], function($, _, Backbone, BranchCanvasView){
     var BranchingCanvasView = Backbone.View.extend({
+        lines: 0,
         size: null,
         position: null,
         branches: null,
@@ -44,11 +45,16 @@ define([
             return false;
         },
 
-        getSize: function(ctx, design) {
+        getSize: function() {
             return this.size;
         },
 
+        getLines: function() {
+            return this.lines;
+        },
+
         render: function(ctx, design, x, y, fix_width) {
+            this.lines = 0;
             this.position.x = x;
             this.position.y = y;
             var branch_fix_width, else_branch_fix_width, solo = 0;
@@ -72,11 +78,13 @@ define([
                 this.branches[i].render(ctx, design, x + this.size.width, y, branch_fix_width, null, solo);
                 this.size.width += this.branches[i].getSize().width;
                 this.size.height = Math.max(this.size.height, this.branches[i].getSize().height);
+                this.lines = Math.max(this.lines, this.branches[i].getLines());
             }
             var else_text = this.branches.length > 1 ? "else" : "";
             this.else_branch.render(ctx, design, x + this.size.width, y, else_branch_fix_width, else_text);
             this.size.width += this.else_branch.getSize().width;
             this.size.height = Math.max(this.size.height, this.else_branch.getSize().height);
+            this.lines = Math.max(this.lines, this.else_branch.getLines());
             if (fix_width) ctx.strokeRect(
                 x,
                 y,

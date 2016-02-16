@@ -6,6 +6,7 @@ define([
     'views/canvas/sequence'
 ], function(require, $, _, Backbone, SequenceCanvasView){
     var BranchCanvasView = Backbone.View.extend({
+        lines: 1,
         size: null,
         position: null,
         branch_sequence: null,
@@ -36,15 +37,16 @@ define([
             return false;
         },
 
-        getSize: function(ctx, design) {
+        getSize: function() {
             return this.size;
         },
 
-        getSequence: function() {
-            return this.branch_sequence;
+        getLines: function() {
+            return this.lines;
         },
 
         render: function(ctx, design, x, y, fix_width, else_text, solo) {
+            this.lines = 1;
             this.position.x = x;
             this.position.y = y;
             ctx.font = design.font_size + "px " + design.font_family;
@@ -120,19 +122,16 @@ define([
                     x,
                     y + this.size.height,
                     this.size.width,
-                    10);
-                this.size.height += 10;
+                    design.font_size + design.margin.top + design.margin.bottom);
+                this.size.height += design.font_size + design.margin.top + design.margin.bottom;
+                this.lines += 1;
             } else {
                 this.branch_sequence.render(ctx, design, x, y + this.size.height, fix_width);
                 this.size.height += this.branch_sequence.getSize().height;
                 this.size.width = fix_width || Math.max(this.size.width, 20 + this.branch_sequence.getSize().width);
+                this.lines += this.branch_sequence.getLines();
             }
 
-            /* if (fix_width) ctx.strokeRect(
-                x,
-                y,
-                fix_width || this.size.width,
-                this.size.height); */
             return this;
         }
     });
