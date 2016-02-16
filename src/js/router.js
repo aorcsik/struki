@@ -11,8 +11,9 @@ define([
     'models/sequence',
     'models/struktogram',
     'models/main',
-    'views/canvas/canvas'
-], function($, _, Backbone, Branch, Branching, Command, Condition, Loop, Sequence, Struktogram, Main, CanvasView) {
+    'views/canvas/canvas',
+    'views/content'
+], function($, _, Backbone, Branch, Branching, Command, Condition, Loop, Sequence, Struktogram, Main, CanvasView, ContentView) {
 
     var Router = Backbone.Router.extend({
 
@@ -26,11 +27,12 @@ define([
         },
         defaultAction: function (actions) {
             var main = new Main();
-            main.newStruktogram("struki");
 
-            var canvas = new CanvasView({'model': main});
+            /* var canvas = new CanvasView({'model': main});
             $("body").append(canvas.$el);
             canvas.render();
+
+            main.newStruktogram("struki");
 
             main.get("struktogram").get("sequence").removeCommandByIndex(0);
             main.get("struktogram").get("sequence").addCommand(new Command({'code': "x:=3"}));
@@ -46,8 +48,10 @@ define([
             branching.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1"}));
             main.get("struktogram").get("sequence").addCommand(branching);
 
-            main.get("struktogram").get("sequence").addCommand(loop);
+            main.get("struktogram").get("sequence").addCommand(loop);*/
 
+            var content = new ContentView({'model': main});
+            content.render().$el.appendTo($("body"));
         }
     });
 

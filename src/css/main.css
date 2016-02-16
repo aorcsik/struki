@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    position: relative;
+    background: #aabbcc;
+}
+
+#toolbar, #browser, #output, #watcher, #properties, #editor {
+    position: absolute;
+    background: #ddeeff;
+}
