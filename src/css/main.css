@@ -1,17 +1,79 @@
 * {
     box-sizing: border-box;
 }
-body {
-    margin: 0;
+html, body {
     padding: 0;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
 }
 
 #content {
     position: relative;
-    background: #aabbcc;
+    height: 100%;
 }
 
-#toolbar, #browser, #output, #watcher, #properties, #editor {
+.small-window {
+}
+
+
+#toolbar, #browser, #properties, #watcher, #output, #editor {
     position: absolute;
-    background: #ddeeff;
+}
+
+#toolbar {
+    margin: 0;
+    width: 100%;
+}
+
+#browser, #properties {
+    width: 300px;
+}
+
+#browser {
+    left: 0;
+    border-right: 1px solid #333;
+}
+
+#properties {
+    right: 0;
+    border-left: 1px solid #333;
+}
+
+#watcher, #output {
+    width: 50%;
+    height: 200px;
+    bottom: 0;
+    border-top: 1px solid #333;
+}
+
+#watcher {
+    right: 0;
+    border-left: 1px solid #333;
+}
+
+#output {
+    left: 0;
+}
+
+
+
+
+
+#editor {
+    overflow: auto;
+}
+
+.small-window .small-window-header {
+    background: #bbb;
+    padding: 5px 10px;
+}
+
+.editor-tabs {
+    position: absolute;
+    height: 30px;
+    width: 100%;
+}
+.canvas-container {
+    text-align: center;
 }

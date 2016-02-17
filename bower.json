@@ -22,6 +22,8 @@
         "requirejs-text": "latest",
         "backbone": "latest",
         "bootstrap": "latest",
+        "bootstrap-material-design": "latest",
+        "roboto-and-material-icons-fonts": "latest",
         "dropzone": "latest",
         "fontawesome": "latest"
     }

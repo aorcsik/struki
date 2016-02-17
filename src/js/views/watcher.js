@@ -1,18 +1,26 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone){
+    'backbone',
+    'text!../../templates/watcher.html'
+], function($, _, Backbone, watcherTemplate){
     var WatcherView = Backbone.View.extend({
         id: "watcher",
+        className: "small-window",
         events: {},
+        template: _.template(watcherTemplate),
 
         initialize: function() {
         },
 
         onClose: function() {},
 
-        render: function() { this.$el.html("watcher"); return this; }
+        render: function() {
+            this.$el.html(this.template({
+
+            }));
+            return this;
+        }
     });
     return WatcherView;
 });

@@ -20,39 +20,51 @@ define([
             this.output = new OutputView({'model': this.model});
             this.watcher = new WatcherView({'model': this.model});
             this.properties = new PropertiesView({'model': this.model});
+            this.editor = new EditorView({'model': this.model});
         },
 
         onClose: function() {},
 
-        updateSizes: function() {
-            var window_width = $(window).width(),
-                window_height = $(window).height();
+        updateLayout: function() {
+            var window_height = $(window).height();
+            var window_width = $(window).width();
+            var toolbar_height = this.toolbar.$el.outerHeight();
+            var output_height = this.output.$el.outerHeight();
+            var watcher_height = this.output.$el.outerHeight();
+            var browser_width = this.browser.$el.outerWidth();
+            var properties_width = this.properties.$el.outerWidth();
             this.$el.css({'width': window_width, 'height': window_height});
-            var toolbar_height = 50;
-            var browser_width = 200;
-            var output_height = 150;
-            var watcher_height = output_height;
-            var properties_width = 200;
-            this.toolbar.$el.css({'top': 0, 'left': 0, 'width': window_width, 'height': toolbar_height});
-            this.browser.$el.css({'top': toolbar_height, 'left': 0, 'width': browser_width, 'height': window_height - toolbar_height - output_height});
-            this.output.$el.css({'bottom': 0, 'left': 0, 'width': Math.floor(window_width / 2), 'height': output_height});
-            this.watcher.$el.css({'bottom': 0, 'right': 0, 'width': Math.ceil(window_width / 2), 'height': watcher_height});
-            this.properties.$el.css({'top': toolbar_height, 'right': 0, 'width': properties_width, 'height': window_height - toolbar_height - watcher_height});
+            this.browser.$el.css({'top': toolbar_height, 'bottom': output_height});
+            this.properties.$el.css({'top': toolbar_height, 'bottom': watcher_height});
+            this.editor.$el.css({
+                'right': properties_width,
+                'bottom': output_height,
+                'top': toolbar_height,
+                'left': browser_width
+            });
         },
 
         render: function() {
             var self = this;
 
-            this.toolbar.render().$el.appendTo(this.$el);
-            this.browser.render().$el.appendTo(this.$el);
-            this.output.render().$el.appendTo(this.$el);
-            this.watcher.render().$el.appendTo(this.$el);
-            this.properties.render().$el.appendTo(this.$el);
+            this.toolbar.$el.appendTo(this.$el);
+            this.browser.$el.appendTo(this.$el);
+            this.output.$el.appendTo(this.$el);
+            this.watcher.$el.appendTo(this.$el);
+            this.properties.$el.appendTo(this.$el);
+            this.editor.$el.appendTo(this.$el);
 
+            this.toolbar.render();
+            this.browser.render();
+            this.output.render();
+            this.watcher.render();
+            this.properties.render();
+            this.editor.render();
+
+            this.updateLayout();
             $(window).resize(function() {
-                self.updateSizes();
+                self.updateLayout();
             });
-            self.updateSizes();
 
             return this;
         }

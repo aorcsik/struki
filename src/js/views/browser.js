@@ -1,18 +1,26 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone){
+    'backbone',
+    'text!../../templates/browser.html'
+], function($, _, Backbone, browserTemplate){
     var BrowserView = Backbone.View.extend({
         id: "browser",
+        className: "small-window",
         events: {},
+        template: _.template(browserTemplate),
 
         initialize: function() {
         },
 
         onClose: function() {},
 
-        render: function() { this.$el.html("browser"); return this; }
+        render: function() {
+            this.$el.html(this.template({
+
+            }));
+            return this;
+        }
     });
     return BrowserView;
 });

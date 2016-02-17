@@ -21,6 +21,8 @@ require.config({
         '../components/backbone/backbone'],
     bootstrap: [
         '../components/bootstrap/dist/js/bootstrap'],
+    bootstrap_material_design: [
+        '../components/bootstrap-material-design/dist/js/material'],
     templates: '../' + 'templates'
   },
   shim: {
@@ -33,6 +35,10 @@ require.config({
     },
     bootstrap: {
       deps: ["jquery"],
+      exports: "jQuery"
+    },
+    bootstrap_material_design: {
+      deps: ["jquery", 'bootstrap'],
       exports: "jQuery"
     }
   },
