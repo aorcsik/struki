@@ -30,14 +30,15 @@ define([
             var window_width = $(window).width();
             var toolbar_height = this.toolbar.$el.outerHeight();
             var output_height = this.output.$el.outerHeight();
-            var watcher_height = this.output.$el.outerHeight();
+            var watcher_height = this.watcher.$el.outerHeight();
             var browser_width = this.browser.$el.outerWidth();
             var properties_width = this.properties.$el.outerWidth();
             this.$el.css({'width': window_width, 'height': window_height});
-            this.browser.$el.css({'top': toolbar_height, 'bottom': output_height});
-            this.properties.$el.css({'top': toolbar_height, 'bottom': watcher_height});
+            this.browser.$el.css({'top': toolbar_height});
+            this.output.$el.css({'left': browser_width, 'width': Math.floor((window_width - browser_width) / 2)});
+            this.watcher.$el.css({'width': Math.ceil((window_width - browser_width) / 2)});
             this.editor.$el.css({
-                'right': properties_width,
+                'right': 0,
                 'bottom': output_height,
                 'top': toolbar_height,
                 'left': browser_width
@@ -51,7 +52,7 @@ define([
             this.browser.$el.appendTo(this.$el);
             this.output.$el.appendTo(this.$el);
             this.watcher.$el.appendTo(this.$el);
-            this.properties.$el.appendTo(this.$el);
+            this.properties.$el.appendTo(this.$el).hide();
             this.editor.$el.appendTo(this.$el);
 
             this.toolbar.render();

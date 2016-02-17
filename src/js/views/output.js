@@ -6,7 +6,6 @@ define([
 ], function($, _, Backbone, outputTemplate){
     var OutputView = Backbone.View.extend({
         id: "output",
-        className: "small-window",
         events: {},
         template: _.template(outputTemplate),
 

@@ -13,7 +13,11 @@ html, body {
     height: 100%;
 }
 
-.small-window {
+.navbar-nav li i.material-icons {
+    font-size: 1.3em;
+    display: inline-block;
+    margin-top: -2px;
+    margin-right: 3px;
 }
 
 
@@ -32,7 +36,8 @@ html, body {
 
 #browser {
     left: 0;
-    border-right: 1px solid #333;
+    bottom: 0;
+    background: #fff;
 }
 
 #properties {
@@ -41,22 +46,32 @@ html, body {
 }
 
 #watcher, #output {
-    width: 50%;
     height: 200px;
     bottom: 0;
-    border-top: 1px solid #333;
 }
 
 #watcher {
     right: 0;
-    border-left: 1px solid #333;
+    padding: 10px 10px 10px 7px;
 }
 
 #output {
-    left: 0;
+    padding: 10px 7px 10px 10px;
+}
+#watcher .panel, #output .panel {
+    height: 100%;
 }
 
-
+#output .divider {
+    position: absolute;
+    top: 50%;
+    right: -8px;
+    margin-top: -10px;
+    color: #999;
+    width: 20px;
+    text-align: center;
+    cursor: ew-resize;
+}
 
 
 
@@ -64,10 +79,6 @@ html, body {
     overflow: auto;
 }
 
-.small-window .small-window-header {
-    background: #bbb;
-    padding: 5px 10px;
-}
 
 .editor-tabs {
     position: absolute;

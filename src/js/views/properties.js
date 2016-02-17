@@ -6,7 +6,6 @@ define([
 ], function($, _, Backbone, propertiesTemplate){
     var PropertiesView = Backbone.View.extend({
         id: "properties",
-        className: "small-window",
         events: {},
         template: _.template(propertiesTemplate),
 

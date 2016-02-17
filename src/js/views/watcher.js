@@ -6,7 +6,6 @@ define([
 ], function($, _, Backbone, watcherTemplate){
     var WatcherView = Backbone.View.extend({
         id: "watcher",
-        className: "small-window",
         events: {},
         template: _.template(watcherTemplate),
 

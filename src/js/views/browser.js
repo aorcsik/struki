@@ -6,7 +6,6 @@ define([
 ], function($, _, Backbone, browserTemplate){
     var BrowserView = Backbone.View.extend({
         id: "browser",
-        className: "small-window",
         events: {},
         template: _.template(browserTemplate),
 
