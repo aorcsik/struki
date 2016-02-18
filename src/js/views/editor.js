@@ -1,4 +1,4 @@
-define([
+    define([
     'jquery',
     'underscore',
     'backbone',
@@ -54,6 +54,7 @@ define([
             }
             this.listenTo(this.model, "change", function() {
                 if (self.canvas) this.canvas.close();
+                self.canvas = null;
                 if (self.model.get("active_document")) {
                     self.canvas = new CanvasView({'model': self.model.get("active_document")});
                 }

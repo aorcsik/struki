@@ -19,6 +19,7 @@ define([
             }
             this.listenTo(this.model, "change", function() {
                 if (this.struktogram) this.struktogram.close();
+                this.struktogram = null;
                 if (self.model.get("active_document")) {
                     this.struktogram = new StruktogramBrowserView({'model': self.model.get("active_document").get("struktogram")});
                 }
