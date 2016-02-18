@@ -13,8 +13,9 @@ define([
         },
         onClose: function() {},
 
-        render: function() {
+        render: function(depth) {
             this.$el.html(this.template({
+                "depth": depth,
                 "model": this.model
             }));
             this.$el.data("view", this);

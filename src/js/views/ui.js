@@ -108,6 +108,9 @@ define([
             this.editor.$el.find(".canvas-container").css({
                 'height': this.editor.$el.height() - this.editor.$el.find(".panel-header").outerHeight() - 40
             });
+            this.browser.$el.find(".struktogram-container").css({
+                'height': this.browser.$el.height()
+            });
         },
 
         render: function() {

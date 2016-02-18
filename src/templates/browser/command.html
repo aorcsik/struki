@@ -1,1 +1,6 @@
-<%= model.get("code") %>
+<div class="command">
+    <i class="material-icons icon">&#xE86F;</i>
+    <i class="material-icons remove-command">&#xE14C;</i>
+    <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
+    <%= model.get("code") %>
+</div>

@@ -9,7 +9,7 @@ define([
 ], function($, _, Backbone, LoopBrowserView, CommandBrowserView, BranchingBrowserView, sequenceTemplate) {
     var SequenceBrowserView = Backbone.View.extend({
         tagName: "ul",
-        className: "sequence sortable-equence",
+        className: "sequence sortable-sequence",
         commands: null,
         template: _.template(sequenceTemplate),
 
@@ -45,14 +45,20 @@ define([
             if (command.type == "branching") return new BranchingBrowserView({'model': command});
         },
 
-        render: function() {
+        render: function(depth) {
             this.$el.html(this.template({
                 "model": this.model
             }));
             for (var i = 0; i < this.commands.length; i++) {
                 this.$el.append(this.commands[i].$el);
-                this.commands[i].render();
+                this.commands[i].render(depth + 1);
             }
+            if (this.commands.length === 0) {
+                this.$el.addClass("empty-sequence");
+            } else {
+                this.$el.removeClass("empty-sequence");
+            }
+            this.$el.data("depth", depth);
             this.$el.data("view", this);
             return this;
         }

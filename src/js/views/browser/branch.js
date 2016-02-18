@@ -20,12 +20,15 @@ define([
             this.branch_sequence.close();
         },
 
-        render: function() {
+        render: function(depth, branch) {
             this.$el.html(this.template({
+                "depth": depth,
+                "branch": branch,
                 "model": this.model
             }));
             this.$el.append(this.branch_sequence.$el);
-            this.branch_sequence.render();
+            this.branch_sequence.render(depth);
+            this.$el.data('view', this);
             return this;
         }
     });

@@ -67,7 +67,7 @@ define([
             this.position.y = y;
             this.size.height = 0;
             this.size.width = 0;
-            if (!this.model.get("test_after")) {
+            if (this.model.get("range") || !this.model.get("test_after")) {
                 height = design.margin.top;
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);
@@ -103,7 +103,7 @@ define([
                 }
                 line++;
             }
-            if (this.model.get("test_after")) {
+            if (!this.model.get("range") && this.model.get("test_after")) {
                 height = design.margin.top;
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);

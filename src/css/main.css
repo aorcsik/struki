@@ -164,7 +164,108 @@ html, body {
     top: 5px;
     font-size: 1.0em;
 }
-.canvas-container {
+#editor .canvas-container {
     text-align: center;
     overflow: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#browser ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+#browser .sorting ul, #browser ul.empty-sequence {
+    padding: 0 0 5px 0;
+}
+/* #browser ul.drag-over {
+    background: rgba(63, 81, 181, 0.1);
+} */
+
+#browser .struktogram-container {
+    overflow: auto;
+}
+#browser .struktogram .title,
+#browser ul.sequence .command,
+#browser ul.sequence .loop-condition,
+#browser ul.sequence .branch-condition {
+    height: 30px;
+    padding: 5px;
+    border-top: 1px solid #ccc;
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    position: relative;
+}
+#browser .struktogram .title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+#browser ul.sequence .icon {
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    font-size: 1.2em;
+}
+#browser ul.sequence .remove-command {
+    position: absolute;
+    right: 5px;
+    top: 8px;
+    font-size: 1.2em;
+    opacity: 0;
+    cursor: pointer;
+
+    transition: opacity .3s;
+}
+#browser ul.sequence .command:hover > .remove-command,
+#browser ul.sequence .loop-condition:hover > .remove-command,
+#browser ul.sequence .branch-condition:hover > .remove-command {
+    opacity: 0.3;
+}
+#browser ul.sequence .command:hover > .remove-command:hover,
+#browser ul.sequence .loop-condition:hover > .remove-command:hover,
+#browser ul.sequence .branch-condition:hover > .remove-command:hover {
+    opacity: 1.0;
+}
+
+
+
+#browser .command-padding {
+    float: left;
+    margin-left: 28px;
+    height: 20px;
+}
+#browser .syntactic-sugar {
+    color: #3F51B5;
+}
+#browser .sort-placeholder {
+    height: 30px;
+    border: 2px dashed #3F51B5;
+    border-radius: 5px;
+}
+/* #browser .sort-placeholder::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    margin: -4px 0 0 0;
+    background: #3F51B5;
+    border-radius: 5px;
+    z-index: 100;
+}*/
+#browser .ui-sortable-helper {
+    background: #fff;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    opacity: 0.5;
+
 }

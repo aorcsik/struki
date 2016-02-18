@@ -33,7 +33,7 @@ define([
 
             }));
             if (this.struktogram) {
-                this.$el.append(this.struktogram.$el);
+                this.$el.find(".struktogram-container").append(this.struktogram.$el);
                 this.struktogram.render();
             }
             return this;

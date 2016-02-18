@@ -1,1 +1,15 @@
-<div><%= model.get("condition").get("code") %></div>
+<div class="loop-condition">
+    <i class="material-icons icon">&#xE5D5;</i>
+    <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
+    <span class="syntactic-sugar">
+        <% if (model.get("condition").get("range")) { %>
+            for
+        <% } else { if (model.get("condition").get("test_after")) { %>
+            until
+        <% } else { %>
+            while
+        <% } } %>
+    </span>
+    <%= model.get("condition").get("code") %>
+    <i class="material-icons remove-command">&#xE14C;</i>
+</div>

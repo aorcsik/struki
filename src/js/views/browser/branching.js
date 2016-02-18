@@ -13,6 +13,7 @@ define([
         template: _.template(branchingTemplate),
 
         initialize: function() {
+            var self = this;
             this.branches = this.model.get("branches").map(function(branch) {
                 return new BranchBrowserView({'model': branch});
             });
@@ -31,16 +32,16 @@ define([
             this.else_branch.close();
         },
 
-        render: function(ctx, design, line, x, y, fix_width, lines) {
+        render: function(depth) {
             this.$el.html(this.template({
                 "model": this.model
             }));
             for (var i = 0; i < this.branches.length; i++) {
                 this.$el.find(".branches").append(this.branches[i].$el);
-                this.branches[i].render();
+                this.branches[i].render(depth, i);
             }
             this.$el.find(".branches").append(this.else_branch.$el);
-            this.else_branch.render();
+            this.else_branch.render(depth, -1);
             this.$el.data("view", this);
             return this;
         }

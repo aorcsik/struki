@@ -11,6 +11,7 @@ define([
         branches: null,
         else_branch: null,
         initialize: function() {
+            var self = this;
             this.size = {
                 'width': 0,
                 'height': 0

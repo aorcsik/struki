@@ -9,7 +9,8 @@ define([
         type: "loop",
         defaults: {
             "condition": new Condition(),
-            "test_after": false
+            "test_after": false,
+            "range": false,
         },
         initialize: function() {
             var self = this;

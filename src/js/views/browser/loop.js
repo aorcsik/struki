@@ -20,12 +20,13 @@ define([
             this.loop_sequence.close();
         },
 
-        render: function(ctx, design, line, x, y, fix_width, lines) {
+        render: function(depth) {
             this.$el.html(this.template({
+                "depth": depth,
                 "model": this.model
             }));
             this.$el.append(this.loop_sequence.$el);
-            this.loop_sequence.render();
+            this.loop_sequence.render(depth);
             this.$el.data("view", this);
             return this;
         }

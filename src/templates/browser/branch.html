@@ -1,1 +1,11 @@
-<div><%= model.get("condition").get("code") ? model.get("condition").get("code") : "else" %></div>
+<div class="branch-condition">
+    <i class="material-icons icon">&#xE0B6;</i>
+    <% if (branch >= 0) { %><i class="material-icons remove-command">&#xE14C;</i><% } %>
+    <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
+    <span class="syntactic-sugar">
+        <% if (branch == 0) { %>if<% }%>
+        <% if (branch > 0) { %>else if<% }%>
+        <% if (branch < 0) { %>else<% }%>
+    </span>
+    <%= model.get("condition").get("code") %>
+</div>
