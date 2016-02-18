@@ -14,8 +14,9 @@ define([
             var self = this;
             this.main_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
             this.listenTo(this.model, "change", function(e) {
-                console.log("change", e);
-                self.render();
+                window.setTimeout(function() {
+                    self.render();
+                }, 10);
             });
         },
 

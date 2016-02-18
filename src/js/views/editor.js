@@ -48,7 +48,7 @@ define([
                 this.canvas = new CanvasView({'model': self.model.get("active_document")});
             }
             this.listenTo(this.model, "change", function() {
-                this.canvas = null;
+                if (self.canvas) this.canvas.close();
                 if (self.model.get("active_document")) {
                     self.canvas = new CanvasView({'model': self.model.get("active_document")});
                 }

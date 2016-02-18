@@ -25,12 +25,18 @@ define([
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
                 self.commands.splice(idx, 0, self.createCommandCanvasView(command));
+                console.log("canvas:add");
             });
             this.listenTo(this.model, "change:remove", function(command, idx) {
                 self.commands.splice(idx, 1);
+                console.log("canvas:remove");
             });
         },
-        onClose: function() {},
+        onClose: function() {
+            this.commands.forEach(function(command) {
+                command.close();
+            });
+        },
 
         onEvent: function(event) {
             if (event.x > this.position.x && event.x < this.position.x + this.size.width) {

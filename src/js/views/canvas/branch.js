@@ -22,7 +22,9 @@ define([
             var SequenceCanvasView = require('views/canvas/sequence');
             this.branch_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
         },
-        onClose: function() {},
+        onClose: function() {
+            this.branch_sequence.close();
+        },
 
         onEvent: function(event) {
             if (event.x > this.position.x && event.x < this.position.x + this.size.width) {

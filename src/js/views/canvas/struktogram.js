@@ -23,7 +23,9 @@ define([
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
         },
 
-        onClose: function() {},
+        onClose: function() {
+            this.main_sequence.close();
+        },
 
         getSize: function() {
             return this.size;

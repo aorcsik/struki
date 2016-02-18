@@ -30,7 +30,12 @@ define([
             });
             this.else_branch = new BranchCanvasView({'model': this.model.get("else_branch")});
         },
-        onClose: function() {},
+        onClose: function() {
+            this.branches.forEach(function(branch) {
+                branch.close();
+            });
+            this.else_branch.close();
+        },
 
         onEvent: function(event) {
             if (event.x > this.position.x && event.x < this.position.x + this.size.width) {

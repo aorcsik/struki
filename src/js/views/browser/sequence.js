@@ -18,13 +18,11 @@ define([
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
                 self.commands.splice(idx, 0, self.createCommandBrowserView(command));
-                console.log("added", self);
-                //self.model.trigger("change", command);
+                console.log("browser:add");
             });
             this.listenTo(this.model, "change:remove", function(command, idx) {
                 self.commands.splice(idx, 1);
-                console.log("removed", self);
-                //self.model.trigger("change", command);
+                console.log("browser:remove");
             });
         },
 

@@ -28,11 +28,15 @@ define([
             var self = this;
             this.struktogram = new StruktogramCanvasView({'model': this.model.get("struktogram")});
             this.listenTo(this.model, 'change', function(e) {
-                self.render();
+                window.setTimeout(function() {
+                    self.render();
+                }, 10);
             });
         },
 
-        onClose: function() {},
+        onClose: function() {
+            this.struktogram.close();
+        },
 
         onClickHandler: function(e) {
             this.struktogram.onEvent({
