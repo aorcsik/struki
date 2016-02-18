@@ -25,7 +25,7 @@ define([
                 this.get("branches").splice(idx, 0, command);
                 this.trigger('change:add', command, idx);
             }
-            this.trigger('change', this);
+            // this.trigger('change', this);
             this.listenTo(branch, 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -35,7 +35,8 @@ define([
             if (idx > -1) {
                 this.get("branches").splice(idx, 1);
                 this.trigger('change:remove', branch, idx);
-                this.trigger('change', this);
+                this.stopListening(removed[0]);
+                // this.trigger('change', this);
             }
         }
     });

@@ -6,7 +6,7 @@ define([
     'views/canvas/sequence'
 ], function(require, $, _, Backbone, SequenceCanvasView){
     var BranchCanvasView = Backbone.View.extend({
-        lines: 1,
+        lines: null,
         size: null,
         position: null,
         branch_sequence: null,

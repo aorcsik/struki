@@ -17,7 +17,7 @@ define([
                 this.get("commands").splice(idx, 0, command);
                 this.trigger('change:add', command, idx);
             }
-            this.trigger('change', this);
+            // this.trigger('change', this);
             this.listenTo(command, 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -29,7 +29,8 @@ define([
             if (idx > -1 && idx < this.get("commands").length) {
                 var removed = this.get("commands").splice(idx, 1);
                 this.trigger('change:remove', removed[0], idx);
-                this.trigger('change', this);
+                this.stopListening(removed[0]);
+                // this.trigger('change', this);
             }
         }
     });

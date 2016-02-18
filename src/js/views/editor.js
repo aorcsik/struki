@@ -36,12 +36,12 @@ define([
             doc.get("struktogram").get("sequence").addCommand(branching);
             doc.get("struktogram").get("sequence").addCommand(loop);
 
-            this.model.openDocument(doc);
 
             var doc2 = new Document();
             doc2.newStruktogram("struki2");
 
             this.model.openDocument(doc2);
+            this.model.openDocument(doc);
 
             this.canvas = null;
             if (self.model.get("active_document")) {

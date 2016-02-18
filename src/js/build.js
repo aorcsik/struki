@@ -10,6 +10,7 @@
     paths: {
         text: "../components/requirejs-text/text",
         jquery: "../components/jquery/dist/jquery",
+        jquery_ui: "../components/jquery-ui/jquery-ui",
         underscore: "../components/underscore/underscore",
         backbone: "../components/backbone/backbone",
         bootstrap: "../components/bootstrap/dist/js/bootstrap",

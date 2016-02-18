@@ -15,6 +15,8 @@ require.config({
         '../components/requirejs-text/text'],
     jquery: [
         '../components/jquery/dist/jquery'],
+    jquery_ui: [
+        '../components/jquery-ui/jquery-ui'],
     underscore: [
         '../components/underscore/underscore'],
     backbone: [

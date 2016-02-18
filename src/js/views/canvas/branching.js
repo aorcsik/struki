@@ -5,7 +5,7 @@ define([
     'views/canvas/branch'
 ], function($, _, Backbone, BranchCanvasView){
     var BranchingCanvasView = Backbone.View.extend({
-        lines: 0,
+        lines: null,
         size: null,
         position: null,
         branches: null,
