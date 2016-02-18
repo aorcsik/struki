@@ -3,9 +3,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/main',
-    'views/content'
-], function($, _, Backbone, Main, ContentView) {
+    'models/ui',
+    'views/ui'
+], function($, _, Backbone, UI, UIView) {
 
     var Router = Backbone.Router.extend({
 
@@ -18,12 +18,9 @@ define([
             '*actions': 'defaultAction'
         },
         defaultAction: function (actions) {
-            var main = new Main();
-            main.newStruktogram("struki");
-
-            var content = new ContentView({'model': main});
-            content.$el.appendTo($("body"));
-            content.render();
+            var ui = new UIView({'model': new UI()});
+            ui.$el.appendTo($("body"));
+            ui.render();
         }
     });
 

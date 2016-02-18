@@ -1,6 +1,18 @@
-<div class="editor-tabs">
+<div class="panel panel-default unselectable">
+    <div class="panel-heading">
+        <ul>
+            <% _.each(model.get("open_documents"), function(doc) { %>
+            <% if (model.get("active_document") === doc) { %>
+                <li class="active" data-cid="<%= doc.cid %>">
+            <% } else { %>
+                <li data-cid="<%= doc.cid %>">
+            <% } %>
+                <%= doc.get("struktogram").get("name") %>
+            </li>
+            <% }); %>
+        </ul>
+    </div>
+    <div class="panel-body canvas-container">
 
-</div>
-<div class="canvas-container">
-
+    </div>
 </div>

@@ -1,6 +1,15 @@
 * {
     box-sizing: border-box;
 }
+
+.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
 html, body {
     padding: 0;
     height: 100%;
@@ -17,7 +26,6 @@ html, body {
     font-size: 1.3em;
     display: inline-block;
     margin-top: -2px;
-    margin-right: 3px;
 }
 
 
@@ -56,35 +64,72 @@ html, body {
 }
 
 #output {
-    padding: 10px 7px 10px 10px;
+    padding: 10px 7px 10px 15px;
 }
 #watcher .panel, #output .panel {
     height: 100%;
 }
 
-#output .divider {
+#browser .vertical-divider,
+#output .vertical-divider {
     position: absolute;
     top: 50%;
     right: -8px;
     margin-top: -10px;
     color: #999;
     width: 20px;
+    height: 20px;
     text-align: center;
     cursor: ew-resize;
+    z-index: 1000;
+}
+#browser .vertical-divider {
+    right: -15px;
+}
+#output .horizontal-divider {
+    position: absolute;
+    top: 0;
+    right: -8px;
+    margin-top: -10px;
+    color: #999;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    cursor: ns-resize;
+    z-index: 1000;
 }
 
 
 
 #editor {
+    padding: 10px 10px 10px 15px;
+}
+#editor .panel-heading {
+    padding: 0;
+}
+#editor .panel-heading ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
     overflow: auto;
 }
-
-
-.editor-tabs {
-    position: absolute;
-    height: 30px;
-    width: 100%;
+#editor .panel-heading ul li {
+    float: left;
+    background: #fff;
+    height: 40px;
+    padding: 10px 10px 10px 10px;
+    margin-right: 1px;
+    cursor: pointer;
+    transition: background .3s;
+}
+#editor .panel-heading ul li:hover {
+    background: rgba(63, 81, 181, 0.05);
+}
+#editor .panel-heading ul li.active {
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3F51B5;
 }
 .canvas-container {
     text-align: center;
+    overflow: auto;
 }
