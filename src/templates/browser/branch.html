@@ -1,6 +1,9 @@
 <div class="branch-condition">
     <i class="material-icons icon">&#xE0B6;</i>
-    <% if (branch >= 0) { %><i class="material-icons remove-command">&#xE14C;</i><% } %>
+    <% if (branch >= 0) { %>
+        <i class="material-icons command-tools edit-command">&#xE3C9;</i>
+        <i class="material-icons command-tools remove-command">&#xE14C;</i>
+    <% } %>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
     <span class="syntactic-sugar">
         <% if (branch == 0) { %>if<% }%>

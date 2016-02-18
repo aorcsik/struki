@@ -209,30 +209,30 @@ html, body {
     font-weight: bold;
     font-size: 1.2em;
 }
-#browser ul.sequence .icon {
+#browser ul.sequence .material-icons {
     position: absolute;
-    left: 5px;
     top: 8px;
     font-size: 1.2em;
 }
-#browser ul.sequence .remove-command {
-    position: absolute;
-    right: 5px;
-    top: 8px;
-    font-size: 1.2em;
+#browser ul.sequence .icon {
+    left: 5px;
+    opacity: 0.8;
+}
+#browser ul.sequence .remove-command { right: 5px; }
+#browser ul.sequence .edit-command { right: 25px; }
+#browser ul.sequence .command-tools  {
     opacity: 0;
     cursor: pointer;
-
     transition: opacity .3s;
 }
-#browser ul.sequence .command:hover > .remove-command,
-#browser ul.sequence .loop-condition:hover > .remove-command,
-#browser ul.sequence .branch-condition:hover > .remove-command {
+#browser ul.sequence .command:hover > .command-tools ,
+#browser ul.sequence .loop-condition:hover > .command-tools ,
+#browser ul.sequence .branch-condition:hover > .command-tools  {
     opacity: 0.3;
 }
-#browser ul.sequence .command:hover > .remove-command:hover,
-#browser ul.sequence .loop-condition:hover > .remove-command:hover,
-#browser ul.sequence .branch-condition:hover > .remove-command:hover {
+#browser ul.sequence .command:hover > .command-tools:hover,
+#browser ul.sequence .loop-condition:hover > .command-tools:hover,
+#browser ul.sequence .branch-condition:hover > .command-tools:hover {
     opacity: 1.0;
 }
 
@@ -251,16 +251,6 @@ html, body {
     border: 2px dashed #3F51B5;
     border-radius: 5px;
 }
-/* #browser .sort-placeholder::after {
-    content: "";
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    margin: -4px 0 0 0;
-    background: #3F51B5;
-    border-radius: 5px;
-    z-index: 100;
-}*/
 #browser .ui-sortable-helper {
     background: #fff;
     border-radius: 5px;
