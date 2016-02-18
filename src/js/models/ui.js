@@ -21,8 +21,7 @@ define([
         closeDocument: function(doc) {
             var idx = this.get("open_documents").indexOf(doc);
             if (idx > -1) {
-                var new_docs = this.get("open_documents").splice(idx, 1);
-                this.set("open_documents", new_docs);
+                this.get("open_documents").splice(idx, 1);
                 if (this.get("active_document") === doc) {
                     if (this.get("open_documents").length === 0) {
                         this.openDocument(null);
@@ -31,6 +30,8 @@ define([
                     } else {
                         this.openDocument(this.get("open_documents")[idx]);
                     }
+                } else {
+                    this.trigger("change", this);
                 }
             }
 

@@ -13,7 +13,8 @@ define([
     var EditorView = Backbone.View.extend({
         id: "editor",
         events: {
-            "click .panel-heading li": "handleTabClick"
+            "click .panel-heading li": "handleSelectTab",
+            "click .panel-heading li .close-tab": "handleCloseTab"
         },
         template: _.template(editorTemplate),
         canvas: null,
@@ -42,29 +43,50 @@ define([
 
             this.model.openDocument(doc2);
 
-            this.canvas = new CanvasView({'model': self.model.get("active_document")});
+            this.canvas = null;
+            if (self.model.get("active_document")) {
+                this.canvas = new CanvasView({'model': self.model.get("active_document")});
+            }
             this.listenTo(this.model, "change", function() {
-                self.canvas = new CanvasView({'model': self.model.get("active_document")});
+                this.canvas = null;
+                if (self.model.get("active_document")) {
+                    self.canvas = new CanvasView({'model': self.model.get("active_document")});
+                }
                 self.render();
             });
         },
 
-        handleTabClick: function(e) {
+        handleSelectTab: function(e) {
             var self = this;
                 doc_cid = $(e.target).closest("li").data("cid");
             this.model.get("open_documents").forEach(function(doc) {
                 if (doc.cid === doc_cid) self.model.openDocument(doc);
             });
         },
+        handleCloseTab: function(e) {
+            var self = this;
+                doc_cid = $(e.target).closest("li").data("cid");
+            this.model.get("open_documents").forEach(function(doc) {
+                if (doc.cid === doc_cid) self.model.closeDocument(doc);
+            });
+            return false;
+        },
 
         onClose: function() {},
 
         render: function() {
-            this.$el.html(this.template({
-                "model": this.model
-            }));
-            this.$el.find(".canvas-container").append(this.canvas.$el);
-            this.canvas.render();
+            if (this.canvas) {
+                this.$el.html(this.template({
+                    "empty": false,
+                    "model": this.model
+                }));
+                this.$el.find(".canvas-container").append(this.canvas.$el);
+                this.canvas.render();
+            } else {
+                this.$el.html(this.template({
+                    "empty": true
+                }));
+            }
             return this;
         }
     });

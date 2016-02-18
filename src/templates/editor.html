@@ -1,3 +1,11 @@
+<% if (empty) { %>
+<div class="editor-empty">
+    <strong><i class="material-icons">&#xE169;</i> Open</strong>
+    or create a
+    <strong><i class="material-icons">&#xE146;</i> New</strong>
+    document.
+</div>
+<% } else { %>
 <div class="panel panel-default unselectable">
     <div class="panel-heading">
         <ul>
@@ -8,6 +16,7 @@
                 <li data-cid="<%= doc.cid %>">
             <% } %>
                 <%= doc.get("struktogram").get("name") %>
+                <i class="material-icons close-tab">&#xE14C;</i>
             </li>
             <% }); %>
         </ul>
@@ -16,3 +25,4 @@
 
     </div>
 </div>
+<% } %>
