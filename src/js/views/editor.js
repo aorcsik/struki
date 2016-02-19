@@ -45,15 +45,22 @@
             var doc2 = new Document();
             doc2.newStruktogram("struki2");
 
-            this.model.openDocument(doc2);
-            this.model.openDocument(doc);
+            window.setTimeout(function() {
+                self.model.openDocument(doc2);
+            }, 250);
+            window.setTimeout(function() {
+                self.model.openDocument(doc);
+            }, 500);
 
             this.canvas = null;
             if (self.model.get("active_document")) {
                 this.canvas = new CanvasView({'model': self.model.get("active_document")});
             }
-            this.listenTo(this.model, "change", function() {
-                if (self.canvas) this.canvas.close();
+            this.listenTo(this.model, "change", function(e) {
+                if (e.changed.active_document === undefined) return;
+                if (self.canvas) {
+                    this.canvas.close();
+                }
                 self.canvas = null;
                 if (self.model.get("active_document")) {
                     self.canvas = new CanvasView({'model': self.model.get("active_document")});

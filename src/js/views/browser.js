@@ -17,11 +17,14 @@ define([
             if (this.model.get("active_document")) {
                 this.stuktogram = new StruktogramBrowserView({'model': this.model.get("active_document").get("struktogram")});
             }
-            this.listenTo(this.model, "change", function() {
-                if (this.struktogram) this.struktogram.close();
-                this.struktogram = null;
+            this.listenTo(this.model, "change", function(e) {
+                if (e.changed.active_document === undefined) return;
+                if (self.struktogram) {
+                    self.struktogram.close();
+                }
+                self.struktogram = null;
                 if (self.model.get("active_document")) {
-                    this.struktogram = new StruktogramBrowserView({'model': self.model.get("active_document").get("struktogram")});
+                    self.struktogram = new StruktogramBrowserView({'model': self.model.get("active_document").get("struktogram")});
                 }
                 self.render();
             });

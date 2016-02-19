@@ -7,15 +7,22 @@ define([
     var CommandBrowserView = Backbone.View.extend({
         tagName: "li",
         template: _.template(commandTemplate),
+        depth: 0,
 
         initialize: function() {
 
         },
-        onClose: function() {},
+        onClose: function() {
 
-        render: function(depth) {
+        },
+        setDepth: function(depth) {
+            this.depth = depth;
+            return this;
+        },
+        render: function(edit) {
             this.$el.html(this.template({
-                "depth": depth,
+                "edit": edit,
+                "depth": this.depth,
                 "model": this.model
             }));
             this.$el.data("view", this);

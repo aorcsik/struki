@@ -201,7 +201,7 @@ html, body {
 #browser ul.sequence .branch-condition {
     height: 30px;
     padding: 5px;
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     font-family: "Ubuntu Mono", "Courier New", monospace;
     position: relative;
 }
@@ -209,30 +209,38 @@ html, body {
     font-weight: bold;
     font-size: 1.2em;
 }
-#browser ul.sequence .material-icons {
+#browser .material-icons {
+    font-size: 16px;
+}
+#browser .struktogram-container .icon,
+#browser .struktogram-container .command-tools {
     position: absolute;
     top: 8px;
-    font-size: 1.2em;
 }
-#browser ul.sequence .icon {
+#browser .icon {
     left: 5px;
     opacity: 0.8;
 }
-#browser ul.sequence .remove-command { right: 5px; }
-#browser ul.sequence .edit-command { right: 25px; }
-#browser ul.sequence .command-tools  {
+#browser .command-tools  {
     opacity: 0;
     cursor: pointer;
     transition: opacity .3s;
 }
-#browser ul.sequence .command:hover > .command-tools ,
-#browser ul.sequence .loop-condition:hover > .command-tools ,
-#browser ul.sequence .branch-condition:hover > .command-tools  {
+#browser .save-command { right: 6px; opacity: 0.3; }
+#browser .remove-command { right: 6px; }
+#browser .edit-command { right: 26px; }
+#browser .add-command { right: 46px; }
+
+#browser .title:hover > .command-tools,
+#browser .command:hover > .command-tools ,
+#browser .loop-condition:hover > .command-tools ,
+#browser .branch-condition:hover > .command-tools  {
     opacity: 0.3;
 }
-#browser ul.sequence .command:hover > .command-tools:hover,
-#browser ul.sequence .loop-condition:hover > .command-tools:hover,
-#browser ul.sequence .branch-condition:hover > .command-tools:hover {
+#browser .title:hover > .command-tools:hover,
+#browser .command:hover > .command-tools:hover,
+#browser .loop-condition:hover > .command-tools:hover,
+#browser .branch-condition:hover > .command-tools:hover {
     opacity: 1.0;
 }
 
@@ -258,4 +266,36 @@ html, body {
     box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
     opacity: 0.5;
 
+}
+
+#browser .editing {
+    background: rgb(51, 122, 183);
+    color: #fff;
+}
+#browser .editing .syntactic-sugar {
+    color: rgba(255,255,255,0.7);
+}
+
+#browser form table {
+    width: 100%;
+}
+#browser form input[type='text'],
+#browser form textarea {
+    width: 100%;
+}
+#browser form .material-icons {
+    margin-top: 3px;
+    margin-right: 3px;
+    cursor: pointer;
+    float: right;
+}
+#browser form td,
+#browser form th {
+    border-bottom: 1px solid #ccc;
+    padding: 0 0 0 3px;
+}
+#browser form .header th {
+    vertical-align: middle;
+    background: #ddd;
+    padding: 3px;
 }

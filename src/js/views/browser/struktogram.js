@@ -10,7 +10,9 @@ define([
         main_sequence: null,
         template: _.template(struktogramTemplate),
         events: {
-            "click .remove-command": "removeCommand"
+            "click .remove-command": "removeCommand",
+            "click .edit-command": "editCommand",
+            "click .save-command": "saveCommand"
         },
 
         initialize: function() {
@@ -47,9 +49,22 @@ define([
             sequence.removeCommand(cmd);
         },
 
-        render: function() {
+        editCommand: function(e) {
+            var $cmd = $(e.target).closest(".edit-command").closest("li, .struktogram"),
+                cmd = $cmd.data('view').model;
+            $cmd.data('view').render(true);
+        },
+
+        saveCommand: function(e) {
+            var $cmd = $(e.target).closest(".save-command").closest("li, .struktogram"),
+                cmd = $cmd.data('view').model;
+            $cmd.data('view').render();
+        },
+
+        render: function(edit) {
             var self = this;
             this.$el.html(this.template({
+                "edit": edit,
                 "model": this.model
             }));
             this.$el.append(this.main_sequence.$el);
@@ -80,6 +95,7 @@ define([
                     target_sequence.addCommand(cmd, new_index);
                 }
             }).disableSelection();
+            this.$el.data('view', this);
             return this;
         }
     });

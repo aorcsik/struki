@@ -11,6 +11,7 @@ define([
         branches: null,
         else_branch: null,
         template: _.template(branchingTemplate),
+        depth: 0,
 
         initialize: function() {
             var self = this;
@@ -31,17 +32,20 @@ define([
             });
             this.else_branch.close();
         },
-
-        render: function(depth) {
+        setDepth: function(depth) {
+            this.depth = depth;
+            return this;
+        },
+        render: function() {
             this.$el.html(this.template({
                 "model": this.model
             }));
             for (var i = 0; i < this.branches.length; i++) {
                 this.$el.find(".branches").append(this.branches[i].$el);
-                this.branches[i].render(depth, i);
+                this.branches[i].setDepth(this.depth).setBranchType(i).render();
             }
             this.$el.find(".branches").append(this.else_branch.$el);
-            this.else_branch.render(depth, -1);
+            this.else_branch.setDepth(this.depth).setBranchType(-1).render();
             this.$el.data("view", this);
             return this;
         }
