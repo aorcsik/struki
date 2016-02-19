@@ -14,8 +14,10 @@ define([
             this.set("open_documents", []);
         },
         openDocument: function(doc) {
-            var idx = this.get("open_documents").indexOf(doc);
-            if (idx < 0) this.get("open_documents").push(doc);
+            if (doc !== null) {
+                var idx = this.get("open_documents").indexOf(doc);
+                if (idx < 0) this.get("open_documents").push(doc);
+            }
             this.set("active_document", doc);
         },
         closeDocument: function(doc) {
