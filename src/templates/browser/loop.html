@@ -21,17 +21,25 @@
 </div>
 <% if (edit) { %>
 <form>
-    <table>
-        <tr class="header"><th colspan="2">Properties</th>
-            <th>&nbsp;</th></tr>
-        <tr><th>condition</th>
-            <td colspan="2"><textarea name="name"><%= model.get('condition').get("code") %></textarea></td></tr>
-        <tr><th>type</th>
-            <td colspan="2"><select name="type">
+    <div class="row form-header">
+        <div class="col-md-10">Properties</div>
+        <div class="col-md-2">&nbsp;</div>
+    </div>
+    <div class="form-group">
+        <label for="<%= model.cid %>_condition" class="col-md-4 control-label">condition</label>
+        <div class="col-md-8">
+            <textarea id="<%= model.cid %>_condition" class="form-control" rows="3" name="condition"><%= model.get('condition').get("code") %></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="<%= model.cid %>_type" class="col-md-4 control-label">type</label>
+        <div class="col-md-8">
+            <select id="<%= model.cid %>_type" name="type" class="form-control">
                 <option value="0"<% if (!model.get("condition").get("range") && !model.get("condition").get("test_after")) { %> selected<% } %>>test before</option>
                 <option value="1"<% if (!model.get("condition").get("range") && model.get("condition").get("test_after")) { %> selected<% } %>>test after</option>
                 <option value="2"<% if (model.get("condition").get("range")) { %> selected<% } %>>range</option>
-            </td></tr>
-    </table>
+            </select>
+        </div>
+    </div>
 </form>
 <% } %>

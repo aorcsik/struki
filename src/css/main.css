@@ -27,6 +27,17 @@ html, body {
     display: inline-block;
     margin-top: -2px;
 }
+.navbar-brand strong {
+    display: inline-block;
+    border: 1px solid #fff;
+    padding: 0 8px;
+}
+.navbar-nav > li a {
+    transition: background .3s;
+}
+.navbar .navbar-nav>li>a:hover {
+    background: rgba(255,255,255,0.1);
+}
 
 
 #toolbar, #browser, #properties, #watcher, #output, #editor {
@@ -199,6 +210,7 @@ html, body {
 #browser ul.sequence .command,
 #browser ul.sequence .loop-condition,
 #browser ul.sequence .branch-condition {
+    clear: both;
     height: 30px;
     padding: 5px;
     border-bottom: 1px solid #ccc;
@@ -209,7 +221,7 @@ html, body {
     font-weight: bold;
     font-size: 1.2em;
 }
-#browser .material-icons {
+#browser .struktogram-container .material-icons {
     font-size: 16px;
 }
 #browser .struktogram-container .icon,
@@ -268,34 +280,40 @@ html, body {
 
 }
 
-#browser .editing {
+#browser .struktogram .editing,
+#browser ul.sequence .editing {
     background: rgb(51, 122, 183);
     color: #fff;
+    border: 0;
 }
 #browser .editing .syntactic-sugar {
     color: rgba(255,255,255,0.7);
 }
+#browser form {
+    overflow: auto;
+    border: 2px solid rgb(51, 122, 183);
+    border-top: 0;
+}
 
-#browser form table {
-    width: 100%;
+#browser .form-header {
+    background: #ddd;
+    padding: 3px 5px;
 }
-#browser form input[type='text'],
-#browser form textarea {
-    width: 100%;
-}
-#browser form .material-icons {
+#browser .form-header .material-icons {
     margin-top: 3px;
     margin-right: 3px;
     cursor: pointer;
     float: right;
 }
-#browser form td,
-#browser form th {
-    border-bottom: 1px solid #ccc;
-    padding: 0 0 0 3px;
+#browser .form-group {
+    margin: 0 -10px 0 -10px;
+    overflow: auto;
 }
-#browser form .header th {
-    vertical-align: middle;
-    background: #ddd;
-    padding: 3px;
+#browser .form-group select,
+#browser .form-group input[type='text'],
+#browser .form-group textarea {
+    width: 100%;
+    margin: 0;
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
 }
