@@ -15,11 +15,14 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-image: url("../images/material.jpg");
+    background-size: 100% 100%;
 }
 
 #content {
     position: relative;
     height: 100%;
+    background: rgba(255,255,255,0.9);
 }
 
 .navbar-nav li i.material-icons {
