@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'views/browser/branch',
-    'text!../../templates/browser/branching.html'
+    'text!../../../templates/browser/branching.html'
 ], function($, _, Backbone, BranchBrowserView, branchingTemplate){
     var BranchingBrowserView = Backbone.View.extend({
         tagName: "li",

@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'views/browser/sequence',
-    'text!../../templates/browser/struktogram.html'
+    'text!../../../templates/browser/struktogram.html'
 ], function($, _, Backbone, SequenceBrowserView, struktogramTemplate){
     var StruktogramBrowserView = Backbone.View.extend({
         className: "struktogram",
@@ -71,10 +71,10 @@ define([
                     self.$el.removeClass("sorting");
                     $(".sortable-sequence").removeClass("drag-over");
                 },
-                receive: function(event, ui) {
+                update: function(event, ui) {
                     var cmd = ui.item.data("view").model,
-                        target_sequence = $(event.target).data("view").model,
-                        source_sequence = ui.sender.data("view").model,
+                        target_sequence = $(event.target).data("view").model;
+                        source_sequence = ui.sender !== null ? ui.sender.data("view").model : target_sequence;
                         new_index = $(event.target).children("li").index(ui.item);
                     source_sequence.removeCommand(cmd);
                     target_sequence.addCommand(cmd, new_index);

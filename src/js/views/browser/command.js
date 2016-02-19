@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!../../templates/browser/command.html'
+    'text!../../../templates/browser/command.html'
 ], function($, _, Backbone, commandTemplate) {
     var CommandBrowserView = Backbone.View.extend({
         tagName: "li",

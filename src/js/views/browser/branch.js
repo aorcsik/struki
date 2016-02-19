@@ -3,9 +3,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/browser/sequence',
-    'text!../../templates/browser/branch.html'
-], function(require, $, _, Backbone, SequenceBrowserView, branchTemplate){
+    'text!../../../templates/browser/branch.html'
+], function(require, $, _, Backbone, branchTemplate){
     var BranchBrowserView = Backbone.View.extend({
         tagName: "li",
         className: "branch",

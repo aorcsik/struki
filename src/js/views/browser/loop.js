@@ -3,9 +3,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/browser/sequence',
-    'text!../../templates/browser/loop.html'
-], function(require, $, _, Backbone, SequenceBrowserView, loopTemplate) {
+    'text!../../../templates/browser/loop.html'
+], function(require, $, _, Backbone, loopTemplate) {
     var LoopCanvasView = Backbone.View.extend({
         tagName: "li",
         className: "loop",

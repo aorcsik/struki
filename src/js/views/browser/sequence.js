@@ -5,7 +5,7 @@ define([
     'views/browser/loop',
     'views/browser/command',
     'views/browser/branching',
-    'text!../../templates/browser/sequence.html'
+    'text!../../../templates/browser/sequence.html'
 ], function($, _, Backbone, LoopBrowserView, CommandBrowserView, BranchingBrowserView, sequenceTemplate) {
     var SequenceBrowserView = Backbone.View.extend({
         tagName: "ul",
@@ -18,11 +18,11 @@ define([
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
                 self.commands.splice(idx, 0, self.createCommandBrowserView(command));
-                console.log("browser:add");
+                // console.log("browser:add");
             });
             this.listenTo(this.model, "change:remove", function(command, idx) {
                 self.commands.splice(idx, 1);
-                console.log("browser:remove");
+                // console.log("browser:remove");
             });
         },
 
