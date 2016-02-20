@@ -23,9 +23,6 @@ define([
                     self.struktogram.close();
                 }
                 self.struktogram = null;
-                if (self.model.get("active_document")) {
-                    self.struktogram = new StruktogramBrowserView({'model': self.model.get("active_document").get("struktogram")});
-                }
                 self.render();
             });
         },
@@ -36,7 +33,8 @@ define([
             this.$el.html(this.template({
 
             }));
-            if (this.struktogram) {
+            if (this.model.get("active_document")) {
+                this.struktogram = new StruktogramBrowserView({'model': this.model.get("active_document").get("struktogram")});
                 this.$el.find(".struktogram-container").append(this.struktogram.$el);
                 this.struktogram.render();
             }

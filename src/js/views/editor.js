@@ -62,9 +62,6 @@
                     this.canvas.close();
                 }
                 self.canvas = null;
-                if (self.model.get("active_document")) {
-                    self.canvas = new CanvasView({'model': self.model.get("active_document")});
-                }
                 self.render();
             });
         },
@@ -88,7 +85,8 @@
         onClose: function() {},
 
         render: function() {
-            if (this.canvas) {
+            if (this.model.get("active_document")) {
+                this.canvas = new CanvasView({'model': this.model.get("active_document")});
                 this.$el.html(this.template({
                     "empty": false,
                     "model": this.model

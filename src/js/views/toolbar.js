@@ -14,6 +14,11 @@ define([
         template: _.template(toolbarTemplate),
 
         initialize: function() {
+            var self = this;
+            this.listenTo(this.model, "change", function(e) {
+                if (e.changed.active_document === undefined) return;
+                self.render();
+            });
         },
 
         newDocument: function() {
@@ -26,7 +31,7 @@ define([
 
         render: function() {
             this.$el.html(this.template({
-
+                "model": this.model
             }));
             return this;
         }
