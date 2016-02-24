@@ -104,9 +104,15 @@ define([
             this.size.width = Math.max(this.size.width, label_width);
             this.size.height += label_height + design.label_distance;
 
+            var label_x = x + Math.max(0, Math.floor((this.size.width - vars_width - label_width) / 2));
+            var sequence_x = label_x + Math.floor(label_width / 2) - (this.main_sequence.getSize().width / 2);
+            this.size.width += sequence_x;
+
             if (fix_width) {
+
+                // LABEL
                 this.strokeRoundRect(ctx,
-                    x + Math.floor((this.size.width - label_width) / 2),
+                    label_x,
                     y,
                     label_width,
                     label_height,
@@ -114,19 +120,25 @@ define([
                 ctx.font = design.font_size + "px " + design.font_family;
                 ctx.fillText(
                     text,
-                    this.position.x + Math.floor((this.size.width - label_width) / 2) + design.margin.left,
-                    this.position.y + design.font_size - 3 + design.margin.top);
+                    label_x + design.margin.left,
+                    y + design.font_size - 3 + design.margin.top);
                 ctx.beginPath();
-                ctx.moveTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height);
-                ctx.lineTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height + 10);
+                ctx.moveTo(label_x + Math.floor(label_width / 2), y + label_height);
+                ctx.lineTo(label_x + Math.floor(label_width / 2), y + label_height + 10);
                 ctx.stroke();
                 y += label_height + design.label_distance;
 
-                var sequence_x = x + Math.max(0, Math.floor((label_width - (this.main_sequence.getSize().width + vars_width)) / 2));
+                // MAIN SEQUENCE
                 this.main_sequence.render(ctx, design, line,
                     sequence_x,
                     y, this.main_sequence.getSize().width, this.lines);
+                ctx.strokeRect(
+                    sequence_x - 1,
+                    y - 1 ,
+                    this.main_sequence.getSize().width + 2,
+                    this.main_sequence.getSize().height + 2);
 
+                // VARIABLES
                 ctx.font = design.font_size + "px " + design.font_family;
                 var variables_x = sequence_x + this.main_sequence.getSize().width;
                 var variables_y = y + design.margin.top;
@@ -138,7 +150,6 @@ define([
                         variables_x + design.margin.left,
                         variables_y - 3);
                 });
-
                 if (!ctx.setLineDash) {
                     ctx.setLineDash = function() {};
                 }
