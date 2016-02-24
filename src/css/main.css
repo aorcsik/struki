@@ -216,7 +216,7 @@ html, body {
     clear: both;
     height: 30px;
     padding: 5px;
-    border-bottom: 1px solid #ccc;
+    /*border-bottom: 1px solid #ccc;*/
     font-family: "Ubuntu Mono", "Courier New", monospace;
     position: relative;
 }
@@ -240,6 +240,7 @@ html, body {
     opacity: 0;
     cursor: pointer;
     transition: opacity .3s;
+    display: none;
 }
 #browser .save-command { right: 6px; opacity: 0.3; }
 #browser .remove-command { right: 6px; }
@@ -250,7 +251,8 @@ html, body {
 #browser .command:hover > .command-tools ,
 #browser .loop-condition:hover > .command-tools ,
 #browser .branch-condition:hover > .command-tools  {
-    opacity: 0.3;
+    display: block;
+    opacity: 0.5;
 }
 #browser .title:hover > .command-tools:hover,
 #browser .command:hover > .command-tools:hover,
@@ -283,12 +285,20 @@ html, body {
 
 }
 
+#browser .title:hover,
+#browser .command:hover,
+#browser .loop-condition:hover,
+#browser .branch-condition:hover,
 #browser .struktogram .editing,
 #browser ul.sequence .editing {
     background: rgb(51, 122, 183);
     color: #fff;
     border: 0;
 }
+#browser .title:hover .syntactic-sugar,
+#browser .command:hover .syntactic-sugar,
+#browser .loop-condition:hover .syntactic-sugar,
+#browser .branch-condition:hover .syntactic-sugar,
 #browser .editing .syntactic-sugar {
     color: rgba(255,255,255,0.7);
 }

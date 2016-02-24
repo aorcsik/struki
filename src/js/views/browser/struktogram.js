@@ -60,17 +60,24 @@ define([
                 cmd = $cmd.data('view').model;
 
             if (cmd.type === "command") {
-                cmd.set("code", $cmd.find("#" + cmd.cid + "_code").val());
+                cmd.set({
+                    "code": $cmd.find("#" + cmd.cid + "_code").val(),
+                    "update_at": (new Date()).getTime()
+                });
             }
             else if (cmd.type === "loop") {
                 cmd.set({
                     "condition": $cmd.find("#" + cmd.cid + "_condition").val(),
                     "test_after": $cmd.find("#" + cmd.cid + "_type").val() == 1,
-                    "range": $cmd.find("#" + cmd.cid + "_type").val() == 2
+                    "range": $cmd.find("#" + cmd.cid + "_type").val() == 2,
+                    "update_at": (new Date()).getTime()
                 });
             }
             else if (cmd.type === "branch") {
-                cmd.set("condition", $cmd.find("#" + cmd.cid + "_condition").val());
+                cmd.set({
+                    "condition": $cmd.find("#" + cmd.cid + "_condition").val(),
+                    "update_at": (new Date()).getTime()
+                });
             }
             else {
                 $cmd.data('view').render();
