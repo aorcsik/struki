@@ -15,6 +15,19 @@ define([
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
             });
+        },
+        toJSON: function() {
+            return {
+                'type': "struktogram",
+                'name': this.get("name"),
+                'parameters': this.get("parameters").map(function(parameter) {
+                    return parameter.toJSON();
+                }),
+                'variables': this.get("variables").map(function(variable) {
+                    return variable.toJSON();
+                }),
+                'sequence': this.get("sequence").toJSON()
+            };
         }
     });
     return Struktogram;

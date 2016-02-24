@@ -33,6 +33,14 @@ define([
                 this.stopListening(removed[0]);
                 this.trigger('change', this);
             }
+        },
+        toJSON: function() {
+            return {
+                'type': "sequence",
+                'commands': this.get("commands").map(function(command) {
+                    return command.toJSON();
+                })
+            };
         }
     });
     return Sequence;

@@ -17,6 +17,15 @@ define([
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
             });
+        },
+        toJSON: function() {
+            return {
+                'type': "loop",
+                'condition': this.get("condition"),
+                'test_after': this.get("test_after"),
+                'range': this.get("range"),
+                'sequence': this.get("sequence").toJSON()
+            };
         }
     });
     return Loop;

@@ -17,6 +17,9 @@ define([
             this.listenTo(this.get("struktogram"), 'change', function(e) {
                 self.trigger('change', e);
             });
+        },
+        toJSON: function() {
+            return this.get("struktogram").toJSON();
         }
     });
     return Document;

@@ -15,6 +15,13 @@ define([
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
             });
+        },
+        toJSON: function() {
+            return {
+                "type": "branch",
+                "condition": this.get("condition"),
+                "sequence": this.get("sequence").toJSON()
+            };
         }
     });
     return Branch;

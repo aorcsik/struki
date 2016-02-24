@@ -7,6 +7,12 @@ define([
         type: "command",
         defaults: {
             "code": "–––"
+        },
+        toJSON: function() {
+            return {
+                'type': "command",
+                'code': this.get("code")
+            };
         }
     });
     return Command;

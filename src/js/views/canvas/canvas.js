@@ -49,18 +49,6 @@ define([
             });
         },
 
-        getDownloadLink: function() {
-            var img = this.el.toDataURL("image/png");
-            if (navigator.msSaveBlob) {
-                var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");
-                return $("<a href='javascript:;'>Download...</a>").on("click", function() {
-                    navigator.msSaveBlob(blob, "structogram.png");
-                });
-            } else {
-                return $("<a href='" + img + "' target='_blank' download='structogram.png'>Download...</a>");
-            }
-        },
-
         render: function() {
             var ctx = this.el.getContext('2d');
             ctx.clearRect(0, 0, this.el.width, this.el.height);
@@ -72,8 +60,6 @@ define([
             });
 
             this.struktogram.render(ctx, this.design, 0, 4.5, 4.5, this.struktogram.getSize().width);
-
-            // $("body").append(this.getDownloadLink());
         }
     });
     return CanvasView;

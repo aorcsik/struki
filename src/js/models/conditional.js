@@ -38,6 +38,14 @@ define([
                 this.stopListening(removed[0]);
                 this.trigger('change', this);
             }
+        },
+        toJSON: function() {
+            return {
+                'type': "conditional",
+                'branches': this.get("branches").map(function(branch) {
+                    return branch.toJSON();
+                })
+            };
         }
     });
     return Conditional;
