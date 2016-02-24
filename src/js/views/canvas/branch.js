@@ -47,7 +47,7 @@ define([
             return this.lines;
         },
 
-        render: function(ctx, design, line, x, y, fix_width, lines, else_text, solo, fix_height) {
+        render: function(ctx, design, line, x, y, fix_width, lines, else_text, solo) {
             var m, height;
 
             ctx.font = design.font_size + "px " + design.font_family;
@@ -204,12 +204,6 @@ define([
                 }
                 line++;
             }
-
-            if (fix_width && !solo && text) ctx.strokeRect(
-                x,
-                y,
-                fix_width,
-                fix_height);
 
             return this;
         }
