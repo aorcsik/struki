@@ -87,16 +87,16 @@ define([
             if (this.loop_sequence.commands.length === 0) {
                 height = design.font_size + design.margin.top + design.margin.bottom;
                 if (fix_width) ctx.strokeRect(
-                    20 + x,
+                    design.loop_inset + x,
                     y + this.size.height,
-                    this.size.width - 20,
+                    this.size.width - design.loop_inset,
                     height);
                 this.size.height += height;
                 this.lines[line++] = height;
             } else {
-                this.loop_sequence.render(ctx, design, line, x + 20, y + this.size.height, fix_width - 20, lines);
+                this.loop_sequence.render(ctx, design, line, x + design.loop_inset, y + this.size.height, fix_width - design.loop_inset, lines);
                 this.size.height += this.loop_sequence.getSize().height;
-                this.size.width = fix_width || Math.max(this.size.width, 20 + this.loop_sequence.getSize().width);
+                this.size.width = fix_width || Math.max(this.size.width, design.loop_inset + this.loop_sequence.getSize().width);
                 for (var key in this.loop_sequence.getLines()) {
                     this.lines[key] = this.loop_sequence.getLines()[key];
                     line = key;

@@ -19,7 +19,9 @@ define([
                 "right": 10,
                 "bottom": 7,
                 "left": 10
-            }
+            },
+            "label_distance": 10,
+            "loop_inset": 20
         },
         events: {
             "click": "onClickHandler"

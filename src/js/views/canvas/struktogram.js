@@ -89,7 +89,7 @@ define([
                 var variable_m = ctx.measureText(variable_text);
                 vars_width = Math.max(vars_width, design.margin.left + variable_m.width + design.margin.right);
             });
-            vars_height = this.model.get("variables").length * design.font_size + (this.model.get("variables").length - 1) * 3 + design.margin.top + design.margin.bottom;
+            vars_height = this.model.get("variables").length * design.font_size + (this.model.get("variables").length - 1) * design.line_distance + design.margin.top + design.margin.bottom;
             this.size.width += vars_width;
             this.size.height = Math.max(this.size.height, vars_height);
 
@@ -102,7 +102,7 @@ define([
             var label_width = m.width + design.margin.right + design.margin.left;
             var label_height = design.font_size + design.margin.top + design.margin.bottom;
             this.size.width = Math.max(this.size.width, label_width);
-            this.size.height += label_height + 10;
+            this.size.height += label_height + design.label_distance;
 
             if (fix_width) {
                 this.strokeRoundRect(ctx,
@@ -120,7 +120,7 @@ define([
                 ctx.moveTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height);
                 ctx.lineTo(x + Math.floor((this.size.width - label_width) / 2 + label_width/2), y + label_height + 10);
                 ctx.stroke();
-                y += label_height + 10;
+                y += label_height + design.label_distance;
 
                 var sequence_x = x + Math.max(0, Math.floor((label_width - (this.main_sequence.getSize().width + vars_width)) / 2));
                 this.main_sequence.render(ctx, design, line,
@@ -129,14 +129,14 @@ define([
 
                 ctx.font = design.font_size + "px " + design.font_family;
                 var variables_x = sequence_x + this.main_sequence.getSize().width;
-                var variables_y = y;
+                var variables_y = y + design.margin.top;
                 this.model.get("variables").forEach(function(variable, idx) {
                     var variable_text = variable.get("name") + ": " + variable.get("type");
+                    variables_y += design.font_size + (idx > 0 ? design.line_distance : 0);
                     ctx.fillText(
                         variable_text,
                         variables_x + design.margin.left,
-                        variables_y + design.font_size - 3 + design.margin.top);
-                    variables_y += design.font_size + (idx > 0 ? design.line_distance : 0);
+                        variables_y - 3);
                 });
 
                 if (!ctx.setLineDash) {
