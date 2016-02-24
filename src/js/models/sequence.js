@@ -4,6 +4,7 @@ define([
     'backbone'
 ], function($, _, Backbone) {
     var Sequence = Backbone.Model.extend({
+        type: "sequence",
         defaults: {},
         initialize: function() {
             this.set("commands", []);

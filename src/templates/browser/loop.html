@@ -9,15 +9,15 @@
     <% } %>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
     <span class="syntactic-sugar">
-        <% if (model.get("condition").get("range")) { %>
+        <% if (model.get("range")) { %>
             for
-        <% } else { if (model.get("condition").get("test_after")) { %>
+        <% } else { if (model.get("test_after")) { %>
             until
         <% } else { %>
             while
         <% } } %>
     </span>
-    <%= model.get("condition").get("code") %>
+    <%= model.get("condition") %>
 </div>
 <% if (edit) { %>
 <form>
@@ -28,16 +28,16 @@
     <div class="form-group">
         <label for="<%= model.cid %>_condition" class="col-md-4 control-label">condition</label>
         <div class="col-md-8">
-            <textarea id="<%= model.cid %>_condition" class="form-control" rows="3" name="condition"><%= model.get('condition').get("code") %></textarea>
+            <textarea id="<%= model.cid %>_condition" class="form-control" rows="3" name="condition"><%= model.get('condition') %></textarea>
         </div>
     </div>
     <div class="form-group">
         <label for="<%= model.cid %>_type" class="col-md-4 control-label">type</label>
         <div class="col-md-8">
             <select id="<%= model.cid %>_type" name="type" class="form-control">
-                <option value="0"<% if (!model.get("condition").get("range") && !model.get("condition").get("test_after")) { %> selected<% } %>>test before</option>
-                <option value="1"<% if (!model.get("condition").get("range") && model.get("condition").get("test_after")) { %> selected<% } %>>test after</option>
-                <option value="2"<% if (model.get("condition").get("range")) { %> selected<% } %>>range</option>
+                <option value="0"<% if (!model.get("range") && !model.get("test_after")) { %> selected<% } %>>test before</option>
+                <option value="1"<% if (!model.get("range") && model.get("test_after")) { %> selected<% } %>>test after</option>
+                <option value="2"<% if (model.get("range")) { %> selected<% } %>>range</option>
             </select>
         </div>
     </div>

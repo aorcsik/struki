@@ -2,20 +2,17 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/condition',
     'models/sequence'
-], function($, _, Backbone, Condition, Sequence) {
+], function($, _, Backbone, Sequence) {
     var Branch = Backbone.Model.extend({
+        type: "branch",
         defaults: {
-            "condition": new Condition()
+            "condition": "I"
         },
         initialize: function() {
             var self = this;
             this.set("sequence", new Sequence());
             this.listenTo(this.get("sequence"), 'change', function(e) {
-                self.trigger('change', e);
-            });
-            this.listenTo(this.get("condition"), 'change', function(e) {
                 self.trigger('change', e);
             });
         }

@@ -5,12 +5,11 @@
     'models/loop',
     'models/command',
     'models/branch',
-    'models/condition',
     'models/branching',
     'models/document',
     'views/canvas/canvas',
     'text!../../templates/editor.html'
-], function($, _, Backbone, Loop, Command, Branch, Condition, Branching, Document, CanvasView, editorTemplate){
+], function($, _, Backbone, Loop, Command, Branch, Branching, Document, CanvasView, editorTemplate){
     var EditorView = Backbone.View.extend({
         id: "editor",
         events: {
@@ -27,14 +26,14 @@
             doc.get("struktogram").get("sequence").removeCommandByIndex(0);
             doc.get("struktogram").get("sequence").addCommand(new Command({'code': "x:=3"}));
             doc.get("struktogram").get("sequence").addCommand(new Command({'code': "y:=4+5-6"}));
-            var loop = new Loop({'condition': new Condition({'code': "a < 2"})});
+            var loop = new Loop({'condition': "a < 2"});
             loop.get("sequence").addCommand(new Command({'code': "a:=a+1"}));
             var branching = new Branching();
-            branching.get("branches")[0].set("condition", new Condition({'code': "x = 1"}));
+            branching.get("branches")[0].set("condition", "x = 1");
             branching.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
             branching.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
             var branch = new Branch();
-            branch.set("condition", new Condition({'code': "x = 1"}));
+            branch.set("condition", "x = 1");
             branch.get("sequence").addCommand(new Command({'code': "x:=x+1+2"}));
             branching.addBranch(branch);
             branching.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1"}));

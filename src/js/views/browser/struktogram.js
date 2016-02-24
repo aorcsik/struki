@@ -58,7 +58,23 @@ define([
         saveCommand: function(e) {
             var $cmd = $(e.target).closest(".save-command").closest("li, .struktogram"),
                 cmd = $cmd.data('view').model;
-            $cmd.data('view').render();
+
+            if (cmd.type === "command") {
+                cmd.set("code", $cmd.find("#" + cmd.cid + "_code").val());
+            }
+            else if (cmd.type === "loop") {
+                cmd.set({
+                    "condition": $cmd.find("#" + cmd.cid + "_condition").val(),
+                    "test_after": $cmd.find("#" + cmd.cid + "_type").val() == 1,
+                    "range": $cmd.find("#" + cmd.cid + "_type").val() == 2
+                });
+            }
+            else if (cmd.type === "branch") {
+                cmd.set("condition", $cmd.find("#" + cmd.cid + "_condition").val());
+            }
+            else {
+                $cmd.data('view').render();
+            }
         },
 
         render: function(edit) {

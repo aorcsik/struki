@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/branch',
-    'models/condition'
-], function($, _, Backbone, Branch, Condition) {
+    'models/branch'
+], function($, _, Backbone, Branch) {
     var Branching = Backbone.Model.extend({
         type: "branching",
         defaults: {},
@@ -12,7 +11,7 @@ define([
             var self = this;
             this.set("branches", []);
             this.addBranch(new Branch());
-            this.set("else_branch", new Branch({'condition': new Condition({'code': ""})}));
+            this.set("else_branch", new Branch({'condition': ""}));
             this.listenTo(this.get("else_branch"), 'change', function(e) {
                 self.trigger('change', e);
             });

@@ -5,6 +5,7 @@ define([
     'models/sequence'
 ], function($, _, Backbone, Sequence) {
     var Struktogram = Backbone.Model.extend({
+        type: "struktogram",
         defaults: {},
         initialize: function() {
             var self = this;

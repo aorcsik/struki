@@ -55,7 +55,7 @@ define([
             var m, i, height;
 
             ctx.font = design.font_size + "px " + design.font_family;
-            var text = this.model.get("condition").get("code");
+            var text = this.model.get("condition");
             var text_lines = text.split("\n").map(function(line) {
                 return line.replace(/^\s+|\s+$/, "");
             }).filter(function(line) {

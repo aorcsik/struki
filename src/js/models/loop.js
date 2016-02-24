@@ -2,13 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/condition',
     'models/sequence'
-], function($, _, Backbone, Condition, Sequence) {
+], function($, _, Backbone, Sequence) {
     var Loop = Backbone.Model.extend({
         type: "loop",
         defaults: {
-            "condition": new Condition(),
+            "condition": "I",
             "test_after": false,
             "range": false,
         },
@@ -16,9 +15,6 @@ define([
             var self = this;
             this.set("sequence", new Sequence());
             this.listenTo(this.get("sequence"), 'change', function(e) {
-                self.trigger('change', e);
-            });
-            this.listenTo(this.get("condition"), 'change', function(e) {
                 self.trigger('change', e);
             });
         }
