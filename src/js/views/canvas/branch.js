@@ -92,7 +92,7 @@ define([
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);
                     this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
-                    height += design.font_size + (i > 0 ? 3 : 0);
+                    height += design.font_size + (i > 0 ? design.line_distance : 0);
                     if (fix_width) {
                         ctx.fillText(
                             text_lines[i],

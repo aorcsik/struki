@@ -6,10 +6,11 @@
     'models/command',
     'models/branch',
     'models/branching',
+    'models/variable',
     'models/document',
     'views/canvas/canvas',
     'text!../../templates/editor.html'
-], function($, _, Backbone, Loop, Command, Branch, Branching, Document, CanvasView, editorTemplate){
+], function($, _, Backbone, Loop, Command, Branch, Branching, Variable, Document, CanvasView, editorTemplate){
     var EditorView = Backbone.View.extend({
         id: "editor",
         events: {
@@ -23,6 +24,8 @@
             var self = this;
             var doc = new Document();
             doc.newStruktogram("struki");
+            doc.get("struktogram").set("parameters", [new Variable({'name': "a", 'type': "Bool"})]);
+            doc.get("struktogram").set("variables", [new Variable({'name': "x", 'type': "Int"})]);
             doc.get("struktogram").get("sequence").removeCommandByIndex(0);
             doc.get("struktogram").get("sequence").addCommand(new Command({'code': "x:=3"}));
             doc.get("struktogram").get("sequence").addCommand(new Command({'code': "y:=4+5-6"}));

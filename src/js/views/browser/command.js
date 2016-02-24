@@ -19,13 +19,22 @@ define([
             this.depth = depth;
             return this;
         },
-        render: function(edit) {
-            this.$el.html(this.template({
-                "edit": edit,
-                "depth": this.depth,
-                "model": this.model
-            }));
-            this.$el.data("view", this);
+        render: function(edit, only_command_line) {
+            if (only_command_line) {
+                this.$el.children("form").remove();
+                this.$el.children(".command-line").replaceWith(this.template({
+                    "edit": edit,
+                    "depth": this.depth,
+                    "model": this.model
+                }));
+            } else {
+                this.$el.html(this.template({
+                    "edit": edit,
+                    "depth": this.depth,
+                    "model": this.model
+                }));
+                this.$el.data("view", this);
+            }
             return this;
         }
     });

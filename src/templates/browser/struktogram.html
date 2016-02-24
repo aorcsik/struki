@@ -1,11 +1,18 @@
-<div class="title <% if (edit) { %>editing<% } %>">
+<div class="command-line <% if (edit) { %>editing<% } %>">
     <% if (edit) { %>
         <i class="material-icons command-tools save-command">&#xE5CA;</i>
     <% } else { %>
         <i class="material-icons command-tools add-command">&#xE145;</i>
         <i class="material-icons command-tools edit-command">&#xE3C9;</i>
     <% } %>
-    <%= model.get("name") %>
+    <div class="title">
+        <%= model.get("name") %>(<%= model.get("parameters").map(function(parameter) {
+            return parameter.get("name") + ": " + parameter.get("type");
+        }).join(",") %>)
+    </div>
+    <% _.each(model.get("variables"), function(variable) { %>
+        <%= vartemp({'variable': variable, 'edit': null}) %>
+    <% }); %>
 </div>
 <% if (edit) { %>
 <form>
@@ -20,12 +27,22 @@
         </div>
     </div>
     <div class="row form-header">
-        <div class="col-md-10">Arguments</div>
-        <div class="col-md-2"><i class="material-icons">&#xE145;</i></div>
+        <div class="col-md-10">Parameters</div>
+        <div class="col-md-2"><i class="material-icons add-parameter">&#xE145;</i></div>
+    </div>
+    <div class="parameters">
+    <% _.each(model.get("parameters"), function(parameter) { %>
+        <%= vartemp({'variable': parameter, 'edit': "parameter"}) %>
+    <% }); %>
     </div>
     <div class="row form-header">
         <div class="col-md-10">Variables</div>
-        <div class="col-md-2"><i class="material-icons">&#xE145;</i></div>
+        <div class="col-md-2"><i class="material-icons add-variable">&#xE145;</i></div>
+    </div>
+    <div class="variables">
+    <% _.each(model.get("variables"), function(variable) { %>
+        <%= vartemp({'variable': variable, 'edit': "variable"}) %>
+    <% }); %>
     </div>
 </form>
 <% } %>

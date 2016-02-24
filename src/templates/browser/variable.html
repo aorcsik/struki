@@ -1,0 +1,20 @@
+<% if (edit) { %>
+    <div class="form-group">
+        <div class="col-md-4">
+            <input name="<%= edit %>_name" type="text" class="form-control" value="<%= variable && variable.get('name') %>">
+        </div>
+        <div class="col-md-6">
+            <input name="<%= edit %>_type" type="text" class="form-control" value="<%= variable && variable.get('type') %>">
+        </div>
+        <div class="col-md-2">
+            <i class="material-icons remove-<%= edit %>">&#xE15B;</i>
+        </div>
+    </div>
+<% } else { %>
+    <div class="command-line variable">
+        <i class="material-icons icon">&#xE5D0;</i>
+        <span class="command-padding"></span>
+        <span class="syntactic-sugar">def</span>
+        <%= variable.get("name") %>: <%= variable.get("type") %>
+    </div>
+<% } %>

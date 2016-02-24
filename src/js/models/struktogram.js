@@ -10,6 +10,8 @@ define([
         initialize: function() {
             var self = this;
             this.set("sequence", new Sequence());
+            this.set("parameters", []);
+            this.set("variables", []);
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
             });

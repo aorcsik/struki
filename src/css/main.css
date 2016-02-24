@@ -209,18 +209,18 @@ html, body {
 #browser .struktogram-container {
     overflow: auto;
 }
-#browser .struktogram .title,
-#browser ul.sequence .command,
-#browser ul.sequence .loop-condition,
-#browser ul.sequence .branch-condition {
+#browser .command-line {
     clear: both;
-    height: 30px;
-    padding: 5px;
-    /*border-bottom: 1px solid #ccc;*/
     font-family: "Ubuntu Mono", "Courier New", monospace;
     position: relative;
 }
-#browser .struktogram .title {
+#browser .command-line .command-line,
+#browser ul.sequence .command-line {
+    height: 30px;
+    padding: 5px;
+}
+#browser .title {
+    padding: 5px;
     font-weight: bold;
     font-size: 1.2em;
 }
@@ -247,21 +247,13 @@ html, body {
 #browser .edit-command { right: 26px; }
 #browser .add-command { right: 46px; }
 
-#browser .title:hover > .command-tools,
-#browser .command:hover > .command-tools ,
-#browser .loop-condition:hover > .command-tools ,
-#browser .branch-condition:hover > .command-tools  {
+#browser .command-line:hover > .command-tools  {
     display: block;
     opacity: 0.5;
 }
-#browser .title:hover > .command-tools:hover,
-#browser .command:hover > .command-tools:hover,
-#browser .loop-condition:hover > .command-tools:hover,
-#browser .branch-condition:hover > .command-tools:hover {
+#browser .command-line:hover > .command-tools:hover {
     opacity: 1.0;
 }
-
-
 
 #browser .command-padding {
     float: left;
@@ -285,22 +277,18 @@ html, body {
 
 }
 
-#browser .title:hover,
-#browser .command:hover,
-#browser .loop-condition:hover,
-#browser .branch-condition:hover,
-#browser .struktogram .editing,
-#browser ul.sequence .editing {
+#browser .command-line:hover,
+#browser .editing {
     background: rgb(51, 122, 183);
     color: #fff;
     border: 0;
 }
-#browser .title:hover .syntactic-sugar,
-#browser .command:hover .syntactic-sugar,
-#browser .loop-condition:hover .syntactic-sugar,
-#browser .branch-condition:hover .syntactic-sugar,
+#browser .command-line:hover .syntactic-sugar,
 #browser .editing .syntactic-sugar {
     color: rgba(255,255,255,0.7);
+}
+#browser .editing .command-tools {
+    display: block;
 }
 #browser form {
     overflow: auto;
@@ -311,6 +299,7 @@ html, body {
 #browser .form-header {
     background: #ddd;
     padding: 3px 5px;
+    margin: 0;
 }
 #browser .form-header .material-icons {
     margin-top: 3px;
@@ -318,9 +307,15 @@ html, body {
     cursor: pointer;
     float: right;
 }
+#browser .form-header > div {
+    padding: 0;
+}
 #browser .form-group {
-    margin: 0 -10px 0 -10px;
+    margin: 0;
     overflow: auto;
+}
+#browser .form-group > div {
+    padding: 0 5px;
 }
 #browser .form-group select,
 #browser .form-group input[type='text'],
@@ -329,4 +324,20 @@ html, body {
     margin: 0;
     font-family: "Ubuntu Mono", "Courier New", monospace;
     font-size: 1.0em;
+}
+#browser .form-control {
+    height: 25px;
+}
+#browser select.form-control,
+#browser textarea.form-control {
+    height: auto;
+}
+#browser .form-group label.control-label {
+    margin-top: 10px;
+}
+#browser .remove-parameter,
+#browser .remove-variable {
+    float: right;
+    margin: 8px 3px 0 0;
+    cursor: pointer;
 }

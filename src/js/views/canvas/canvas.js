@@ -13,6 +13,7 @@ define([
         design: {
             "font_family": "Ubuntu Mono",
             "font_size": 14,
+            "line_distance": 3,
             "margin": {
                 "top": 7,
                 "right": 10,
