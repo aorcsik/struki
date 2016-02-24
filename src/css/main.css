@@ -243,7 +243,8 @@ html, body {
     display: none;
 }
 #browser .save-command { right: 6px; opacity: 0.3; }
-#browser .close-struktogram, #browser .close-command { right: 6px; }
+#browser .close-struktogram,
+#browser .remove-command { right: 6px; }
 #browser .edit-command { right: 26px; }
 #browser .add-command { right: 46px; }
 
@@ -340,4 +341,29 @@ html, body {
     float: right;
     margin: 8px 3px 0 0;
     cursor: pointer;
+}
+
+#browser .command-dropdown {
+    position: absolute;
+    background: #fff;
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    right: 46px;
+    top: 8px;
+    color: #000;
+}
+#browser .command-dropdown li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+}
+#browser .command-dropdown li:hover {
+    background: rgb(51, 122, 183);
+    color: #fff;
 }

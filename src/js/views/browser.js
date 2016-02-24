@@ -42,7 +42,7 @@ define([
             }));
             if (this.model.get("active_document")) {
                 this.struktogram = new StruktogramBrowserView({'model': this.model.get("active_document").get("struktogram")});
-                this.$el.find(".struktogram-container").append(this.struktogram.$el);
+                this.$el.children(".struktogram-container").append(this.struktogram.$el);
                 this.struktogram.render();
             }
             return this;

@@ -3,17 +3,24 @@ define([
     'underscore',
     'backbone',
     'models/variable',
+    'models/command',
+    'models/branch',
+    'models/conditional',
+    'models/loop',
     'views/browser/sequence',
     'text!../../../templates/browser/variable.html',
-    'text!../../../templates/browser/struktogram.html'
-], function($, _, Backbone, Variable, SequenceBrowserView, variableTemplate, struktogramTemplate){
+    'text!../../../templates/browser/struktogram.html',
+    'text!../../../templates/browser/add_dropdown.html',
+], function($, _, Backbone, Variable, Command, Branch, Conditional, Loop, SequenceBrowserView, variableTemplate, struktogramTemplate, addDropdownTemplate){
     var StruktogramBrowserView = Backbone.View.extend({
         className: "struktogram",
         main_sequence: null,
         template: _.template(struktogramTemplate),
         vartemp: _.template(variableTemplate),
+        adddroptemp: _.template(addDropdownTemplate),
         events: {
             "click .remove-command": "removeCommand",
+            "click .add-command": "addCommand",
             "click .edit-command": "editCommand",
             "click .save-command": "saveCommand",
             "click .add-variable": "addVariable",
@@ -31,10 +38,16 @@ define([
                     self.render();
                 }, 10);
             });
+            /* $(window).on("click.closedropdown", function(e) {
+                if (!$(e.target).is(".add-command")) {
+                    $(".command-dropdown").remove();
+                }
+            }); */
         },
 
         onClose: function() {
             this.main_sequence.close();
+            $(window).off("click.closedropdown");
         },
 
         removeCommand: function(e) {
@@ -123,6 +136,55 @@ define([
             else {
                 $cmd.data('view').render();
             }
+        },
+
+        addCommand: function(e) {
+            $(".command-dropdown").remove();
+
+            var $cmd = $(e.target).closest(".add-command").closest("li, .struktogram"),
+                cmd = $cmd.data('view').model;
+
+            if (cmd.type === "loop") {
+                $cmd.children(".command-line").append(this.adddroptemp({
+                    "options": {'command': true, 'loop': true, 'conditional': true, 'branch': false}
+                }));
+            }
+            else if (cmd.type === "branch") {
+                $cmd.children(".command-line").append(this.adddroptemp({
+                    "options": {'command': true, 'loop': true, 'conditional': true, 'branch': true}
+                }));
+            }
+            else if (cmd.type === "struktogram") {
+                $cmd.children(".command-line").append(this.adddroptemp({
+                    "options": {'command': true, 'loop': true, 'conditional': true, 'branch': false}
+                }));
+            }
+
+            var popup_delay = null;
+            $(".command-dropdown").on("mouseover", function() {
+                window.clearTimeout(popup_delay);
+            }).on("mouseout", function() {
+                popup_delay = window.setTimeout(function() {
+                    $(".command-dropdown").remove();
+                }, 100);
+            });
+            $(".command-dropdown li").on("click", function() {
+                var type = $(this).data("type");
+                if (type === "command") {
+                    cmd.get("sequence").addCommand(new Command());
+                }
+                else if (type === "loop") {
+                    cmd.get("sequence").addCommand(new Loop());
+                }
+                else if (type === "conditional") {
+                    cmd.get("sequence").addCommand(new Conditional());
+                }
+                else if (type === "branch") {
+                    var $conditional = $cmd.closest(".conditional"),
+                        conditional = $conditional.data('view').model;
+                    conditional.addBranch(new Branch());
+                }
+            });
         },
 
         addVariable: function(e) {
