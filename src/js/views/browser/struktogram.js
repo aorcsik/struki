@@ -41,14 +41,14 @@ define([
             var $cmd = $(e.target).closest(".remove-command").closest("li"),
                 cmd = $cmd.data('view').model;
             if ($cmd.is(".branch")) {
-                var $branching = $cmd.closest(".branching"),
-                    branching = $branching.data('view').model;
-                if (branching.get("branches").length > 1) {
-                    branching.removeBranch(cmd);
+                var $conditional = $cmd.closest(".conditional"),
+                    conditional = $conditional.data('view').model;
+                if (conditional.get("branches").length > 1) {
+                    conditional.removeBranch(cmd);
                     return;
                 } else {
-                    $cmd = $branching;
-                    cmd = branching;
+                    $cmd = $conditional;
+                    cmd = conditional;
                 }
             }
             var $sequence = $cmd.closest(".sequence"),

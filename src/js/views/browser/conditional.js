@@ -3,14 +3,14 @@ define([
     'underscore',
     'backbone',
     'views/browser/branch',
-    'text!../../../templates/browser/branching.html'
-], function($, _, Backbone, BranchBrowserView, branchingTemplate){
-    var BranchingBrowserView = Backbone.View.extend({
+    'text!../../../templates/browser/conditional.html'
+], function($, _, Backbone, BranchBrowserView, conditionalTemplate){
+    var ConditionalBrowserView = Backbone.View.extend({
         tagName: "li",
-        className: "branching",
+        className: "conditional",
         branches: null,
         else_branch: null,
-        template: _.template(branchingTemplate),
+        template: _.template(conditionalTemplate),
         depth: 0,
 
         initialize: function() {
@@ -50,5 +50,5 @@ define([
             return this;
         }
     });
-    return BranchingBrowserView;
+    return ConditionalBrowserView;
 });

@@ -4,8 +4,8 @@ define([
     'backbone',
     'models/branch'
 ], function($, _, Backbone, Branch) {
-    var Branching = Backbone.Model.extend({
-        type: "branching",
+    var Conditional = Backbone.Model.extend({
+        type: "conditional",
         defaults: {},
         initialize: function() {
             var self = this;
@@ -40,5 +40,5 @@ define([
             }
         }
     });
-    return Branching;
+    return Conditional;
 });

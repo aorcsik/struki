@@ -4,9 +4,9 @@ define([
     'backbone',
     'views/browser/loop',
     'views/browser/command',
-    'views/browser/branching',
+    'views/browser/conditional',
     'text!../../../templates/browser/sequence.html'
-], function($, _, Backbone, LoopBrowserView, CommandBrowserView, BranchingBrowserView, sequenceTemplate) {
+], function($, _, Backbone, LoopBrowserView, CommandBrowserView, ConditionalBrowserView, sequenceTemplate) {
     var SequenceBrowserView = Backbone.View.extend({
         tagName: "ul",
         depth: 0,
@@ -40,7 +40,7 @@ define([
         createCommandBrowserView: function(command) {
             if (command.type == "loop") return new LoopBrowserView({'model': command});
             if (command.type == "command") return new CommandBrowserView({'model': command});
-            if (command.type == "branching") return new BranchingBrowserView({'model': command});
+            if (command.type == "conditional") return new ConditionalBrowserView({'model': command});
         },
         setDepth: function(depth) {
             this.depth = depth;

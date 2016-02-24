@@ -4,7 +4,7 @@ define([
     'backbone',
     'views/canvas/branch'
 ], function($, _, Backbone, BranchCanvasView){
-    var BranchingCanvasView = Backbone.View.extend({
+    var ConditionalCanvasView = Backbone.View.extend({
         lines: null,
         size: null,
         position: null,
@@ -118,5 +118,5 @@ define([
             return this;
         }
     });
-    return BranchingCanvasView;
+    return ConditionalCanvasView;
 });

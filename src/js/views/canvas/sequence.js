@@ -4,8 +4,8 @@ define([
     'backbone',
     'views/canvas/loop',
     'views/canvas/command',
-    'views/canvas/branching'
-], function($, _, Backbone, LoopCanvasView, CommandCanvasView, BranchingCanvasView) {
+    'views/canvas/conditional'
+], function($, _, Backbone, LoopCanvasView, CommandCanvasView, ConditionalCanvasView) {
     var SequenceCanvasView = Backbone.View.extend({
         lines: null,
         size: null,
@@ -60,7 +60,7 @@ define([
         createCommandCanvasView: function(command) {
             if (command.type == "loop") return new LoopCanvasView({'model': command});
             if (command.type == "command") return new CommandCanvasView({'model': command});
-            if (command.type == "branching") return new BranchingCanvasView({'model': command});
+            if (command.type == "conditional") return new ConditionalCanvasView({'model': command});
         },
 
         getSize: function() {
