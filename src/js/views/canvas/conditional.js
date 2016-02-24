@@ -82,7 +82,7 @@ define([
                     branch_fix_width = Math.floor(fix_width * this.branches[i].getSize().width / old_size.width);
                     else_branch_fix_width -= branch_fix_width;
                 }
-                this.branches[i].render(ctx, design, line, x + this.size.width, y, branch_fix_width, lines, null, solo);
+                this.branches[i].render(ctx, design, line, x + this.size.width, y, branch_fix_width, lines, null, solo, old_size.height);
                 this.size.width += this.branches[i].getSize().width;
                 this.size.height = Math.max(this.size.height, this.branches[i].getSize().height);
                 for (key in this.branches[i].getLines()) {
@@ -91,7 +91,7 @@ define([
                 }
             }
             var else_text = this.branches.length > 1 ? "else" : "";
-            this.else_branch.render(ctx, design, line, x + this.size.width, y, else_branch_fix_width, lines, else_text, null);
+            this.else_branch.render(ctx, design, line, x + this.size.width, y, else_branch_fix_width, lines, else_text, null, old_size.height);
             this.size.width += this.else_branch.getSize().width;
             this.size.height = Math.max(this.size.height, this.else_branch.getSize().height);
             for (key in this.else_branch.getLines()) {
