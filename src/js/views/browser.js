@@ -7,7 +7,9 @@ define([
 ], function($, _, Backbone, StruktogramBrowserView, browserTemplate){
     var BrowserView = Backbone.View.extend({
         id: "browser",
-        events: {},
+        events: {
+            "click .close-struktogram": "closeStruktogram"
+        },
         template: _.template(browserTemplate),
         stuktogram: null,
 
@@ -28,6 +30,11 @@ define([
         },
 
         onClose: function() {},
+
+        closeStruktogram: function() {
+            this.model.closeDocument(this.model.get("active_document"));
+            return false;
+        },
 
         render: function() {
             this.$el.html(this.template({
