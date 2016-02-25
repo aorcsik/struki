@@ -41,6 +41,14 @@ define([
                     return command.toJSON();
                 })
             };
+        },
+        evaluate: function(context) {
+            var return_value = null;
+            for (var i = 0; i < this.get("commands").length; i++) {
+                return_value = this.get("commands")[i].evaluate(context);
+                if (return_value !== null) return return_value;
+            }
+            return return_value;
         }
     });
     return Sequence;

@@ -13,6 +13,9 @@ define([
                 'type': "command",
                 'code': this.get("code")
             };
+        },
+        evaluate: function(context) {
+            return context.evaluateCode(this.get("code"));
         }
     });
     return Command;

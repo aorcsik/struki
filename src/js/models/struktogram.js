@@ -28,6 +28,20 @@ define([
                 }),
                 'sequence': this.get("sequence").toJSON()
             };
+        },
+        evaluate: function(parameters, context) {
+            var variables = context.get("variables");
+            this.get("parameters").forEach(function(parameter, idx) {
+                variables[parameter.get("name")] = parameters[idx];
+            });
+            this.get("variables").forEach(function(variable, idx) {
+                variables[variable.get("name")] = null;
+            });
+            context.set({
+                "variables": variables,
+                "updated_at": (new Date()).getTime()
+            });
+            return this.get("sequence").evaluate(context);
         }
     });
     return Struktogram;

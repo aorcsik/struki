@@ -22,6 +22,9 @@ define([
                 "condition": this.get("condition"),
                 "sequence": this.get("sequence").toJSON()
             };
+        },
+        evaluate: function(context) {
+            return this.get("sequence").evaluate(context);
         }
     });
     return Branch;

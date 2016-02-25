@@ -1,8 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone, Sequence) {
+    'backbone',
+    'models/context'
+], function($, _, Backbone, Context) {
     var UI = Backbone.Model.extend({
         defaults: {
             'browser_width':  [300, "px"],
@@ -19,6 +20,19 @@ define([
                 if (idx < 0) this.get("open_documents").push(doc);
             }
             this.set("active_document", doc);
+            this.resetContext();
+        },
+        resetContext: function() {
+            var functions = {}, variables = {},
+                struktogram = this.get("active_document").get("struktogram");
+            functions[struktogram.get("name")] = struktogram;
+            struktogram.get("parameters").forEach(function(parameter) {
+                variables[parameter.get("name")] = null;
+            });
+            this.set("context", new Context({
+                'functions': functions,
+                'variables': variables
+            }));
         },
         closeDocument: function(doc) {
             var idx = this.get("open_documents").indexOf(doc);
@@ -68,6 +82,28 @@ define([
                 return this.get(object_size)[0];
             else if (this.get(object_size)[1] === "%")
                 return this.get(object_size)[0] / 100 * max_size;
+        },
+
+        runStruktogram: function() {
+            var context = this.get("context"),
+                struktogram = this.get("active_document").get("struktogram"),
+                parameters = [];
+            struktogram.get("parameters").forEach(function(parameter) {
+                var value = context.get("variables")[parameter.get("name")];
+                if (value === "") {
+                    value = null;
+                } else if (parameter.get("type") == "Int") {
+                    value = parseInt(value, 10);
+                } else if (parameter.get("type") == "Bool") {
+                    if (value === "I") value = true;
+                    else if (value == "H") value = false;
+                    else value = Boolean(value);
+                } else if (parameter.get("type") == "Float") {
+                    value = parseFloat(value);
+                }
+                parameters.push(value);
+            });
+            this.get("active_document").get("struktogram").evaluate(parameters, context);
         }
 
     });

@@ -10,7 +10,8 @@ define([
         className: "navbar navbar-inverse",
         events: {
             "click #new_document": "newDocument",
-            "click #save_dropdown": "updateSaveLinks"
+            "click #save_dropdown": "updateSaveLinks",
+            "click #run_struktogram": "runStruktogram"
         },
         template: _.template(toolbarTemplate),
 
@@ -26,10 +27,6 @@ define([
             var doc = new Document();
             doc.newStruktogram("new");
             this.model.openDocument(doc);
-        },
-
-        saveJSON: function() {
-            console.log(this.model.get("active_document").toJSON());
         },
 
         onClose: function() {},
@@ -82,6 +79,10 @@ define([
                 $("#json_download").replaceWith(this.getJSONDownalodLink());
                 $("#png_download").replaceWith(this.getPNGDownloadLink());
             }
+        },
+
+        runStruktogram: function() {
+            $("#watcher").data("view").runStruktogram();
         },
 
         render: function() {

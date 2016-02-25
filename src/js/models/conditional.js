@@ -46,7 +46,16 @@ define([
                     return branch.toJSON();
                 })
             };
+        },
+        evaluate: function(context) {
+            for (var i = 0; i < this.get("branches").length; i++) {
+                if (context.evaluateCondition(this.get("branches")[i].get("condition"))) {
+                    return this.get("branches")[i].evaluate(context);
+                }
+            }
+            return this.get("else_branch").evaluate(context);
         }
+
     });
     return Conditional;
 });

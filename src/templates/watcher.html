@@ -1,6 +1,14 @@
 <div class="panel panel-default unselectable">
     <div class="panel-heading">Watcher</div>
     <div class="panel-body">
-    ...
+        <% if (context) { for (var name in context.get("variables")) { %>
+            <div class="form-group">
+                <label for="variable_<%= name %>" class="col-md-2 control-label"><%= name %></label>
+                <div class="col-md-10">
+                    <input id="variable_<%= name %>" name="<%= name %>" type="text" class="form-control" value="<%= context.get('variables')[name] %>">
+                </div>
+            </div>
+        <% } } %>
+        </div>
     </div>
 </div>

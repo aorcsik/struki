@@ -367,3 +367,23 @@ html, body {
     background: rgb(51, 122, 183);
     color: #fff;
 }
+
+#watcher .form-group {
+    margin: 0;
+    overflow: auto;
+}
+#watcher .form-group > div,
+#watcher .form-group > label {
+    padding: 0;
+}
+#watcher .form-group label,
+#watcher .form-group input {
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
+}
+#watcher .form-control {
+    height: 25px;
+}
+#watcher .form-group label.control-label {
+    margin-top: 6px;
+}
