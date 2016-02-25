@@ -85,7 +85,8 @@ define([
             if (cmd.type === "command") {
                 cmd.set({
                     "code": $cmd.find("#" + cmd.cid + "_code").val(),
-                    "update_at": (new Date()).getTime()
+                    "_counter": cmd.get("_counter") ? cmd.get("_counter") + 1 : 1,
+                    "_updated_at": (new Date()).getTime()
                 });
             }
             else if (cmd.type === "loop") {
@@ -93,13 +94,15 @@ define([
                     "condition": $cmd.find("#" + cmd.cid + "_condition").val(),
                     "test_after": $cmd.find("#" + cmd.cid + "_type").val() == 1,
                     "range": $cmd.find("#" + cmd.cid + "_type").val() == 2,
-                    "update_at": (new Date()).getTime()
+                    "_counter": cmd.get("_counter") ? cmd.get("_counter") + 1 : 1,
+                    "_updated_at": (new Date()).getTime()
                 });
             }
             else if (cmd.type === "branch") {
                 cmd.set({
                     "condition": $cmd.find("#" + cmd.cid + "_condition").val(),
-                    "update_at": (new Date()).getTime()
+                    "_counter": cmd.get("_counter") ? cmd.get("_counter") + 1 : 1,
+                    "_updated_at": (new Date()).getTime()
                 });
             }
             else if (cmd.type === "struktogram") {
@@ -130,7 +133,8 @@ define([
                     }).get().filter(function(item) {
                         return item !== null;
                     }),
-                    "update_at": (new Date()).getTime()
+                    "_counter": cmd.get("_counter") ? cmd.get("_counter") + 1 : 1,
+                    "_updated_at": (new Date()).getTime()
                 });
             }
             else {

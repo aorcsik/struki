@@ -39,7 +39,8 @@ define([
             });
             context.set({
                 "variables": variables,
-                "updated_at": (new Date()).getTime()
+                "_counter": context.get("_counter") ? context.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
             });
             return this.get("sequence").evaluate(context);
         }

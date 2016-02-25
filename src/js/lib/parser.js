@@ -1,8 +1,10 @@
+define([], function() {
+
 var token_patterns = [
     {type: "",             pattern: /\s+/},
     {type: "BOOL[%]",      pattern: /(I|H)/},
-    {type: "FLOAT[%]",     pattern: /-?[0-9]*\.[0-9]+/},
-    {type: "INTEGER[%]",   pattern: /-?[0-9]+/},
+    {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
+    {type: "INTEGER[%]",   pattern: /[0-9]+/},
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/},
 
     {type: "OPERATOR_BRO", pattern: /\[/},
@@ -64,8 +66,7 @@ var expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LSTEXPRESSION\[(\d+)\]/, operator: "list"}
 ];
 
-function StructogramCellParser(code) {
-    this.context = new Context();
+function Parser(code) {
     this.raw_code = code;
     this.tokenized_code = "";
     this.expression_counter = 0;
@@ -76,7 +77,7 @@ function StructogramCellParser(code) {
     this.parse(this.tokenized_code);
 }
 
-StructogramCellParser.prototype.tokenize = function(code) {
+Parser.prototype.tokenize = function(code) {
     for (var i = 0; i < token_patterns.length; i++) {
         var result = token_patterns[i].pattern.exec(code);
         if (result && result.index === 0) {
@@ -87,7 +88,7 @@ StructogramCellParser.prototype.tokenize = function(code) {
     }
 };
 
-StructogramCellParser.prototype.parse = function(code) {
+Parser.prototype.parse = function(code) {
     for (var i = 0; i < expression_patterns.length; i++) {
         var result = expression_patterns[i].pattern.exec(code);
         if (result) {
@@ -101,7 +102,7 @@ StructogramCellParser.prototype.parse = function(code) {
     }
 };
 
-StructogramCellParser.prototype.evaluate = function(context) {
+Parser.prototype.evaluate = function(context) {
     return this.expressions[this.expression_counter - 1].evaluate(context, this.expressions);
 };
 
@@ -154,23 +155,23 @@ Expression.prototype.evaluate = function(context, expressions) {
     } else if (this.operator == "gt") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        if (typeof a === "boolean" && typeof b === "boolean") return a > b;
-        else throw "Compile Error: > operator requires boolean operands";
+        if (typeof a === "number" && typeof b === "number") return a > b;
+        else throw "Compile Error: > operator requires number operands";
     } else if (this.operator == "gte") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        if (typeof a === "boolean" && typeof b === "boolean") return a >= b;
-        else throw "Compile Error: >= operator requires boolean operands";
+        if (typeof a === "number" && typeof b === "number") return a >= b;
+        else throw "Compile Error: >= operator requires number operands";
     } else if (this.operator == "lt") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        if (typeof a === "boolean" && typeof b === "boolean") return a < b;
-        else throw "Compile Error: < operator requires boolean operands";
+        if (typeof a === "number" && typeof b === "number") return a < b;
+        else throw "Compile Error: < operator requires number operands";
     } else if (this.operator == "lte") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
-        if (typeof a === "boolean" && typeof b === "boolean") return a <= b;
-        else throw "Compile Error: <= operator requires boolean operands";
+        if (typeof a === "number" && typeof b === "number") return a <= b;
+        else throw "Compile Error: <= operator requires number operands";
     } else if (this.operator == "eq") {
         a = expressions[this.result[1]].evaluate(context, expressions);
         b = expressions[this.result[2]].evaluate(context, expressions);
@@ -259,58 +260,8 @@ Expression.prototype.evaluateArrayIndex = function(expression, context, expressi
     return keys;
 };
 
-function Context() {
-    this.variables = {};
-    this.functions = {
-        "sqrt": Math.sqrt,
-        "print": function() { console.log.apply(this, arguments); }
-    };
-}
 
-Context.prototype.defineVariable = function(name, value) {
-    if (value === undefined) value = null;
-    this.variables[name] = value;
-};
-
-Context.prototype.applyFunction = function(name, params) {
-    if (this.functions[name] !== undefined) return this.functions[name].apply(this, params);
-    else throw "Compile Error: undefined function '" + name + "'";
-};
-
-Context.prototype.setVariable = function(name, value) {
-    if (this.variables[name] !== undefined) this.variables[name] = value;
-    else throw "Compile Error: undefined variable '" + name + "'";
-};
-
-Context.prototype.getVariable = function(name) {
-    if (this.variables[name] !== undefined) return this.variables[name];
-    else throw "Compile Error: undefined variable '" + name + "'";
-};
-
-Context.prototype.getArrayValue = function(keys) {
-    var array = this.getVariable(keys[0]);
-    var name = keys[0];
-    for (var i = 1; i < keys.length - 1; i++) {
-        if (array.constructor === Array) array = array[keys[i]];
-        else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-        name += "[" + keys[i] + "]";
-    }
-    if (array.constructor === Array) return array[keys[i]];
-    else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-};
-
-Context.prototype.setArrayValue = function(keys, value) {
-    var array = this.getVariable(keys[0]);
-    var name = keys[0];
-    for (var i = 1; i < keys.length - 1; i++) {
-        if (array.constructor === Array) array = array[keys[i]];
-        else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-        name += "[" + keys[i] + "]";
-    }
-    if (array.constructor === Array) array[keys[i]] = value;
-    else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-};
-
+/*
 Context.prototype.evaluate = function(code) {
     var pc = new StructogramCellParser(code);
     pc.evaluate(this);
@@ -325,4 +276,7 @@ ct.evaluate("a[0][] := (1 + a[1][0]) * 6");
 ct.evaluate("print(a)");
 ct.evaluate("print(!(2 = 2))");
 ct.evaluate("x := [1, 2, 3] + [4]");
-ct.evaluate("print(x)");
+ct.evaluate("print(x)"); */
+
+    return Parser;
+});

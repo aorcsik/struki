@@ -15,9 +15,15 @@ define([
             this.set("open_documents", []);
         },
         openDocument: function(doc) {
+            var self = this;
             if (doc !== null) {
                 var idx = this.get("open_documents").indexOf(doc);
-                if (idx < 0) this.get("open_documents").push(doc);
+                if (idx < 0) {
+                    this.get("open_documents").push(doc);
+                    this.listenTo(doc.get("struktogram"), "change", function() {
+                        self.resetContext();
+                    });
+                }
             }
             this.set("active_document", doc);
             this.resetContext();
@@ -84,7 +90,7 @@ define([
                 return this.get(object_size)[0] / 100 * max_size;
         },
 
-        runStruktogram: function() {
+        runStruktogram: function(debug_step) {
             var context = this.get("context"),
                 struktogram = this.get("active_document").get("struktogram"),
                 parameters = [];
@@ -103,7 +109,12 @@ define([
                 }
                 parameters.push(value);
             });
-            this.get("active_document").get("struktogram").evaluate(parameters, context);
+            context.set({"_state": 0, "_debug": debug_step});
+            try {
+                this.get("active_document").get("struktogram").evaluate(parameters, context);
+            } catch(e) {
+                if (e.match(/^Compile/)) $("#output").data("view").error(e);
+            }
         }
 
     });

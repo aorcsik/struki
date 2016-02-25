@@ -37,6 +37,7 @@ define([
                     return_value = this.get("sequence").evaluate(context);
                     if (return_value !== null) return return_value;
                     context.incrementVariable(range.var, range.step);
+                    context.stepState();
                 }
             } else if (this.get("test_after")) {
                 do {
