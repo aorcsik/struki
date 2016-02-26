@@ -24,13 +24,14 @@
             var self = this;
             var doc = new Document();
             doc.newStruktogram("struki");
-            doc.get("struktogram").set("parameters", [new Variable({'name': "a", 'type': "Bool"})]);
+            doc.get("struktogram").set("parameters", [new Variable({'name': "a", 'type': "Int"})]);
             doc.get("struktogram").set("variables", [new Variable({'name': "x", 'type': "Int"})]);
             doc.get("struktogram").get("sequence").removeCommandByIndex(0);
             doc.get("struktogram").get("sequence").addCommand(new Command({'code': "x:=3"}));
-            doc.get("struktogram").get("sequence").addCommand(new Command({'code': "y:=4+5-6"}));
+            // doc.get("struktogram").get("sequence").addCommand(new Command({'code': "y:=4+5-6"}));
             var loop = new Loop({'condition': "a < 2"});
             loop.get("sequence").addCommand(new Command({'code': "a:=a+1"}));
+            loop.get("sequence").addCommand(new Command({'code': "print(a)"}));
             var conditional = new Conditional();
             conditional.get("branches")[0].set("condition", "x = 1");
             conditional.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));

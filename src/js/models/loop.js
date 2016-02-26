@@ -27,25 +27,46 @@ define([
                 'sequence': this.get("sequence").toJSON()
             };
         },
+
+        evaluateCondition: function(context) {
+            try {
+                this.trigger("evaluate", this);
+                return context.evaluateCondition(this.get("condition"));
+            } catch (e) {
+                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                throw e;
+            }
+        },
+
+        evaluateRange: function(context, range) {
+            try {
+                this.trigger("evaluate", this);
+                context.stepState();
+                return context.getVariable(range.var) < range.end;
+            } catch (e) {
+                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                throw e;
+            }
+        },
+
         evaluate: function(context) {
             var variables;
             var return_value = null;
             if (this.get("range")) {
                 var range = context.evaluateRange(this.get("condition"));
                 context.setVariable(range.var, range.start);
-                while (context.getVariable(range.var) < range.end) {
+                while (this.evaluateRange(context, range)) {
                     return_value = this.get("sequence").evaluate(context);
                     if (return_value !== null) return return_value;
                     context.incrementVariable(range.var, range.step);
-                    context.stepState();
                 }
             } else if (this.get("test_after")) {
                 do {
                     return_value = this.get("sequence").evaluate(context);
                     if (return_value !== null) return return_value;
-                } while (context.evaluateCondition(this.get("condition")));
+                } while (this.evaluateCondition(context));
             } else {
-                while (context.evaluateCondition(this.get("condition"))) {
+                while (this.evaluateCondition(context)) {
                     return_value = this.get("sequence").evaluate(context);
                     if (return_value !== null) return return_value;
                 }

@@ -6,7 +6,9 @@ define([
 ], function($, _, Backbone, outputTemplate){
     var OutputView = Backbone.View.extend({
         id: "output",
-        events: {},
+        events: {
+            "click .control-reset": "clear"
+        },
         template: _.template(outputTemplate),
 
         initialize: function() {
@@ -15,7 +17,14 @@ define([
         onClose: function() {},
 
         error: function(err) {
-            this.$el.find(".panel-body").prepend($("<div class='text-danger'>" + err + "</div>"));
+            this.$el.find(".panel-body").append($("<div class='text-danger'>" + err + "</div>"));
+        },
+        log: function() {
+            var args = Array.prototype.slice.call(arguments);
+            this.$el.find(".panel-body").append($("<div>" + args.join(", ") + "</div>"));
+        },
+        clear: function() {
+            this.$el.find(".panel-body div").remove();
         },
 
         render: function() {

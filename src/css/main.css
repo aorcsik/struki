@@ -72,11 +72,6 @@ html, body {
     bottom: 0;
 }
 
-#watcher {
-    right: 0;
-    padding: 10px 10px 10px 7px;
-}
-
 #output {
     padding: 10px 7px 10px 15px;
 }
@@ -284,8 +279,14 @@ html, body {
     color: #fff;
     border: 0;
 }
+#browser .evaluating {
+    background: rgb(0, 150, 136);
+    color: #fff;
+    border: 0;
+}
 #browser .command-line:hover .syntactic-sugar,
-#browser .editing .syntactic-sugar {
+#browser .editing .syntactic-sugar,
+#browser .evaluating .syntactic-sugar {
     color: rgba(255,255,255,0.7);
 }
 #browser .editing .command-tools {
@@ -368,9 +369,19 @@ html, body {
     color: #fff;
 }
 
+
+
+#watcher {
+    right: 0;
+    padding: 10px 10px 10px 7px;
+}
+#watcher .panel-body {
+    overflow: auto;
+}
 #watcher .form-group {
     margin: 0;
     overflow: auto;
+    padding: 0;
 }
 #watcher .form-group > div,
 #watcher .form-group > label {
@@ -386,4 +397,34 @@ html, body {
 }
 #watcher .form-group label.control-label {
     margin-top: 6px;
+}
+
+#output .panel-heading,
+#watcher .panel-heading {
+    padding: 0;
+    height: 35px;
+}
+#output .panel-title,
+#watcher .debug-counter {
+    padding: 7px 10px;
+    color: #999;
+    height: 35px;
+}
+#watcher .debug-counter {
+    float: right;
+}
+#output .control-reset,
+#watcher .control-reset {
+    float: right;
+}
+#output .btn,
+#watcher .btn {
+    height: 35px;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+
+#output .panel-body {
+    overflow: auto;
 }

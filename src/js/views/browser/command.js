@@ -10,7 +10,11 @@ define([
         depth: 0,
 
         initialize: function() {
-
+            var self = this;
+            this.listenTo(this.model, "evaluate", function() {
+                $(".evaluating").removeClass("evaluating");
+                self.$el.children(".command-line").addClass("evaluating");
+            });
         },
         onClose: function() {
 

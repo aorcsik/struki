@@ -15,7 +15,13 @@ define([
             };
         },
         evaluate: function(context) {
-            return context.evaluateCode(this.get("code"));
+            try {
+                this.trigger("evaluate", this);
+                return context.evaluateCode(this.get("code"));
+            } catch (e) {
+                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                throw e;
+            }
         }
     });
     return Command;

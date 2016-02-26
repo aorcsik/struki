@@ -20,7 +20,7 @@ define([
                 this.stuktogram = new StruktogramBrowserView({'model': this.model.get("active_document").get("struktogram")});
             }
             this.listenTo(this.model, "change", function(e) {
-                if (e.changed.active_document === undefined) return;
+                if (e.changed.active_document === undefined && e.changed.context === undefined) return;
                 if (self.struktogram) {
                     self.struktogram.close();
                 }

@@ -11,7 +11,7 @@ define([
         events: {
             "click #new_document": "newDocument",
             "click #save_dropdown": "updateSaveLinks",
-            "click #run_struktogram": "runStruktogram"
+            "click #run_struktogram": "run"
         },
         template: _.template(toolbarTemplate),
 
@@ -81,8 +81,8 @@ define([
             }
         },
 
-        runStruktogram: function() {
-            $("#watcher").data("view").runStruktogram();
+        run: function() {
+            $("#watcher").data("view").run();
         },
 
         render: function() {

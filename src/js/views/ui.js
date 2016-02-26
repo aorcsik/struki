@@ -106,10 +106,16 @@ define([
                 'bottom': output_height
             });
             this.editor.$el.find(".canvas-container").css({
-                'height': this.editor.$el.height() - this.editor.$el.find(".panel-header").outerHeight() - 40
+                'height': this.editor.$el.height() - this.editor.$el.find(".panel-heading").outerHeight()
             });
             this.browser.$el.find(".struktogram-container").css({
                 'height': this.browser.$el.height()
+            });
+            this.output.$el.find(".panel-body").css({
+                'height': this.output.$el.height() - this.output.$el.find(".panel-heading").outerHeight()
+            });
+            this.watcher.$el.find(".panel-body").css({
+                'height': this.watcher.$el.height() - this.watcher.$el.find(".panel-heading").outerHeight()
             });
         },
 

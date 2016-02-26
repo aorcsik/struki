@@ -90,10 +90,11 @@ define([
                 return this.get(object_size)[0] / 100 * max_size;
         },
 
-        runStruktogram: function(debug_step) {
+        run: function(debug_step) {
             var context = this.get("context"),
                 struktogram = this.get("active_document").get("struktogram"),
                 parameters = [];
+            this.saved_variables = $.extend({}, context.get("variables"));
             struktogram.get("parameters").forEach(function(parameter) {
                 var value = context.get("variables")[parameter.get("name")];
                 if (value === "") {
@@ -114,6 +115,7 @@ define([
                 this.get("active_document").get("struktogram").evaluate(parameters, context);
             } catch(e) {
                 if (e.match(/^Compile/)) $("#output").data("view").error(e);
+                throw e;
             }
         }
 

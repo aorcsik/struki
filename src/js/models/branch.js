@@ -23,6 +23,15 @@ define([
                 "sequence": this.get("sequence").toJSON()
             };
         },
+        evaluateCondition: function(context) {
+            try {
+                this.trigger("evaluate", this);
+                return context.evaluateCondition(this.get("condition") || "I");
+            } catch (e) {
+                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                throw e;
+            }
+        },
         evaluate: function(context) {
             return this.get("sequence").evaluate(context);
         }

@@ -49,10 +49,11 @@ define([
         },
         evaluate: function(context) {
             for (var i = 0; i < this.get("branches").length; i++) {
-                if (context.evaluateCondition(this.get("branches")[i].get("condition"))) {
+                if (this.get("branches")[i].evaluateCondition(context)) {
                     return this.get("branches")[i].evaluate(context);
                 }
             }
+            this.get("else_branch").evaluateCondition(context);
             return this.get("else_branch").evaluate(context);
         }
 

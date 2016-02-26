@@ -10,13 +10,19 @@ define([
             "_state": 0
         },
         initialize: function() {
+            var self = this;
             this.set("variables", $.extend({}, this.get("variables")));
             this.set("functions", $.extend({
-                "print": new FunctionWrapper({'function': function() { console.log.apply(this, arguments); }})
+                "print": new FunctionWrapper({
+                    'func': function() {
+                        $("#output").data('view').log.apply($("#output").data('view'), arguments);
+                    }
+                })
             }, this.get("functions")));
         },
         stepState: function() {
             this.set({"_state": this.get("_state") ? this.get("_state") + 1 : 1});
+            // console.log(this.get('_debug'), this.get('_state'));
             if (this.get('_debug') && this.get('_state') === this.get('_debug')) {
                 throw "DEBUG STOP";
             }
