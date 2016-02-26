@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/document',
     'text!../../templates/toolbar.html'
-], function($, _, Backbone, Document, toolbarTemplate){
+], function($, _, Backbone, toolbarTemplate){
     var ToolbarView = Backbone.View.extend({
         id: "toolbar",
         className: "navbar navbar-inverse",
@@ -26,9 +25,7 @@ define([
         },
 
         newDocument: function() {
-            var doc = new Document();
-            doc.newStruktogram("new");
-            this.model.openDocument(doc);
+            this.model.newDocument("new");
         },
 
         openDocumentDialog: function(e) {
@@ -40,9 +37,7 @@ define([
             var files = e.target.files;
             var reader = new FileReader();
             reader.onload = function(read_event) {
-                var doc = new Document();
-                    doc.fromJSON(JSON.parse(read_event.target.result));
-                self.model.openDocument(doc);
+                self.model.openDocumentFromJSON(JSON.parse(read_event.target.result));
             };
             reader.readAsText(files[0]);
         },
@@ -93,7 +88,6 @@ define([
 
         updateSaveLinks: function() {
             if (this.model.get("active_document")) {
-                console.log("xx");
                 $("#json_download").replaceWith(this.getJSONDownalodLink());
                 $("#png_download").replaceWith(this.getPNGDownloadLink());
             }

@@ -6,35 +6,38 @@ define([
     'models/sequence'
 ], function(require, $, _, Backbone) {
     var Branch = Backbone.Model.extend({
-        type: "branch",
+        _type: "branch",
         defaults: {
             "condition": "I"
         },
         initialize: function() {
             var self = this;
             var Sequence = require('models/sequence');
-            this.set("sequence", new Sequence());
+            this.set("sequence", new Sequence({'parent': this}));
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
             });
         },
         toJSON: function() {
             return {
-                "type": this.type,
+                "type": this._type,
                 "condition": this.get("condition"),
                 "sequence": this.get("sequence").toJSON()
             };
         },
         fromJSON: function(json) {
-            if (json.type && json.type === this.type) {
+            if (json.type && json.type === this._type) {
                 var Sequence = require('models/sequence');
-                var sequence = new Sequence();
+                var sequence = new Sequence({'parent': this});
                 sequence.fromJSON(json.sequence);
                 this.set({
                     "condition": json.condition,
                     "sequence": sequence
                 });
             }
+        },
+        getStruktogram: function() {
+            return this.get("parent").getStruktogram();
         },
         evaluateCondition: function(context) {
             try {

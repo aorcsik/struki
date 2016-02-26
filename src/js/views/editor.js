@@ -2,15 +2,10 @@
     'jquery',
     'underscore',
     'backbone',
-    'models/loop',
-    'models/command',
-    'models/branch',
-    'models/conditional',
     'models/variable',
-    'models/document',
     'views/canvas/canvas',
     'text!../../templates/editor.html'
-], function($, _, Backbone, Loop, Command, Branch, Conditional, Variable, Document, CanvasView, editorTemplate){
+], function($, _, Backbone, Variable, CanvasView, editorTemplate){
     var EditorView = Backbone.View.extend({
         id: "editor",
         events: {
@@ -22,30 +17,30 @@
 
         initialize: function() {
             var self = this;
-            var doc = new Document();
+
+            /* var doc = this.model.newDocument();
             doc.newStruktogram("struki");
             doc.get("struktogram").set("parameters", [new Variable({'name': "a", 'type': "Int"})]);
             doc.get("struktogram").set("variables", [new Variable({'name': "x", 'type': "Int"})]);
             doc.get("struktogram").get("sequence").removeCommandByIndex(0);
-            doc.get("struktogram").get("sequence").addCommand(new Command({'code': "x:=3"}));
-            // doc.get("struktogram").get("sequence").addCommand(new Command({'code': "y:=4+5-6"}));
-            var loop = new Loop({'condition': "a < 2"});
-            loop.get("sequence").addCommand(new Command({'code': "a:=a+1"}));
-            loop.get("sequence").addCommand(new Command({'code': "print(a)"}));
-            var conditional = new Conditional();
+            doc.get("struktogram").get("sequence").newCommand({'code': "x:=3"});
+            // doc.get("struktogram").get("sequence").newCommand({'code': "y:=4+5-6"});
+
+            var conditional = doc.get("struktogram").get("sequence").newConditional();
+            conditional.get("else_branch").get("sequence").newCommand({'code': "x:=x-1"});
             conditional.get("branches")[0].set("condition", "x = 1");
-            conditional.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
-            conditional.get("branches")[0].get("sequence").addCommand(new Command({'code': "x:=x+1"}));
-            var branch = new Branch();
+            conditional.get("branches")[0].get("sequence").newCommand({'code': "x:=x+1"});
+            conditional.get("branches")[0].get("sequence").newCommand({'code': "x:=x+1"});
+            var branch = conditional.newBranch({'condition': "x = 1"});
             branch.set("condition", "x = 1");
-            branch.get("sequence").addCommand(new Command({'code': "x:=x+1+2"}));
-            conditional.addBranch(branch);
-            conditional.get("else_branch").get("sequence").addCommand(new Command({'code': "x:=x-1"}));
-            doc.get("struktogram").get("sequence").addCommand(conditional);
-            doc.get("struktogram").get("sequence").addCommand(loop);
+            branch.get("sequence").newCommand({'code': "x:=x+1+2"});
+
+            var loop = doc.get("struktogram").get("sequence").newLoop({'condition': "a < 2"});
+            loop.get("sequence").newCommand({'code': "a:=a+1"});
+            loop.get("sequence").newCommand({'code': "print(a)"});
 
 
-            var doc2 = new Document();
+            var doc2 = this.model.newDocument();
             doc2.newStruktogram("struki2");
 
             window.setTimeout(function() {
@@ -53,7 +48,7 @@
             }, 250);
             window.setTimeout(function() {
                 self.model.openDocument(doc);
-            }, 500);
+            }, 500); */
 
             this.canvas = null;
             if (self.model.get("active_document")) {

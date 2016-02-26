@@ -4,22 +4,25 @@ define([
     'backbone'
 ], function($, _, Backbone) {
     var Command = Backbone.Model.extend({
-        type: "command",
+        _type: "command",
         defaults: {
             "code": "–––"
         },
         toJSON: function() {
             return {
-                'type': this.type,
+                'type': this._type,
                 'code': this.get("code")
             };
         },
         fromJSON: function(json) {
-            if (json.type && json.type === this.type) {
+            if (json.type && json.type === this._type) {
                 this.set({
                     "code": json.code
                 });
             }
+        },
+        getStruktogram: function() {
+            return this.get("parent").getStruktogram();
         },
         evaluate: function(context) {
             try {

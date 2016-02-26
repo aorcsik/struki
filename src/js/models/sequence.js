@@ -7,10 +7,25 @@ define([
     'models/loop'
 ], function($, _, Backbone, Command, Conditional, Loop) {
     var Sequence = Backbone.Model.extend({
-        type: "sequence",
+        _type: "sequence",
         defaults: {},
         initialize: function() {
             this.set("commands", []);
+        },
+        newCommand: function(data) {
+            var command = new Command($.extend({'parent': this}, data));
+            this.addCommand(command);
+            return command;
+        },
+        newLoop: function(data) {
+            var loop = new Loop($.extend({'parent': this}, data));
+            this.addCommand(loop);
+            return loop;
+        },
+        newConditional: function(data) {
+            var conditional = new Conditional($.extend({'parent': this}, data));
+            this.addCommand(conditional);
+            return conditional;
         },
         addCommand: function(command, idx) {
             var self = this;
@@ -39,31 +54,34 @@ define([
         },
         toJSON: function() {
             return {
-                'type': this.type,
+                'type': this._type,
                 'commands': this.get("commands").map(function(command) {
                     return command.toJSON();
                 })
             };
         },
         fromJSON: function(json) {
-            if (json.type && json.type === this.type) {
+            if (json.type && json.type === this._type) {
                 this.set({
                     "commands": json.commands.map(function(command_json) {
                         var command;
                         if (command_json.type && command_json.type === "command") {
-                            command = new Command();
+                            command = new Command({'parent': this});
                         }
                         if (command_json.type && command_json.type === "conditional") {
-                            command = new Conditional();
+                            command = new Conditional({'parent': this});
                         }
                         if (command_json.type && command_json.type === "loop") {
-                            command = new Loop();
+                            command = new Loop({'parent': this});
                         }
                         command.fromJSON(command_json);
                         return command;
                     })
                 });
             }
+        },
+        getStruktogram: function() {
+            return this.get("parent").getStruktogram();
         },
         evaluate: function(context) {
             var return_value = null;

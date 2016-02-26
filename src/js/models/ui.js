@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/context'
-], function($, _, Backbone, Context) {
+    'models/context',
+    'models/document'
+], function($, _, Backbone, Context, Document) {
     var UI = Backbone.Model.extend({
         defaults: {
             'browser_width':  [300, "px"],
@@ -13,6 +14,18 @@ define([
         initialize: function() {
             var self = this;
             this.set("open_documents", []);
+        },
+        newDocument: function(name) {
+            var doc = new Document({"ui": this});
+            doc.newStruktogram(name || "new");
+            this.openDocument(doc);
+            return doc;
+        },
+        openDocumentFromJSON: function(json) {
+            var doc = new Document({"ui": this});
+            doc.fromJSON(json);
+            this.openDocument(doc);
+            return doc;
         },
         openDocument: function(doc) {
             var self = this;
@@ -27,6 +40,7 @@ define([
             }
             this.set("active_document", doc);
             this.resetContext();
+            return doc;
         },
         resetContext: function() {
             var functions = {}, variables = {};
@@ -38,6 +52,7 @@ define([
                 });
             }
             this.set("context", new Context({
+                'ui': this,
                 'functions': functions,
                 'variables': variables
             }));

@@ -2,9 +2,8 @@ define([
     'require',
     'jquery',
     'underscore',
-    'backbone',
-    'views/canvas/sequence'
-], function(require, $, _, Backbone, SequenceCanvasView){
+    'backbone'
+], function(require, $, _, Backbone){
     var LoopCanvasView = Backbone.View.extend({
         lines: null,
         size: null,

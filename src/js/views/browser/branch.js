@@ -10,7 +10,7 @@ define([
         className: "branch",
         branch_sequence: null,
         template: _.template(branchTemplate),
-        type: 0,
+        branch_type: 0,
 
         initialize: function() {
             var self = this;
@@ -24,8 +24,8 @@ define([
         onClose: function() {
             this.branch_sequence.close();
         },
-        setBranchType: function(type) {
-            this.type = type;
+        setBranchType: function(branch_type) {
+            this.branch_type = branch_type;
             return this;
         },
         setDepth: function(depth) {
@@ -38,14 +38,14 @@ define([
                 this.$el.children(".command-line").replaceWith(this.template({
                     "edit": edit,
                     "depth": this.depth,
-                    "branch": this.type,
+                    "branch": this.branch_type,
                     "model": this.model
                 }));
             } else {
                 this.$el.html(this.template({
                     "edit": edit,
                     "depth": this.depth,
-                    "branch": this.type,
+                    "branch": this.branch_type,
                     "model": this.model
                 }));
                 this.$el.append(this.branch_sequence.$el);

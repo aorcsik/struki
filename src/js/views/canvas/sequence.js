@@ -58,9 +58,9 @@ define([
         },
 
         createCommandCanvasView: function(command) {
-            if (command.type == "loop") return new LoopCanvasView({'model': command});
-            if (command.type == "command") return new CommandCanvasView({'model': command});
-            if (command.type == "conditional") return new ConditionalCanvasView({'model': command});
+            if (command._type == "loop") return new LoopCanvasView({'model': command});
+            if (command._type == "command") return new CommandCanvasView({'model': command});
+            if (command._type == "conditional") return new ConditionalCanvasView({'model': command});
         },
 
         getSize: function() {

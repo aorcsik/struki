@@ -38,9 +38,9 @@ define([
             });
         },
         createCommandBrowserView: function(command) {
-            if (command.type == "loop") return new LoopBrowserView({'model': command});
-            if (command.type == "command") return new CommandBrowserView({'model': command});
-            if (command.type == "conditional") return new ConditionalBrowserView({'model': command});
+            if (command._type == "loop") return new LoopBrowserView({'model': command});
+            if (command._type == "command") return new CommandBrowserView({'model': command});
+            if (command._type == "conditional") return new ConditionalBrowserView({'model': command});
         },
         setDepth: function(depth) {
             this.depth = depth;

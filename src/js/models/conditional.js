@@ -5,16 +5,21 @@ define([
     'models/branch'
 ], function($, _, Backbone, Branch) {
     var Conditional = Backbone.Model.extend({
-        type: "conditional",
+        _type: "conditional",
         defaults: {},
         initialize: function() {
             var self = this;
             this.set("branches", []);
-            this.addBranch(new Branch());
-            this.set("else_branch", new Branch({'condition': ""}));
+            this.newBranch();
+            this.set("else_branch", new Branch({'parent': this, 'condition': ""}));
             this.listenTo(this.get("else_branch"), 'change', function(e) {
                 self.trigger('change', e);
             });
+        },
+        newBranch: function(data) {
+            var branch = new Branch($.extend({'parent': this}, data));
+            this.addBranch(branch);
+            return branch;
         },
         addBranch: function(branch, idx) {
             var self = this;
@@ -41,7 +46,7 @@ define([
         },
         toJSON: function() {
             return {
-                'type': this.type,
+                'type': this._type,
                 'branches': this.get("branches").map(function(branch) {
                     return branch.toJSON();
                 }),
@@ -49,18 +54,21 @@ define([
             };
         },
         fromJSON: function(json) {
-            if (json.type && json.type === this.type) {
-                var else_branch = new Branch();
+            if (json.type && json.type === this._type) {
+                var else_branch = new Branch({'parent': this});
                 else_branch.fromJSON(json.else_branch);
                 this.set({
                     'branches': json.branches.map(function(branch_json) {
-                        var branch = new Branch();
+                        var branch = new Branch({'parent': this});
                         branch.fromJSON(branch_json);
                         return branch;
                     }),
                     'else_branch': else_branch
                 });
             }
+        },
+        getStruktogram: function() {
+            return this.get("parent").getStruktogram();
         },
         evaluate: function(context) {
             for (var i = 0; i < this.get("branches").length; i++) {

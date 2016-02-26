@@ -7,8 +7,9 @@ define([
     'views/output',
     'views/watcher',
     'views/properties',
-    'views/editor'
-], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, EditorView){
+    'views/editor',
+    'text!../../examples/struki.json'
+], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, EditorView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
@@ -140,6 +141,8 @@ define([
             $(window).resize(function() {
                 self.model.updateWindowSize($(window).width(), $(window).height());
             });
+
+            this.model.openDocumentFromJSON(JSON.parse(exampleJSON));
 
             return this;
         }

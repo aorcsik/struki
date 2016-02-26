@@ -260,23 +260,5 @@ Expression.prototype.evaluateArrayIndex = function(expression, context, expressi
     return keys;
 };
 
-
-/*
-Context.prototype.evaluate = function(code) {
-    var pc = new StructogramCellParser(code);
-    pc.evaluate(this);
-};
-
-var ct = new Context();
-ct.defineVariable("x", 1);
-ct.defineVariable("a", [[],[]]);
-
-ct.evaluate("a[1][] := (1 + x) * sqrt(16)");
-ct.evaluate("a[0][] := (1 + a[1][0]) * 6");
-ct.evaluate("print(a)");
-ct.evaluate("print(!(2 = 2))");
-ct.evaluate("x := [1, 2, 3] + [4]");
-ct.evaluate("print(x)"); */
-
     return Parser;
 });
