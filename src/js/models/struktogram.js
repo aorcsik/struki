@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'models/variable',
     'models/sequence'
-], function($, _, Backbone, Sequence) {
+], function($, _, Backbone, Variable, Sequence) {
     var Struktogram = Backbone.Model.extend({
         type: "struktogram",
         defaults: {},
@@ -18,7 +19,7 @@ define([
         },
         toJSON: function() {
             return {
-                'type': "struktogram",
+                'type': this.type,
                 'name': this.get("name"),
                 'parameters': this.get("parameters").map(function(parameter) {
                     return parameter.toJSON();
@@ -28,6 +29,26 @@ define([
                 }),
                 'sequence': this.get("sequence").toJSON()
             };
+        },
+        fromJSON: function(json) {
+            if (json.type && json.type === this.type) {
+                var sequence = new Sequence();
+                sequence.fromJSON(json.sequence);
+                this.set({
+                    "name": json.name,
+                    "variables": json.variables.map(function(variable_json) {
+                        var variable = new Variable();
+                        variable.fromJSON(variable_json);
+                        return variable;
+                    }),
+                    "parameters": json.parameters.map(function(variable_json) {
+                        var variable = new Variable();
+                        variable.fromJSON(variable_json);
+                        return variable;
+                    }),
+                    "sequence": sequence
+                });
+            }
         },
         evaluate: function(parameters, context) {
             var variables = context.get("variables");

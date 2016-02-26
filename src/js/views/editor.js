@@ -60,7 +60,7 @@
                 this.canvas = new CanvasView({'model': self.model.get("active_document")});
             }
             this.listenTo(this.model, "change", function(e) {
-                if (e.changed.active_document === undefined) return;
+                // if (e.changed.active_document === undefined) return;
                 if (self.canvas) {
                     this.canvas.close();
                 }

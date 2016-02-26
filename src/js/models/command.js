@@ -10,9 +10,16 @@ define([
         },
         toJSON: function() {
             return {
-                'type': "command",
+                'type': this.type,
                 'code': this.get("code")
             };
+        },
+        fromJSON: function(json) {
+            if (json.type && json.type === this.type) {
+                this.set({
+                    "code": json.code
+                });
+            }
         },
         evaluate: function(context) {
             try {

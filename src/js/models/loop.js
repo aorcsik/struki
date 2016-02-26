@@ -1,9 +1,9 @@
 define([
+    'require',
     'jquery',
     'underscore',
-    'backbone',
-    'models/sequence'
-], function($, _, Backbone, Sequence) {
+    'backbone'
+], function(require, $, _, Backbone) {
     var Loop = Backbone.Model.extend({
         type: "loop",
         defaults: {
@@ -13,6 +13,7 @@ define([
         },
         initialize: function() {
             var self = this;
+            var Sequence = require('models/sequence');
             this.set("sequence", new Sequence());
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
@@ -20,12 +21,25 @@ define([
         },
         toJSON: function() {
             return {
-                'type': "loop",
+                'type': this.type,
                 'condition': this.get("condition"),
                 'test_after': this.get("test_after"),
                 'range': this.get("range"),
                 'sequence': this.get("sequence").toJSON()
             };
+        },
+        fromJSON: function(json) {
+            if (json.type && json.type === this.type) {
+                var Sequence = require('models/sequence');
+                var sequence = new Sequence();
+                sequence.fromJSON(json.sequence);
+                this.set({
+                    "sequence": sequence,
+                    "condition": json.condition,
+                    "test_after": json.test_after,
+                    "range": json.range
+                });
+            }
         },
 
         evaluateCondition: function(context) {

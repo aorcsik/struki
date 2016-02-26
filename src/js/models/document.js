@@ -20,6 +20,14 @@ define([
         },
         toJSON: function() {
             return this.get("struktogram").toJSON();
+        },
+        fromJSON: function(json) {
+            var struktogram = new Struktogram();
+            struktogram.fromJSON(json);
+            this.set("struktogram", struktogram);
+            this.listenTo(this.get("struktogram"), 'change', function(e) {
+                self.trigger('change', e);
+            });
         }
     });
     return Document;

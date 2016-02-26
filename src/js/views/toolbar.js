@@ -10,8 +10,10 @@ define([
         className: "navbar navbar-inverse",
         events: {
             "click #new_document": "newDocument",
+            "click #open_document": "openDocumentDialog",
             "click #save_dropdown": "updateSaveLinks",
-            "click #run_struktogram": "run"
+            "click #run_struktogram": "run",
+            "change #open_docuemnt_input": "openDocument"
         },
         template: _.template(toolbarTemplate),
 
@@ -27,6 +29,22 @@ define([
             var doc = new Document();
             doc.newStruktogram("new");
             this.model.openDocument(doc);
+        },
+
+        openDocumentDialog: function(e) {
+            $(e.target).closest("li").find("input").click();
+        },
+
+        openDocument: function(e) {
+            var self = this;
+            var files = e.target.files;
+            var reader = new FileReader();
+            reader.onload = function(read_event) {
+                var doc = new Document();
+                    doc.fromJSON(JSON.parse(read_event.target.result));
+                self.model.openDocument(doc);
+            };
+            reader.readAsText(files[0]);
         },
 
         onClose: function() {},

@@ -29,12 +29,14 @@ define([
             this.resetContext();
         },
         resetContext: function() {
-            var functions = {}, variables = {},
-                struktogram = this.get("active_document").get("struktogram");
-            functions[struktogram.get("name")] = struktogram;
-            struktogram.get("parameters").forEach(function(parameter) {
-                variables[parameter.get("name")] = null;
-            });
+            var functions = {}, variables = {};
+            if (this.get("active_document")) {
+                var struktogram = this.get("active_document").get("struktogram");
+                functions[struktogram.get("name")] = struktogram;
+                struktogram.get("parameters").forEach(function(parameter) {
+                    variables[parameter.get("name")] = null;
+                });
+            }
             this.set("context", new Context({
                 'functions': functions,
                 'variables': variables
@@ -56,7 +58,6 @@ define([
                     this.trigger("change", this);
                 }
             }
-
         },
         updateWindowSize: function(window_width, window_height) {
             this.set({

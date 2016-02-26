@@ -11,6 +11,9 @@ define([
                 'name': this.get("name"),
                 'type': this.get("type")
             };
+        },
+        fromJSON: function(json) {
+            this.set(json);
         }
     });
     return Variable;

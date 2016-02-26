@@ -41,11 +41,26 @@ define([
         },
         toJSON: function() {
             return {
-                'type': "conditional",
+                'type': this.type,
                 'branches': this.get("branches").map(function(branch) {
                     return branch.toJSON();
-                })
+                }),
+                'else_branch': this.get("else_branch").toJSON()
             };
+        },
+        fromJSON: function(json) {
+            if (json.type && json.type === this.type) {
+                var else_branch = new Branch();
+                else_branch.fromJSON(json.else_branch);
+                this.set({
+                    'branches': json.branches.map(function(branch_json) {
+                        var branch = new Branch();
+                        branch.fromJSON(branch_json);
+                        return branch;
+                    }),
+                    'else_branch': else_branch
+                });
+            }
         },
         evaluate: function(context) {
             for (var i = 0; i < this.get("branches").length; i++) {

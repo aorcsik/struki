@@ -1,8 +1,11 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone) {
+    'backbone',
+    'models/command',
+    'models/conditional',
+    'models/loop'
+], function($, _, Backbone, Command, Conditional, Loop) {
     var Sequence = Backbone.Model.extend({
         type: "sequence",
         defaults: {},
@@ -36,11 +39,31 @@ define([
         },
         toJSON: function() {
             return {
-                'type': "sequence",
+                'type': this.type,
                 'commands': this.get("commands").map(function(command) {
                     return command.toJSON();
                 })
             };
+        },
+        fromJSON: function(json) {
+            if (json.type && json.type === this.type) {
+                this.set({
+                    "commands": json.commands.map(function(command_json) {
+                        var command;
+                        if (command_json.type && command_json.type === "command") {
+                            command = new Command();
+                        }
+                        if (command_json.type && command_json.type === "conditional") {
+                            command = new Conditional();
+                        }
+                        if (command_json.type && command_json.type === "loop") {
+                            command = new Loop();
+                        }
+                        command.fromJSON(command_json);
+                        return command;
+                    })
+                });
+            }
         },
         evaluate: function(context) {
             var return_value = null;
