@@ -142,7 +142,9 @@ define([
                 self.model.updateWindowSize($(window).width(), $(window).height());
             });
 
-            this.model.openDocumentFromJSON(JSON.parse(exampleJSON));
+            window.setTimeout(function() {
+                self.model.openDocumentFromJSON(JSON.parse(exampleJSON));
+            }, 500);
 
             return this;
         }
