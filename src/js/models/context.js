@@ -6,9 +6,7 @@ define([
     'models/function_wrapper'
 ], function($, _, Backbone, Parser, FunctionWrapper) {
     var Context = Backbone.Model.extend({
-        defaults: {
-            "_state": 0
-        },
+        defaults: {},
         initialize: function() {
             var self = this;
             this.set("variables", $.extend({}, this.get("variables")));
@@ -21,9 +19,10 @@ define([
             }, this.get("functions")));
         },
         stepState: function() {
-            this.set({"_state": this.get("_state") ? this.get("_state") + 1 : 1});
+            var global_context = this.getGlobalContext();
+            global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
             // console.log(this.get('_debug'), this.get('_state'));
-            if (this.get('_debug') && this.get('_state') === this.get('_debug')) {
+            if (global_context.get('_debug') && global_context.get('_state') === global_context.get('_debug')) {
                 throw "DEBUG STOP";
             }
         },
@@ -92,12 +91,10 @@ define([
                 'step': start > end ? -1 : 1
             };
         },
-
         applyFunction: function(name, params) {
             if (this.get("functions")[name] !== undefined) return this.get("functions")[name].evaluate(params, this);
             else throw "Compile Error: undefined function '" + name + "'";
         },
-
         getArrayValue: function(keys) {
             var array = this.getVariable(keys[0]);
             var name = keys[0];
@@ -109,7 +106,6 @@ define([
             if (array.constructor === Array) return array[keys[i]];
             else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
         },
-
         setArrayValue: function(keys, value) {
             var array = this.getVariable(keys[0]);
             var name = keys[0];
@@ -120,8 +116,27 @@ define([
             }
             if (array.constructor === Array) array[keys[i]] = value;
             else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+        },
+        getGlobalContext: function() {
+            if (this.get("name") === "global") {
+                return this;
+            } else {
+                return this.get("parent").getGlobalContext();
+            }
+        },
+        newContext: function(name) {
+            var self = this;
+            this.set("context", new Context({
+                "parent": this,
+                "name": this.get("name") + ":" + name,
+                "variables": $.extend({}, this.get("variables")),
+                "functions": $.extend({}, this.get("functions"))
+            }));
+            this.listenTo(this.get("context"), "change", function(e) {
+                self.trigger("change", e);
+            });
+            return this.get("context");
         }
-
     });
     return Context;
 });

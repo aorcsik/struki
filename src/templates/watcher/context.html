@@ -1,0 +1,19 @@
+<% if (context) { %>
+    <div class="context-deader"><%= context.get("name") %></div>
+    <% for (var name in context.get("variables")) { %>
+        <% if (global) { %>
+        <div class="form-group">
+            <label for="variable_<%= name %>" class="col-md-2 control-label"><%= name %></label>
+            <div class="col-md-10">
+                <input id="variable_<%= name %>" name="<%= name %>" type="text" class="form-control" value="<%= context.get('variables')[name] %>">
+            </div>
+        </div>
+        <% } else { %>
+        <div class="form-group">
+            <label class="col-md-2 control-label"><%= name %></label>
+            <div class="col-md-10"><%= context.get('variables')[name] %></div>
+        </div>
+        <% } %>
+    <% } %>
+    <%= contexttemp({'context': context.get("context"), 'contexttemp': contexttemp, 'global': false}) %>
+<% } %>

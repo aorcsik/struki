@@ -28,15 +28,20 @@ define([
             return conditional;
         },
         addCommand: function(command, idx) {
-            var self = this;
-            if (idx === undefined || idx > this.get("commands").length) {
-                this.get("commands").push(command);
-                this.trigger('change:add', command, this.get("commands").length - 1);
+            var self = this,
+                commands = this.get("commands");
+            if (idx === undefined || idx > commands.length) {
+                commands.push(command);
+                idx = this.get("commands").length - 1;
             } else {
-                this.get("commands").splice(idx, 0, command);
-                this.trigger('change:add', command, idx);
+                commands.splice(idx, 0, command);
             }
-            this.trigger('change', this);
+            this.trigger('change:add', command, idx);
+            this.set({
+                'commands': commands,
+                '_updated_at': (new Date()).getTime()
+            });
+            // this.trigger('change', this);
             this.listenTo(command, 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -45,11 +50,16 @@ define([
             this.removeCommandByIndex(this.get("commands").indexOf(command));
         },
         removeCommandByIndex: function(idx) {
-            if (idx > -1 && idx < this.get("commands").length) {
-                var removed = this.get("commands").splice(idx, 1);
+            var commands = this.get("commands");
+            if (idx > -1 && idx < commands.length) {
+                var removed = commands.splice(idx, 1);
                 this.trigger('change:remove', removed[0], idx);
                 this.stopListening(removed[0]);
-                this.trigger('change', this);
+                this.set({
+                    'commands': commands,
+                    '_updated_at': (new Date()).getTime()
+                });
+                // this.trigger('change', this);
             }
         },
         toJSON: function() {

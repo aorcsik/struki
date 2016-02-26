@@ -52,7 +52,8 @@ define([
                 });
             }
             this.set("context", new Context({
-                'ui': this,
+                'parent': this,
+                'name': "global",
                 'functions': functions,
                 'variables': variables
             }));

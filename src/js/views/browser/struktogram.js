@@ -177,7 +177,7 @@ define([
                     cmd.get("sequence").newLoop();
                 }
                 else if (type === "conditional") {
-                    cmd.get("sequence").addConditional();
+                    cmd.get("sequence").newConditional();
                 }
                 else if (type === "branch") {
                     var $conditional = $cmd.closest(".conditional"),

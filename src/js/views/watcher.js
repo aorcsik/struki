@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!../../templates/watcher.html'
-], function($, _, Backbone, watcherTemplate){
+    'text!../../templates/watcher.html',
+    'text!../../templates/watcher/context.html'
+], function($, _, Backbone, watcherTemplate, contextTemplate){
     var WatcherView = Backbone.View.extend({
         id: "watcher",
         events: {
@@ -14,6 +15,7 @@ define([
             "click .control-reset": "reset"
         },
         template: _.template(watcherTemplate),
+        contexttemp: _.template(contextTemplate),
 
         initialize: function() {
             var self = this;
@@ -152,11 +154,13 @@ define([
             if (this.$el.find(".panel-body").size() > 0) {
                 this.$el.find(".panel-body").html(this.template({
                     'context_only': true,
+                    'contexttemp': this.contexttemp,
                     'context': this.model.get("context")
                 }));
             } else {
                 this.$el.html(this.template({
                     'context_only': false,
+                    'contexttemp': this.contexttemp,
                     'context': this.model.get("context"),
                     'button_states': this.button_states
                 }));

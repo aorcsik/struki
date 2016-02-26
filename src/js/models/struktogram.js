@@ -53,8 +53,9 @@ define([
         getStruktogram: function() {
             return this;
         },
-        evaluate: function(parameters, context) {
-            var variables = context.get("variables");
+        evaluate: function(parameters, parent_context) {
+            var context = parent_context.newContext(this.get("name")),
+                variables = context.get("variables");
             this.get("parameters").forEach(function(parameter, idx) {
                 variables[parameter.get("name")] = parameters[idx];
             });
