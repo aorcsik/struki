@@ -29,6 +29,7 @@ define([
             };
         },
         fromJSON: function(json) {
+            var self = this;
             if (json.type && json.type === this._type) {
                 var Sequence = require('models/sequence');
                 var sequence = new Sequence({'parent': this});
@@ -38,6 +39,9 @@ define([
                     "condition": json.condition,
                     "test_after": json.test_after,
                     "range": json.range
+                });
+                this.listenTo(this.get("sequence"), 'change', function(e) {
+                    self.trigger('change', e);
                 });
             }
         },

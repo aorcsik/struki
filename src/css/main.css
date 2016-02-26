@@ -397,6 +397,9 @@ html, body {
 #watcher .form-group > label {
     padding: 0;
 }
+#watcher .form-group label {
+    padding-left: 10px;
+}
 #watcher .form-group label,
 #watcher .form-group input {
     font-family: "Ubuntu Mono", "Courier New", monospace;
@@ -423,6 +426,11 @@ html, body {
 #watcher .debug-counter {
     float: right;
 }
+#watcher .context-header {
+    background: #ddd;
+    padding: 3px 5px;
+    margin: 0;
+}
 #output .control-reset,
 #watcher .control-reset {
     float: right;
@@ -433,8 +441,8 @@ html, body {
     padding: 5px 10px;
     margin: 0;
 }
-
-
-#output .panel-body {
+#output .panel-body,
+#watcher .panel-body {
     overflow: auto;
+    padding: 0;
 }

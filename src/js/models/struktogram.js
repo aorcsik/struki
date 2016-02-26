@@ -31,6 +31,7 @@ define([
             };
         },
         fromJSON: function(json) {
+            var self = this;
             if (json.type && json.type === this._type) {
                 var sequence = new Sequence({'parent': this});
                 sequence.fromJSON(json.sequence);
@@ -47,6 +48,9 @@ define([
                         return variable;
                     }),
                     "sequence": sequence
+                });
+                this.listenTo(this.get("sequence"), 'change', function(e) {
+                    self.trigger('change', e);
                 });
             }
         },

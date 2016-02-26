@@ -23,7 +23,8 @@ define([
             return this.get("struktogram").toJSON();
         },
         fromJSON: function(json) {
-            var struktogram = new Struktogram({'document': this});
+            var self = this,
+                struktogram = new Struktogram({'document': this});
             struktogram.fromJSON(json);
             this.set("struktogram", struktogram);
             this.listenTo(this.get("struktogram"), 'change', function(e) {

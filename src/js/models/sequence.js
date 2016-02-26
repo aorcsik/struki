@@ -31,8 +31,8 @@ define([
             var self = this,
                 commands = this.get("commands");
             if (idx === undefined || idx > commands.length) {
+                idx = commands.length;
                 commands.push(command);
-                idx = this.get("commands").length - 1;
             } else {
                 commands.splice(idx, 0, command);
             }
@@ -71,22 +71,21 @@ define([
             };
         },
         fromJSON: function(json) {
+            var self = this;
             if (json.type && json.type === this._type) {
-                this.set({
-                    "commands": json.commands.map(function(command_json) {
-                        var command;
-                        if (command_json.type && command_json.type === "command") {
-                            command = new Command({'parent': this});
-                        }
-                        if (command_json.type && command_json.type === "conditional") {
-                            command = new Conditional({'parent': this});
-                        }
-                        if (command_json.type && command_json.type === "loop") {
-                            command = new Loop({'parent': this});
-                        }
-                        command.fromJSON(command_json);
-                        return command;
-                    })
+                json.commands.forEach(function(command_json) {
+                    var command;
+                    if (command_json.type && command_json.type === "command") {
+                        command = new Command({'parent': this});
+                    }
+                    if (command_json.type && command_json.type === "conditional") {
+                        command = new Conditional({'parent': this});
+                    }
+                    if (command_json.type && command_json.type === "loop") {
+                        command = new Loop({'parent': this});
+                    }
+                    command.fromJSON(command_json);
+                    self.addCommand(command);
                 });
             }
         },
