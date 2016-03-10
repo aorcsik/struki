@@ -102,6 +102,15 @@ define([
                 'step': start > end ? -1 : 1
             };
         },
+        defineFunction: function(name, func) {
+            var functions = this.get("functions");
+            functions[name] = new FunctionWrapper({'func': func});
+            this.set({
+                "functions": functions,
+                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
+            });
+        },
         applyFunction: function(name, params) {
             if (this.get("functions")[name] !== undefined) return this.get("functions")[name].evaluate(params, this);
             else throw "Compile Error: undefined function '" + name + "'";

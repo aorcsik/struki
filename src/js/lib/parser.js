@@ -13,10 +13,11 @@ var token_patterns = [
     {type: "OPERATOR_PRC[%]", pattern: /\)/},
 
     {type: "OPERATOR_NEG", pattern: /-/,
-        after: ['OPERATOR_LST', 'OPERATOR_BRO[%]', 'OPERATOR_PRO[%]', // ,  (  [
+        after: ['START',        'OPERATOR_SUM', 'OPERATOR_DIV',       //    +  /
+                'OPERATOR_MUL', 'OPERATOR_MOD', 'OPERATOR_SET',       // *  %  :=
+                'OPERATOR_LST', 'OPERATOR_BRO[%]', 'OPERATOR_PRO[%]', // ,  (  [
                 'OPERATOR_LTE', 'OPERATOR_GTE',    'OPERATOR_NE',     // <= >= <>
-                'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ',     // <  >  =
-                'OPERATOR_SET', 'START']},                            // :=
+                'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ']},   // <  >  =
     {type: "OPERATOR_SUB", pattern: /-/},
     {type: "OPERATOR_SUM", pattern: /\+/},
     {type: "OPERATOR_DIV", pattern: /\//},
@@ -44,11 +45,14 @@ var expression_patterns = [
     {pattern: /INTEGER\[(.*?)\]/, operator: "int", parameters: [1]},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var", parameters: [1]},
 
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_PRC\[\1\]/, operator: "func", parameters: [1, 3]},
-    {pattern: /OPERATOR_PRO\[(\d+)\](.*?)OPERATOR_PRC\[\1\]/, operator: "parens", parameters: [2]},
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_BRC\[\1\]/, operator: "array_index", parameters: [1, 3]},
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]OPERATOR_BRC\[\1\]/, operator: "array_push", parameters: [1]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1, 3]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\]OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1]},
+    {pattern: /OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\1\]/, operator: "parens", parameters: [2]},
+
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_BRC\[\2\]/, operator: "array_index", parameters: [1, 3]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]OPERATOR_BRC\[\2\]/, operator: "array_push", parameters: [1]},
     {pattern: /OPERATOR_BRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_BRC\[\1\]/, operator: "array", parameters: [2]},
+    {pattern: /OPERATOR_BRO\[(\d+)\]OPERATOR_BRC\[\1\]/, operator: "empty_array", parameters: []},
 
     {pattern: /OPERATOR_NEGEXPRESSION\[(\d+)\]/,                    operator: "neg", parameters: [1]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MULEXPRESSION\[(\d+)\]/, operator: "mul", parameters: [1, 2]},
@@ -111,14 +115,21 @@ Parser.prototype.tokenize = function(code, last_token_type) {
 
 Parser.prototype.parse = function(code) {
     var expression, expression_num;
-    console.log(code);
     for (var i = 0; i < expression_patterns.length; i++) {
         var result = expression_patterns[i].pattern.exec(code);
         if (result) {
             var params = expression_patterns[i].parameters.map(function(param_key) {
                 return result[param_key];
             });
-            if (expression_patterns[i].operator == "parens") {
+            if (expression_patterns[i].operator == "func") {
+                if (params.length > 1) {
+                    expression = this.parse(params[1]);
+                    expression.id = this.expression_counter++;
+                    this.expressions[expression.id] = expression;
+                    params[1] = expression.id;
+                }
+                expression = new Expression(this.expression_counter++, expression_patterns[i].operator, params);
+            } else if (expression_patterns[i].operator == "parens") {
                 expression = this.parse(params[0]);
                 expression.id = this.expression_counter++;
             } else {
@@ -128,8 +139,11 @@ Parser.prototype.parse = function(code) {
             return this.parse(code.replace(result[0], "EXPRESSION[" + expression.id + "]"));
         }
     }
-    if (!code.match(/^EXPRESSION\[\d+\]$/)) {
+    var match = code.match(/^EXPRESSION\[(\d+)\]$/);
+    if (!match) {
         throw "Compile Error: unresolved tokens '" + code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";") + "'";
+    } else {
+        return this.expressions[match[1]];
     }
     return new Expression(null, "expression", [this.expression_counter - 1]);
 };
@@ -237,12 +251,18 @@ Expression.prototype.evaluate = function(context, expressions) {
         return context.getVariable(this.params[0]);
     } else if (this.operator == "func") {
         if (expressions[this.params[0]].operator == "var") {
-            value = this.evaluateList(expressions[this.params[1]], context, expressions);
-            return context.applyFunction(expressions[this.params[0]].params[0], value);
+            if (this.params.length == 1) {
+                return context.applyFunction(expressions[this.params[0]].params[0]);
+            } else {
+                value = this.evaluateList(expressions[this.params[1]], context, expressions);
+                return context.applyFunction(expressions[this.params[0]].params[0], value);
+            }
         }
         throw "Syntax Error: left operand is not a valid function name";
     } else if (this.operator == "array") {
         return this.evaluateList(expressions[this.params[0]], context, expressions);
+    } else if (this.operator == "empty_array") {
+        return [];
     } else if (this.operator == "list") {
         return this.evaluateList(this, context, expressions);
     } else if (this.operator == "array_index") {
