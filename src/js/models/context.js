@@ -6,7 +6,9 @@ define([
     'models/function_wrapper'
 ], function($, _, Backbone, Parser, FunctionWrapper) {
     var Context = Backbone.Model.extend({
-        defaults: {},
+        defaults: {
+            'name': "global"
+        },
         initialize: function() {
             var self = this;
             this.set("variables", $.extend({}, this.get("variables")));
@@ -29,6 +31,15 @@ define([
         getVariable: function(name) {
             if (this.get("variables")[name] !== undefined) return this.get("variables")[name];
             else throw "Compile Error: undefined variable '" + name + "'";
+        },
+        defineVariable: function(name, initial_value) {
+            var variables = this.get("variables");
+            variables[name] = initial_value;
+            this.set({
+                "variables": variables,
+                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
+            });
         },
         setVariable: function(name, value) {
             var variables = this.get("variables");

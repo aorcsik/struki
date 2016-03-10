@@ -53,7 +53,6 @@ define([
             }
             this.set("context", new Context({
                 'parent': this,
-                'name': "global",
                 'functions': functions,
                 'variables': variables
             }));
