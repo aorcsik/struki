@@ -26,6 +26,7 @@
     "roboto-and-material-icons-fonts": "latest",
     "dropzone": "latest",
     "fontawesome": "latest",
-    "jquery-ui": "latest"
+    "jquery-ui": "latest",
+    "qunit": "latest"
   }
 }

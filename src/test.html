@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TEST – STRUKI | Struktogram Szerkesztő és Futtató Környezet</title>
+        <link rel="stylesheet" href="components/qunit/qunit/qunit.css" type="text/css">
+        <link rel="stylesheet" href="css/test.css" type="text/css">
+        <script type="text/javascript">
+        var require = {
+            baseUrl: "js" + "/",
+            waitSeconds: 15,
+            urlArgs : "new" + (new Date()).getTime(),
+            deps : ['test']
+        };
+        </script>
+        <script src="components/requirejs/require.js" defer></script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+    </body>
+</html>
