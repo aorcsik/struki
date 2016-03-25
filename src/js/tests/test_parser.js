@@ -56,6 +56,11 @@ define([
             assert.deepEqual((new Parser("\"abcd\" + \"\"")).evaluate(context), "abcd", "\"abcd\" + \"\" = \"abcd\"");
         });
 
+        QUnit.test("String index", function(assert) {
+            context.defineVariable("a", "hello");
+            assert.deepEqual((new Parser("a[0]")).evaluate(context), "h", "a[0] = \"h\"");
+        });
+
         QUnit.test("Arrays", function(assert) {
             assert.deepEqual((new Parser("[]")).evaluate(context), [], "[ ]");
             assert.deepEqual((new Parser("[2]")).evaluate(context), [2], "[ 2 ]");

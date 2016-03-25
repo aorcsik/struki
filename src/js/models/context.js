@@ -120,11 +120,11 @@ define([
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
                 if (array.constructor === Array) array = array[keys[i]];
-                else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+                else throw "Compile Error: " + name + " is not Array, but " + array.constructor.name;
                 name += "[" + keys[i] + "]";
             }
-            if (array.constructor === Array) return array[keys[i]];
-            else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+            if (array.constructor === Array || array.constructor === String) return array[keys[i]];
+            else throw "Compile Error: " + name + " is not Array or String, but " + array.constructor.name;
         },
         setArrayValue: function(keys, value) {
             var array = this.getVariable(keys[0]);
