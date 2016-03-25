@@ -173,7 +173,11 @@ Parser.prototype.parse = function(code) {
     }
     var match = code.match(/^EXPRESSION\[(\d+)\]$/);
     if (!match) {
-        throw "Compile Error: unresolved tokens '" + code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";") + "'";
+        if (code === "") {
+            throw "Compile Error: no code to parse";
+        } else {
+            throw "Compile Error: unresolved tokens '" + code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";") + "'";
+        }
     } else {
         return this.expressions[match[1]];
     }

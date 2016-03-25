@@ -22,17 +22,17 @@ define([
             var self = this;
             this.listenTo(this.model, "change", function(e) {
                 if (e.changed.context === undefined) return;
-                self.listenTo(self.model.get("context"), "change", function() {
+                self.listenTo(self.model.get("context"), "change", function(e) {
                     self.render();
                 });
-                this.debug_step = 0;
-                this.saved_variables = null;
-                self.render();
+                self.softReset();
+                self.render(true);  // full render
             });
         },
 
         onClose: function() {},
 
+        unsafe: false, // TODO: set unsafe
         debug_step: 0,
         max_steps: null,
         saved_variables: null,
@@ -49,7 +49,12 @@ define([
                 variables = $.extend({}, this.saved_variables);
             }
             context.set("variables", variables);
-            this.model.run(this.debug_step);
+            // if unsafe, don't do a full run, just set the state to -1
+            if (this.unsafe && this.debug_step == 0) {
+                this.model.get("context").set({"_state": -1});
+            } else {
+                this.model.run(this.debug_step);
+            }
         },
 
         next: function() {
@@ -98,39 +103,71 @@ define([
             this.$el.find(".debug-counter").html(text);
         },
 
-        step: function(dir) {
-            if (this.max_steps === null) {
-                this.run();
-                this.updateMaxSteps(this.model.get("context").get("_state"));
-            }
-            if ((dir == 1 && this.debug_step < this.max_steps) || (dir == -1 && this.debug_step > 1)) {
-                $("#output").data('view').clear();
-                $("#output").data('view').log("Started...");
-                this.updateDebugStep(this.debug_step + dir);
-                try {
-                    this.run();
-                } catch (e) {
-                    if (e !== "DEBUG STOP") throw e;
-                }
+        prerun: function(cb) {
+            var self = this;
+            $("#the_modal .modal-footer").hide();
+            $("#the_modal .modal-body").html("<p>Compiling and prerunning struktogram, please wait...</p>")
+            $("#the_modal").on("shown.bs.modal", function() {
+                window.setTimeout(function() {
+                    try {
+                        self.run();
+                        self.updateMaxSteps(self.model.get("context").get("_state"));
+                        $("#the_modal").off("shown.bs.modal").modal("hide");
+                        cb();
+                    } catch (e) {
+                        $("#the_modal").off("shown.bs.modal");
+                        $("#the_modal .modal-body").html("<p class='text-danger'><i class='material-icons'>&#xE8B2;</i> " + e + "</p>");
+                        $("#the_modal .modal-footer").show();
+                    }
+                }, 300);
+            });
+            $("#the_modal").modal("show");
+        },
 
-                this.updateButtonState("back", this.debug_step > 1);
-                this.updateButtonState("next", this.debug_step < this.max_steps);
-                return true;
+        step: function(dir) {
+            var self = this;
+            if (this.max_steps === null) {
+                this.prerun(function() {
+                    self.step(dir);
+                });
+                return false;
+            } else {
+                var self = this;
+                if ((dir == 1 && (this.max_steps === -1 || this.debug_step < this.max_steps)) || (dir == -1 && this.debug_step > 1)) {
+                    $("#output").data('view').clear();
+                    $("#output").data('view').log("Started...");
+                    this.updateDebugStep(this.debug_step + dir);
+                    try {
+                        this.run();
+                    } catch (e) {
+                        if (e !== "DEBUG STOP") throw e;
+                    }
+
+                    this.updateButtonState("back", this.debug_step > 1);
+                    this.updateButtonState("next", this.max_steps === -1 || this.debug_step < this.max_steps);
+                    return true;
+                }
+                $("#output").data('view').log("Ended.");
+                this.updateButtonState("run", true);
+                this.updateButtonState("pause", false);
+                return false;
             }
-            $("#output").data('view').log("Ended.");
-            this.updateButtonState("run", true);
-            this.updateButtonState("pause", false);
-            return false;
         },
 
         run_delay: null,
         delayed_run: function() {
             var self = this;
-            this.run_delay = window.setTimeout(function() {
-                self.updateButtonState("run", false);
-                self.updateButtonState("pause", true);
-                if (self.step(1)) self.delayed_run();
-            }, 500);
+            if (this.max_steps === null) {
+                this.prerun(function() {
+                    self.delayed_run();
+                })
+            } else {
+                this.run_delay = window.setTimeout(function() {
+                    self.updateButtonState("run", false);
+                    self.updateButtonState("pause", true);
+                    if (self.step(1)) self.delayed_run();
+                }, 500);
+            }
         },
 
         pause: function() {
@@ -139,8 +176,7 @@ define([
             this.updateButtonState("pause", false);
         },
 
-        reset: function() {
-            this.pause();
+        softReset: function() {
             this.updateDebugStep(0);
             this.updateMaxSteps(null);
             this.saved_variables = null;
@@ -148,6 +184,11 @@ define([
             this.updateButtonState("pause", false);
             this.updateButtonState("back", false);
             this.updateButtonState("next", true);
+        },
+
+        reset: function() {
+            this.pause();
+            this.softReset();
             if (this.saved_variables) {
                 var variables = $.extend({}, this.saved_variables);
                 this.model.get("context").set("variables", variables);
@@ -156,8 +197,8 @@ define([
             }
         },
 
-        render: function() {
-            if (this.$el.find(".panel-body").size() > 0) {
+        render: function(full) {
+            if (!full && this.$el.find(".panel-body").size() > 0) {
                 this.$el.find(".panel-body").html(this.template({
                     'context_only': true,
                     'contexttemp': this.contexttemp,
