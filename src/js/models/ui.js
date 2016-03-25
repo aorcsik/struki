@@ -113,9 +113,7 @@ define([
             this.saved_variables = $.extend({}, context.get("variables"));
             struktogram.get("parameters").forEach(function(parameter) {
                 var value = context.get("variables")[parameter.get("name")];
-                if (value === "") {
-                    value = null;
-                } else if (parameter.get("type") == "Int") {
+                if (parameter.get("type") == "Int") {
                     value = parseInt(value, 10);
                 } else if (parameter.get("type") == "Bool") {
                     if (value === "I") value = true;
@@ -130,7 +128,7 @@ define([
             try {
                 this.get("active_document").get("struktogram").evaluate(parameters, context);
             } catch(e) {
-                if (e.match(/^Compile/)) $("#output").data("view").error(e);
+                if (e.match && e.match(/^Compile/)) $("#output").data("view").error(e);
                 throw e;
             }
         }

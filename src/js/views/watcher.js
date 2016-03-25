@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/parser',
     'text!../../templates/watcher.html',
     'text!../../templates/watcher/context.html'
-], function($, _, Backbone, watcherTemplate, contextTemplate){
+], function($, _, Backbone, Parser, watcherTemplate, contextTemplate){
     var WatcherView = Backbone.View.extend({
         id: "watcher",
         events: {
@@ -36,17 +37,18 @@ define([
         max_steps: null,
         saved_variables: null,
         run: function() {
-            var variables;
+            var variables,
+                context = this.model.get("context");
             if (this.debug_step === 0) {
-                variables = this.model.get("context").get("variables");
+                variables = context.get("variables");
                 this.$el.find(".form-control").each(function() {
-                    variables[$(this).attr("name")] = $(this).val();
+                    variables[$(this).attr("name")] = (new Parser($(this).val())).evaluate(context);
                 });
                 this.saved_variables = $.extend({}, variables);
             } else {
                 variables = $.extend({}, this.saved_variables);
             }
-            this.model.get("context").set("variables", variables);
+            context.set("variables", variables);
             this.model.run(this.debug_step);
         },
 
@@ -71,6 +73,10 @@ define([
             else this.$el.find(".control-run").addClass("hide");
             if (this.button_states.pause) this.$el.find(".control-pause").removeClass("hide");
             else this.$el.find(".control-pause").addClass("hide");
+
+            if (!this.button_states.next) this.$el.find(".control-run").addClass("disabled");
+            else this.$el.find(".control-run").removeClass("disabled");
+
             if (this.button_states.back) this.$el.find(".control-back").removeClass("disabled");
             else this.$el.find(".control-back").addClass("disabled");
             if (this.button_states.next) this.$el.find(".control-next").removeClass("disabled");

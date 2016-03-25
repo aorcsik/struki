@@ -401,7 +401,8 @@ html, body {
     padding-left: 10px;
 }
 #watcher .form-group label,
-#watcher .form-group input {
+#watcher .form-group input,
+#watcher .form-group .context-data {
     font-family: "Ubuntu Mono", "Courier New", monospace;
     font-size: 1.0em;
 }

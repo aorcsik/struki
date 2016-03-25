@@ -17,6 +17,11 @@ define([
                     'func': function() {
                         $("#output").data('view').log.apply($("#output").data('view'), arguments);
                     }
+                }),
+                "size": new FunctionWrapper({
+                    'func': function(arg) {
+                        return arg.length;
+                    }
                 })
             }, this.get("functions")));
         },
@@ -31,6 +36,22 @@ define([
         getVariable: function(name) {
             if (this.get("variables")[name] !== undefined) return this.get("variables")[name];
             else throw "Compile Error: undefined variable '" + name + "'";
+        },
+        getVariableAsAtring: function(name) {
+            return this.toString(this.getVariable(name));
+        },
+        toString: function(value) {
+            var self = this;
+            if (value !== null && value !== undefined) {
+                if (typeof value === "number") return value;
+                if (value.constructor === String) return ("\"" + value.replace(/[\\"]/, "\\$1") + "\"").replace(/"/g, '&quot;');
+                if (value.constructor === Array) {
+                    return "[" + value.map(function(item) {
+                        self.toString(item);
+                    }).join(",") + "]";
+                }
+            }
+            return "";
         },
         defineVariable: function(name, initial_value) {
             var variables = this.get("variables");
