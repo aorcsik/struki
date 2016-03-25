@@ -43,12 +43,17 @@ define([
             assert.equal((new Parser("I & H | (H | !H)")).evaluate(context), true, "precedence");
         });
 
-        QUnit.test("Char values", function(assert) {
-            assert.equal((new Parser("' '")).evaluate(context), " ", "' '");
-            assert.equal((new Parser("'1'")).evaluate(context), "1", "'1'");
-            assert.equal((new Parser("'x'")).evaluate(context), "x", "'x'");
-            assert.equal((new Parser("'\\''")).evaluate(context), "'", "'\\''");
-            assert.equal((new Parser("'\\\\'")).evaluate(context), "\\", "'\\\\'");
+        QUnit.test("String values", function(assert) {
+            assert.equal((new Parser('""')).evaluate(context), "", '""');
+            assert.equal((new Parser('" "')).evaluate(context), " ", '" "');
+            assert.equal((new Parser('"1"')).evaluate(context), "1", '"1"');
+            assert.equal((new Parser('"1234 abcd"')).evaluate(context), "1234 abcd", '"1234 abcd"');
+            assert.equal((new Parser("\"1234 \\\"ab\\\\cd\"")).evaluate(context), "1234 \"ab\\cd", "\"1234 \\\"ab\\\\cd\"");
+        });
+
+        QUnit.test("String operators", function(assert) {
+            assert.deepEqual((new Parser("\"\" + \"a\"")).evaluate(context), "a", "\"\" + \"a\" = \"a\"");
+            assert.deepEqual((new Parser("\"abcd\" + \"\"")).evaluate(context), "abcd", "\"abcd\" + \"\" = \"abcd\"");
         });
 
         QUnit.test("Arrays", function(assert) {
@@ -56,7 +61,7 @@ define([
             assert.deepEqual((new Parser("[2]")).evaluate(context), [2], "[ 2 ]");
             assert.deepEqual((new Parser("[2,3,4,5]")).evaluate(context), [2,3,4,5], "[ 2, 3, 4, 5 ]");
             assert.deepEqual((new Parser("[2,3,[4,5]]")).evaluate(context), [2,3,[4,5]], "[ 2, 3, [ 4, 5 ] ]");
-            assert.deepEqual((new Parser("['2','3','4']")).evaluate(context), ['2','3','4'], "[ '2', '3', '4' ]");
+            assert.deepEqual((new Parser("[\"2\",\"3\",\"4\"]")).evaluate(context), ["2","3","4"], "[ \"2\", \"3\", \"4\" ]");
         });
 
         QUnit.test("Array operators", function(assert) {

@@ -1,10 +1,10 @@
 define([], function() {
 
 var token_patterns = [
-    {type: "CHAR[%]",      pattern: /'([^\\']|\\'|\\\\)'/},
     {type: "",             pattern: /\s+/},
     {type: "BOOL[%]",      pattern: /(I|H)/},
     {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
+    {type: "STRING[%]",    pattern: /"/},
     {type: "INTEGER[%]",   pattern: /[0-9]+/},
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/},
 
@@ -43,8 +43,8 @@ var token_patterns = [
 var expression_patterns = [
     {pattern: /BOOL\[(\d+)\]/, operator: "bool", parameters: [1]},
     {pattern: /FLOAT\[(\d+)\]/, operator: "float", parameters: [1]},
+    {pattern: /STRING\[(\d+)\]/, operator: "string", parameters: [1]},
     {pattern: /INTEGER\[(\d+)\]/, operator: "int", parameters: [1]},
-    {pattern: /CHAR\[(\d+)\]/, operator: "char", parameters: [1]},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var", parameters: [1]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1, 3]},
@@ -89,9 +89,23 @@ function Parser(code) {
     this.parens_counter = 0;
     this.bracket_counter = 0;
 
+    this.string_parser = false;
+
     this.tokenize(this.raw_code, "START");
     this.parse(this.tokenized_code);
 }
+
+Parser.prototype.stringParser = function(code, escaped) {
+    var head = code[0],
+        tail = code.slice(1);
+    if (head === "\\") {
+        return head + this.stringParser(tail, true);
+    } else if (!escaped && head === "\"") {
+        return "";
+    } else {
+        return head + this.stringParser(tail);
+    }
+};
 
 Parser.prototype.tokenize = function(code, last_token_type) {
     for (var i = 0; i < token_patterns.length; i++) {
@@ -99,7 +113,12 @@ Parser.prototype.tokenize = function(code, last_token_type) {
         // There is a match, its the next character, no after requirement, or last token in after
         if (result && result.index === 0 && (!token_patterns[i].after || token_patterns[i].after.indexOf(last_token_type) != -1)) {
             var token, value;
-            if (token_patterns[i].type == "BOOL[%]") {
+            if (token_patterns[i].type == "STRING[%]") {
+                var string_parser_result = this.stringParser(code.replace(token_patterns[i].pattern, ""));
+                result[0] = "\"" + string_parser_result + "\"";
+                this.constants[this.constants_counter] = string_parser_result.replace(/\\("|\\)/g, "$1");
+                value = this.constants_counter++;
+            } else if (token_patterns[i].type == "BOOL[%]") {
                 this.constants[this.constants_counter] = result[0] === "I";
                 value = this.constants_counter++;
             } else if (token_patterns[i].type == "FLOAT[%]") {
@@ -107,9 +126,6 @@ Parser.prototype.tokenize = function(code, last_token_type) {
                 value = this.constants_counter++;
             } else if (token_patterns[i].type == "INTEGER[%]") {
                 this.constants[this.constants_counter] = parseInt(result[0]);
-                value = this.constants_counter++;
-            } else if (token_patterns[i].type == "CHAR[%]") {
-                this.constants[this.constants_counter] = result[0].replace(/(^'|'$)/g, "").replace(/^\\/, "");
                 value = this.constants_counter++;
             } else if (token_patterns[i].type == "OPERATOR_PRO[%]") {
                 value = this.parens_counter++;
@@ -124,7 +140,7 @@ Parser.prototype.tokenize = function(code, last_token_type) {
             }
             token = token_patterns[i].type.replace("%", value);
             this.tokenized_code += token;
-            return this.tokenize(code.replace(token_patterns[i].pattern, ""), token_patterns[i].type || last_token_type);
+            return this.tokenize(code.replace(result[0], ""), token_patterns[i].type || last_token_type);
         }
     }
 };
@@ -184,14 +200,15 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         return constants[this.params[0]];
     } else if (this.operator == "int") {
         return constants[this.params[0]];
-    } else if (this.operator == "char") {
+    } else if (this.operator == "string") {
         return constants[this.params[0]];
     } else if (this.operator == "sum") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a + b;
         if (a.constructor === Array && b.constructor === Array) return a.concat(b);
-        else throw "Compile Error: + operator requires number or array operands";
+        if (a.constructor === String && b.constructor === String) return a + b;
+        else throw "Compile Error: + operator requires number, char, string or array operands";
     } else if (this.operator == "sub") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
