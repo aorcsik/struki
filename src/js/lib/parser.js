@@ -1,6 +1,7 @@
 define([], function() {
 
 var token_patterns = [
+    {type: "CHAR[%]",      pattern: /'([^\\']|\\'|\\\\)'/},
     {type: "",             pattern: /\s+/},
     {type: "BOOL[%]",      pattern: /(I|H)/},
     {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
@@ -13,8 +14,8 @@ var token_patterns = [
     {type: "OPERATOR_PRC[%]", pattern: /\)/},
 
     {type: "OPERATOR_NEG", pattern: /-/,
-        after: ['START',        'OPERATOR_SUM', 'OPERATOR_DIV',       //    +  /
-                'OPERATOR_MUL', 'OPERATOR_MOD', 'OPERATOR_SET',       // *  %  :=
+        after: ['START',        'OPERATOR_SUM',    'OPERATOR_DIV',    //    +  /
+                'OPERATOR_MUL', 'OPERATOR_MOD',    'OPERATOR_SET',    // *  %  :=
                 'OPERATOR_LST', 'OPERATOR_BRO[%]', 'OPERATOR_PRO[%]', // ,  (  [
                 'OPERATOR_LTE', 'OPERATOR_GTE',    'OPERATOR_NE',     // <= >= <>
                 'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ']},   // <  >  =
@@ -40,9 +41,10 @@ var token_patterns = [
 ];
 
 var expression_patterns = [
-    {pattern: /BOOL\[(.*?)\]/, operator: "bool", parameters: [1]},
-    {pattern: /FLOAT\[(.*?)\]/, operator: "float", parameters: [1]},
-    {pattern: /INTEGER\[(.*?)\]/, operator: "int", parameters: [1]},
+    {pattern: /BOOL\[(\d+)\]/, operator: "bool", parameters: [1]},
+    {pattern: /FLOAT\[(\d+)\]/, operator: "float", parameters: [1]},
+    {pattern: /INTEGER\[(\d+)\]/, operator: "int", parameters: [1]},
+    {pattern: /CHAR\[(\d+)\]/, operator: "char", parameters: [1]},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var", parameters: [1]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1, 3]},
@@ -81,6 +83,8 @@ function Parser(code) {
     this.tokenized_code = "";
     this.expression_counter = 0;
     this.expressions = {};
+    this.constants_counter = 0;
+    this.constants = {};
     this.variables = {};
     this.parens_counter = 0;
     this.bracket_counter = 0;
@@ -95,7 +99,19 @@ Parser.prototype.tokenize = function(code, last_token_type) {
         // There is a match, its the next character, no after requirement, or last token in after
         if (result && result.index === 0 && (!token_patterns[i].after || token_patterns[i].after.indexOf(last_token_type) != -1)) {
             var token, value;
-            if (token_patterns[i].type == "OPERATOR_PRO[%]") {
+            if (token_patterns[i].type == "BOOL[%]") {
+                this.constants[this.constants_counter] = result[0] === "I";
+                value = this.constants_counter++;
+            } else if (token_patterns[i].type == "FLOAT[%]") {
+                this.constants[this.constants_counter] = parseFloat(result[0]);
+                value = this.constants_counter++;
+            } else if (token_patterns[i].type == "INTEGER[%]") {
+                this.constants[this.constants_counter] = parseInt(result[0]);
+                value = this.constants_counter++;
+            } else if (token_patterns[i].type == "CHAR[%]") {
+                this.constants[this.constants_counter] = result[0].replace(/(^'|'$)/g, "").replace(/^\\/, "");
+                value = this.constants_counter++;
+            } else if (token_patterns[i].type == "OPERATOR_PRO[%]") {
                 value = this.parens_counter++;
             } else if (token_patterns[i].type == "OPERATOR_PRC[%]") {
                 value = --this.parens_counter;
@@ -149,7 +165,7 @@ Parser.prototype.parse = function(code) {
 };
 
 Parser.prototype.evaluate = function(context) {
-    return this.expressions[this.expression_counter - 1].evaluate(context, this.expressions);
+    return this.expressions[this.expression_counter - 1].evaluate(context, this.expressions, this.constants);
 };
 
 function Expression(id, operator, params) {
@@ -158,93 +174,94 @@ function Expression(id, operator, params) {
     this.params = params;
 }
 
-Expression.prototype.evaluate = function(context, expressions) {
+Expression.prototype.evaluate = function(context, expressions, constants) {
     var a, b, c, array_index_expression, keys, value, func;
     if (this.operator == "expression") {
-        return expressions[this.params[0]].evaluate(context, expressions);
+        return expressions[this.params[0]].evaluate(context, expressions, constants);
     } else if (this.operator == "bool") {
-        if (this.params[0] == "I") return true;
-        if (this.params[0] == "H") return false;
+        return constants[this.params[0]];
     } else if (this.operator == "float") {
-        return parseFloat(this.params[0]);
+        return constants[this.params[0]];
     } else if (this.operator == "int") {
-        return parseInt(this.params[0], 10);
+        return constants[this.params[0]];
+    } else if (this.operator == "char") {
+        return constants[this.params[0]];
     } else if (this.operator == "sum") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a + b;
         if (a.constructor === Array && b.constructor === Array) return a.concat(b);
         else throw "Compile Error: + operator requires number or array operands";
     } else if (this.operator == "sub") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a - b;
         else throw "Compile Error: - operator requires number operands";
     } else if (this.operator == "mul") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a * b;
         else throw "Compile Error: * operator requires number operands";
     } else if (this.operator == "div") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number")
             if (b !== 0) return a / b;
             else throw "Compile Error: division by zero";
         else throw "Compile Error: / operator requires number operands";
     } else if (this.operator == "mod") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number")
             if (b !== 0) return a % b;
             else throw "Compile Error: division by zero";
         else throw "Compile Error: % operator requires number operands";
     } else if (this.operator == "gt") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a > b;
         else throw "Compile Error: > operator requires number operands";
     } else if (this.operator == "gte") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a >= b;
         else throw "Compile Error: >= operator requires number operands";
     } else if (this.operator == "lt") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a < b;
         else throw "Compile Error: < operator requires number operands";
     } else if (this.operator == "lte") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a <= b;
         else throw "Compile Error: <= operator requires number operands";
     } else if (this.operator == "eq") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === typeof b) return a == b;
         else throw "Compile Error: = operator requires operands of the same type";
     } else if (this.operator == "ne") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === typeof b) return a != b;
         else throw "Compile Error: <> operator requires operands of the same type";
     } else if (this.operator == "and") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "boolean" && typeof b === "boolean") return a && b;
         else throw "Compile Error: & operator requires boolean operands";
     } else if (this.operator == "or") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
-        b = expressions[this.params[1]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "boolean" && typeof b === "boolean") return a || b;
         else throw "Compile Error: | operator requires boolean operands";
     } else if (this.operator == "neg") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
         if (typeof a === "number") return -1 * a;
         else throw "Compile Error: - operator requires number operand";
     } else if (this.operator == "not") {
-        a = expressions[this.params[0]].evaluate(context, expressions);
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
         if (typeof a === "boolean") return !a;
         else throw "Compile Error: ! operator requires boolean operand";
     } else if (this.operator == "var") {
@@ -254,38 +271,38 @@ Expression.prototype.evaluate = function(context, expressions) {
             if (this.params.length == 1) {
                 return context.applyFunction(expressions[this.params[0]].params[0]);
             } else {
-                value = this.evaluateList(expressions[this.params[1]], context, expressions);
+                value = this.evaluateList(expressions[this.params[1]], context, expressions, constants);
                 return context.applyFunction(expressions[this.params[0]].params[0], value);
             }
         }
         throw "Syntax Error: left operand is not a valid function name";
     } else if (this.operator == "array") {
-        return this.evaluateList(expressions[this.params[0]], context, expressions);
+        return this.evaluateList(expressions[this.params[0]], context, expressions, constants);
     } else if (this.operator == "empty_array") {
         return [];
     } else if (this.operator == "list") {
-        return this.evaluateList(this, context, expressions);
+        return this.evaluateList(this, context, expressions, constants);
     } else if (this.operator == "array_index") {
-        keys = this.evaluateArrayIndex(this, context, expressions);
+        keys = this.evaluateArrayIndex(this, context, expressions, constants);
         return context.getArrayValue(keys);
     } else if (this.operator == "set") {
         if (expressions[this.params[0]].operator == "var") {
             a = expressions[this.params[0]].params[0];
-            b = expressions[this.params[1]].evaluate(context, expressions);
+            b = expressions[this.params[1]].evaluate(context, expressions, constants);
             return context.setVariable(a, b);
         } else if (expressions[this.params[0]].operator == "array_push") {
-            value = expressions[this.params[1]].evaluate(context, expressions);
+            value = expressions[this.params[1]].evaluate(context, expressions, constants);
             array_index_expression = expressions[this.params[0]];
             if (expressions[array_index_expression.params[0]].operator == "var") {
                 a = expressions[array_index_expression.params[0]].params[0];
                 return context.getVariable(a).push(value);
             } else if (expressions[array_index_expression.params[0]].operator == "array_index") {
-                keys = this.evaluateArrayIndex(expressions[array_index_expression.params[0]], context, expressions);
+                keys = this.evaluateArrayIndex(expressions[array_index_expression.params[0]], context, expressions, constants);
                 return context.getArrayValue(keys).push(value);
             }
         } else if (expressions[this.params[0]].operator == "array_index") {
-            value = expressions[this.params[1]].evaluate(context, expressions);
-            keys = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions);
+            value = expressions[this.params[1]].evaluate(context, expressions, constants);
+            keys = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             return context.setArrayValue(keys, value);
         }
         throw "Syntax Error: left operand is not a valid variable or array syntax";
@@ -293,27 +310,27 @@ Expression.prototype.evaluate = function(context, expressions) {
     throw "Syntax Error: cannot use " + this.operator + " operator here";
 };
 
-Expression.prototype.evaluateList = function(list, context, expressions) {
+Expression.prototype.evaluateList = function(list, context, expressions, constants) {
     var sublist, flatlist = [];
     if (list.operator == "list") {
-        sublist = this.evaluateList(expressions[list.params[0]], context, expressions);
+        sublist = this.evaluateList(expressions[list.params[0]], context, expressions, constants);
         sublist.forEach(function(item) { flatlist.push(item); });
-        sublist = this.evaluateList(expressions[list.params[1]], context, expressions);
+        sublist = this.evaluateList(expressions[list.params[1]], context, expressions, constants);
         sublist.forEach(function(item) { flatlist.push(item); });
     } else {
-        flatlist.push(list.evaluate(context, expressions));
+        flatlist.push(list.evaluate(context, expressions, constants));
     }
     return flatlist;
 };
 
-Expression.prototype.evaluateArrayIndex = function(expression, context, expressions) {
+Expression.prototype.evaluateArrayIndex = function(expression, context, expressions, constants) {
     var keys;
     if (expressions[expression.params[0]].operator == "var") {
         keys = [expressions[expression.params[0]].params[0]];
     } else if (expressions[expression.params[0]].operator == "array_index"){
-        keys = this.evaluateArrayIndex(expressions[expression.params[0]], context, expressions);
+        keys = this.evaluateArrayIndex(expressions[expression.params[0]], context, expressions, constants);
     } else throw "Syntax Error: bad array syntax";
-    keys.push(expressions[expression.params[1]].evaluate(context, expressions));
+    keys.push(expressions[expression.params[1]].evaluate(context, expressions, constants));
     return keys;
 };
 
