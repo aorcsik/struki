@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/settings',
     'text!../../templates/toolbar.html'
-], function($, _, Backbone, toolbarTemplate){
+], function($, _, Backbone, SettingsView, toolbarTemplate){
     var ToolbarView = Backbone.View.extend({
         id: "toolbar",
         className: "navbar navbar-inverse",
@@ -12,6 +13,7 @@ define([
             "click #open_document": "openDocumentDialog",
             "click #save_dropdown": "updateSaveLinks",
             "click #run_struktogram": "run",
+            "click #nav_settings": "openSettings",
             "change #open_docuemnt_input": "openDocument"
         },
         template: _.template(toolbarTemplate),
@@ -40,6 +42,12 @@ define([
                 self.model.openDocumentFromJSON(JSON.parse(read_event.target.result));
             };
             reader.readAsText(files[0]);
+        },
+
+        openSettings: function() {
+            var settings = new SettingsView({'model': this.model});
+            settings.$el.appendTo($("body"));
+            settings.render();
         },
 
         onClose: function() {},

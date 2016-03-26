@@ -448,12 +448,22 @@ html, body {
     padding: 0;
 }
 
-#the_modal .text-danger {
+#watcher_modal .text-danger {
     padding-left: 30px;
     position: relative;
 }
-#the_modal .text-danger .material-icons {
+#watcher_modal .text-danger .material-icons {
     position: absolute;
     left: 0;
     margin-top: -2px;
+}
+
+#settings_modal .modal-header {
+    padding-left: 45px;
+    position: relative;
+}
+#settings_modal .modal-header .material-icons {
+    position: absolute;
+    left: 15px;
+    margin-top: 1px;
 }

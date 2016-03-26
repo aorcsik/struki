@@ -9,7 +9,11 @@ define([
         defaults: {
             'browser_width':  [300, "px"],
             'output_width':   [ 50, "%" ],
-            'output_height':  [200, "px"]
+            'output_height':  [200, "px"],
+
+            'unsafe': false,
+            'step_delay': 500,
+            'max_iterations': 10000
         },
         initialize: function() {
             var self = this;

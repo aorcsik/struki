@@ -29,7 +29,7 @@ define([
             var global_context = this.getGlobalContext();
             global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
             // console.log(this.get('_debug'), this.get('_state'));
-            if (global_context.get("_state") >= 10000) {
+            if (global_context.get("_state") >= global_context.get("parent").get("max_iterations")) {
                 throw "Too many iterations, possible infinite loop.";
             }
             if (global_context.get('_debug') && global_context.get('_state') === global_context.get('_debug')) {

@@ -4,8 +4,9 @@ define([
     'backbone',
     'lib/parser',
     'text!../../templates/watcher.html',
-    'text!../../templates/watcher/context.html'
-], function($, _, Backbone, Parser, watcherTemplate, contextTemplate){
+    'text!../../templates/watcher/context.html',
+    'text!../../templates/watcher/modal.html'
+], function($, _, Backbone, Parser, watcherTemplate, contextTemplate, modalTemplate){
     var WatcherView = Backbone.View.extend({
         id: "watcher",
         events: {
@@ -17,6 +18,7 @@ define([
         },
         template: _.template(watcherTemplate),
         contexttemp: _.template(contextTemplate),
+        modaltemp: _.template(modalTemplate),
 
         initialize: function() {
             var self = this;
@@ -32,7 +34,6 @@ define([
 
         onClose: function() {},
 
-        unsafe: false, // TODO: set unsafe
         debug_step: 0,
         max_steps: null,
         saved_variables: null,
@@ -50,8 +51,8 @@ define([
             }
             context.set("variables", variables);
             // if unsafe, don't do a full run, just set the state to -1
-            if (this.unsafe && this.debug_step == 0) {
-                this.model.get("context").set({"_state": -1});
+            if (this.model.get("unsafe") && this.debug_step == 0) {
+                context.set({"_state": -1});
             } else {
                 this.model.run(this.debug_step);
             }
@@ -103,25 +104,54 @@ define([
             this.$el.find(".debug-counter").html(text);
         },
 
-        prerun: function(cb) {
-            var self = this;
-            $("#the_modal .modal-footer").hide();
-            $("#the_modal .modal-body").html("<p>Compiling and prerunning struktogram, please wait...</p>")
-            $("#the_modal").on("shown.bs.modal", function() {
-                window.setTimeout(function() {
-                    try {
-                        self.run();
-                        self.updateMaxSteps(self.model.get("context").get("_state"));
-                        $("#the_modal").off("shown.bs.modal").modal("hide");
-                        cb();
-                    } catch (e) {
-                        $("#the_modal").off("shown.bs.modal");
-                        $("#the_modal .modal-body").html("<p class='text-danger'><i class='material-icons'>&#xE8B2;</i> " + e + "</p>");
-                        $("#the_modal .modal-footer").show();
-                    }
-                }, 300);
+        openModal: function(options) {
+            var $modal = $(this.modaltemp(options)).appendTo($("body")).on("hidden.bs.modal", function() {
+                if (options.onHide) options.onHide();
+                $modal.remove();
+            }).on("shown.bs.modal", function() {
+                if (options.onShow) options.onShow();
+            }).modal("show");
+            return $modal;
+        },
+
+        openErrorModal: function(e) {
+            this.openModal({
+                'title': "",
+                'body': "<p class='text-danger'><i class='material-icons'>&#xE8B2;</i> " + e + "</p>",
+                'footer': true
             });
-            $("#the_modal").modal("show");
+        },
+
+        prerun: function(cb) {
+            var $modal, self = this;
+            if (this.model.get("unsafe")) {
+                try {
+                    self.run();
+                    self.updateMaxSteps(self.model.get("context").get("_state"));
+                    cb();
+                } catch (e) {
+                    this.openErrorModal(e);
+                }
+            } else {
+                $modal = this.openModal({
+                    'title': "",
+                    'body': "<p>Compiling and prerunning struktogram, please wait...</p>",
+                    'footer': false,
+                    'onShow': function() {
+                        window.setTimeout(function() {
+                            try {
+                                self.run();
+                                self.updateMaxSteps(self.model.get("context").get("_state"));
+                                $modal.modal('hide');
+                                cb();
+                            } catch (e) {
+                                $modal.modal('hide');
+                                self.openErrorModal(e);
+                            }
+                        }, 300);
+                    }
+                });
+            }
         },
 
         step: function(dir) {
@@ -132,8 +162,14 @@ define([
                 });
                 return false;
             } else {
-                var self = this;
-                if ((dir == 1 && (this.max_steps === -1 || this.debug_step < this.max_steps)) || (dir == -1 && this.debug_step > 1)) {
+                var self = this,
+                    context = this.model.get("context"),
+                    can_step_next = (dir == 1 && (this.max_steps === -1 || this.debug_step < this.max_steps)),
+                    can_step_prev = (dir == -1 && this.debug_step > 1),
+                    can_step = (can_step_next || can_step_prev),
+                    context_state = context.get("_state"),
+                    is_ended = context_state > -1 && this.debug_step > context_state;
+                if (!is_ended && can_step) {
                     $("#output").data('view').clear();
                     $("#output").data('view').log("Started...");
                     this.updateDebugStep(this.debug_step + dir);
@@ -142,11 +178,13 @@ define([
                     } catch (e) {
                         if (e !== "DEBUG STOP") throw e;
                     }
-
                     this.updateButtonState("back", this.debug_step > 1);
                     this.updateButtonState("next", this.max_steps === -1 || this.debug_step < this.max_steps);
                     return true;
                 }
+                this.updateMaxSteps(context_state);
+                this.updateDebugStep(context_state);
+                this.updateButtonState("next", this.max_steps === -1 || this.debug_step < this.max_steps);
                 $("#output").data('view').log("Ended.");
                 this.updateButtonState("run", true);
                 this.updateButtonState("pause", false);
@@ -166,7 +204,7 @@ define([
                     self.updateButtonState("run", false);
                     self.updateButtonState("pause", true);
                     if (self.step(1)) self.delayed_run();
-                }, 500);
+                }, this.model.get("step_delay"));
             }
         },
 
