@@ -26,11 +26,13 @@ define([
         },
 
         initialize: function() {
-            var self = this;
+            var self = this,
+                render_timeout = null;
             this.main_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
             this.listenTo(this.model, "change", function(e) {
                 // TODO: better handling of callback timing
-                window.setTimeout(function() {
+                window.clearTimeout(render_timeout);
+                render_timeout = window.setTimeout(function() {
                     self.render();
                 }, 10);
             });
@@ -239,12 +241,14 @@ define([
                         $(".sortable-sequence").removeClass("drag-over");
                     },
                     update: function(event, ui) {
-                        var cmd = ui.item.data("view").model,
-                            target_sequence = $(event.target).data("view").model;
-                            source_sequence = ui.sender !== null ? ui.sender.data("view").model : target_sequence;
-                            new_index = $(event.target).children("li").index(ui.item);
-                        source_sequence.removeCommand(cmd);
-                        target_sequence.addCommand(cmd, new_index);
+                        var new_index = $(event.target).children("li").index(ui.item);
+                        if (ui.sender || new_index !== -1) {
+                            var cmd = ui.item.data("view").model,
+                                target_sequence = $(event.target).data("view").model;
+                                source_sequence = ui.sender !== null ? ui.sender.data("view").model : target_sequence;
+                            source_sequence.removeCommand(cmd);
+                            target_sequence.addCommand(cmd, new_index);
+                        }
                     }
                 }).disableSelection();
                 this.$el.data('view', this);
