@@ -467,3 +467,10 @@ html, body {
     left: 15px;
     margin-top: 1px;
 }
+
+#output .panel-body {
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}

@@ -18,10 +18,12 @@ define([
 
         error: function(err) {
             this.$el.find(".panel-body").append($("<div class='text-danger'>" + err + "</div>"));
+            this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);
         },
         log: function() {
             var args = Array.prototype.slice.call(arguments);
             this.$el.find(".panel-body").append($("<div>" + args.join(", ") + "</div>"));
+            this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);
         },
         clear: function() {
             this.$el.find(".panel-body div").remove();
