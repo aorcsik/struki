@@ -104,9 +104,9 @@ define([
             this.stepState();
             return result;
         },
-        evaluateCode: function(code) {
+        evaluateCode: function(code, ret) {
             //console.log("evaluate code: " + code);
-            var ret = false;
+            var ret = ret || false;
             if (code.match(/^\s*return\s*/, code)) {
                 code = code.replace(/^\s*return\s*/, "", code);
                 ret = true;
@@ -116,15 +116,16 @@ define([
             this.stepState();
             return ret ? result : null;
         },
-        evaluateRange: function() {
-            //console.log("evaluate range: " + condition);
-            var name, start, end;
-            return {
-                'var': "i",
-                'start': start,
-                'end': end,
-                'step': start > end ? -1 : 1
-            };
+        evaluateRange: function(range_condition) {
+            var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
+            // console.log("evaluate range: " + range_condition, match);
+            if (match !== null) {
+                return {
+                    'var': match[1],
+                    'list': this.evaluateCode(match[3], true)
+                };
+            }
+            throw "Compile Error: bad range expression";
         },
         defineFunction: function(name, func) {
             var functions = this.get("functions");

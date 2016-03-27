@@ -57,11 +57,22 @@ define([
                 throw e;
             }
         },
+        range_helper: null,
+        initRange: function(context) {
+            this.range_helper = -1;
+            return context.evaluateRange(this.get("condition"));
+        },
         evaluateRange: function(context, range) {
             try {
                 this.trigger("evaluate", this);
                 context.stepState();
-                return context.getVariable(range.var) < range.end;
+                this.range_helper++;
+                if (this.range_helper < range.list.length) {
+                    context.setVariable(range.var, range.list[this.range_helper]);
+                    return true;
+                } else {
+                    return false;
+                }
             } catch (e) {
                 if (e == "DEBUG STOP") this.trigger("debugstop", this);
                 throw e;
@@ -71,12 +82,10 @@ define([
             var variables;
             var return_value = null;
             if (this.get("range")) {
-                var range = context.evaluateRange(this.get("condition"));
-                context.setVariable(range.var, range.start);
+                var range = this.initRange(context);
                 while (this.evaluateRange(context, range)) {
                     return_value = this.get("sequence").evaluate(context);
                     if (return_value !== null) return return_value;
-                    context.incrementVariable(range.var, range.step);
                 }
             } else if (this.get("test_after")) {
                 do {

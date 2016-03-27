@@ -18,12 +18,14 @@ var token_patterns = [
                 'OPERATOR_MUL', 'OPERATOR_MOD',    'OPERATOR_SET',    // *  %  :=
                 'OPERATOR_LST', 'OPERATOR_BRO[%]', 'OPERATOR_PRO[%]', // ,  (  [
                 'OPERATOR_LTE', 'OPERATOR_GTE',    'OPERATOR_NE',     // <= >= <>
-                'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ']},   // <  >  =
+                'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ',     // <  >  =
+                'OPERATOR_RNG']},                                     // ..
     {type: "OPERATOR_SUB", pattern: /-/},
     {type: "OPERATOR_SUM", pattern: /\+/},
     {type: "OPERATOR_DIV", pattern: /\//},
     {type: "OPERATOR_MUL", pattern: /\*/},
     {type: "OPERATOR_MOD", pattern: /%/},
+    {type: "OPERATOR_RNG", pattern: /\.\./},
 
     {type: "OPERATOR_SET", pattern: /:=/},
 
@@ -62,6 +64,7 @@ var expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MODEXPRESSION\[(\d+)\]/, operator: "mod", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUMEXPRESSION\[(\d+)\]/, operator: "sum", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUBEXPRESSION\[(\d+)\]/, operator: "sub", parameters: [1, 2]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_RNGEXPRESSION\[(\d+)\]/, operator: "rng", parameters: [1, 2]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEXPRESSION\[(\d+)\]/,  operator: "gt",  parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEEXPRESSION\[(\d+)\]/, operator: "gte", parameters: [1, 2]},
@@ -237,6 +240,18 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             if (b !== 0) return a % b;
             else throw "Compile Error: division by zero";
         else throw "Compile Error: % operator requires number operands";
+    } else if (this.operator == "rng") {
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
+        if (typeof a === "number" && typeof b === "number") {
+            var range = []
+            if (a <= b) {
+                for (var xx = a; xx <= b; xx++) range.push(xx);
+            } else {
+                for (var xx = a; xx >= b; xx--) range.push(xx);
+            }
+            return range;
+        } else throw "Compile Error: % operator requires number operands";
     } else if (this.operator == "gt") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);

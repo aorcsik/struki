@@ -88,6 +88,14 @@ define([
             assert.deepEqual(context.getVariable("a"), [2]);
         });
 
+        QUnit.test("Range", function(assert) {
+            assert.deepEqual((new Parser("1..1")).evaluate(context), [1], "1..1");
+            assert.deepEqual((new Parser("-1..1")).evaluate(context), [-1, 0, 1], "-1..1");
+            assert.deepEqual((new Parser("1..-1")).evaluate(context), [1, 0, -1], "1..-1");
+            context.defineVariable("a", 5);
+            assert.deepEqual((new Parser("1..a")).evaluate(context), [1, 2, 3, 4, 5], "1..a");
+        });
+
         QUnit.test("Function call", function(assert) {
             context.defineFunction("test", function() { return Array.prototype.slice.call(arguments); });
             assert.deepEqual((new Parser("test()")).evaluate(context), [], "test()");
