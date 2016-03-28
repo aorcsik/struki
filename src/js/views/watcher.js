@@ -25,7 +25,7 @@ define([
             this.listenTo(this.model, "change", function(e) {
                 if (e.changed.context === undefined) return;
                 self.listenTo(self.model.get("context"), "change", function(e) {
-                    self.render();
+                    //self.render();
                 });
                 self.softReset();
                 self.render(true);  // full render
@@ -73,8 +73,8 @@ define([
             "back": false,
             "stop": true
         },
-        updateButtonState: function(btn, state) {
-            this.button_states[btn] = state;
+        updateButtonStates: function(button_states) {
+            $.extend(this.button_states, button_states);
             if (this.button_states.run) this.$el.find(".control-run").removeClass("hide");
             else this.$el.find(".control-run").addClass("hide");
             if (this.button_states.pause) this.$el.find(".control-pause").removeClass("hide");
@@ -164,31 +164,34 @@ define([
             } else {
                 var self = this,
                     context = this.model.get("context"),
-                    can_step_next = (dir == 1 && (this.max_steps === -1 || this.debug_step < this.max_steps)),
-                    can_step_prev = (dir == -1 && this.debug_step > 1),
-                    can_step = (can_step_next || can_step_prev),
+                    can_step_next = (this.max_steps === -1 || this.debug_step < this.max_steps),
+                    can_step_prev = (this.debug_step > 1),
+                    can_step = ((dir == 1 && can_step_next) || (dir == -1 && can_step_prev)),
                     context_state = context.get("_state"),
                     is_ended = context_state > -1 && this.debug_step > context_state;
                 if (!is_ended && can_step) {
-                    $("#output").data('view').clear();
-                    $("#output").data('view').log("Started...");
                     this.updateDebugStep(this.debug_step + dir);
                     try {
                         this.run();
                     } catch (e) {
                         if (e !== "DEBUG STOP") throw e;
                     }
-                    this.updateButtonState("back", this.debug_step > 1);
-                    this.updateButtonState("next", this.max_steps === -1 || this.debug_step < this.max_steps);
+                    this.updateButtonStates({
+                        'back': this.debug_step > 1,
+                        'next': this.max_steps === -1 || this.debug_step <= this.max_steps
+                    });
+                    this.model.flushOutput();
+                    self.render();
                     return true;
                 }
                 this.updateMaxSteps(context_state);
                 this.updateDebugStep(context_state);
-                this.updateButtonState("next", this.max_steps === -1 || this.debug_step < this.max_steps);
-                $("#output").data('view').log("Ended.");
-                this.updateButtonState("run", true);
-                this.updateButtonState("pause", false);
+                this.updateButtonStates({
+                    'next': this.max_steps === -1 || this.debug_step < this.max_steps,
+                    'run': true, 'pause': false
+                });
                 this.model.finishRun();
+                self.render();
                 return false;
             }
         },
@@ -202,8 +205,7 @@ define([
                 })
             } else {
                 this.run_delay = window.setTimeout(function() {
-                    self.updateButtonState("run", false);
-                    self.updateButtonState("pause", true);
+                    self.updateButtonStates({'run': false, 'pause': true});
                     if (self.step(1)) self.delayed_run();
                 }, this.model.get("step_delay"));
             }
@@ -211,18 +213,17 @@ define([
 
         pause: function() {
             window.clearTimeout(this.run_delay);
-            this.updateButtonState("run", true);
-            this.updateButtonState("pause", false);
+            this.updateButtonStates({'run': true, 'pause': false});
         },
 
         softReset: function() {
             this.updateDebugStep(0);
             this.updateMaxSteps(null);
             this.saved_variables = null;
-            this.updateButtonState("run", true);
-            this.updateButtonState("pause", false);
-            this.updateButtonState("back", false);
-            this.updateButtonState("next", true);
+            this.updateButtonStates({
+                'run': true, 'pause': false,
+                'back': false, 'next': true
+            });
         },
 
         reset: function() {

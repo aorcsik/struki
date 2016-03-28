@@ -18,6 +18,7 @@ define([
         initialize: function() {
             var self = this;
             this.set("open_documents", []);
+            this.set("output_buffer", []);
         },
         newDocument: function(name) {
             var doc = new Document({"ui": this});
@@ -47,7 +48,7 @@ define([
             return doc;
         },
         resetContext: function() {
-            var functions = {}, variables = {};
+            var self = this, functions = {}, variables = {};
             if (this.get("active_document")) {
                 var struktogram = this.get("active_document").get("struktogram");
                 functions[struktogram.get("name")] = struktogram;
@@ -55,11 +56,19 @@ define([
                     variables[parameter.get("name")] = null;
                 });
             }
-            this.set("context", new Context({
+            var context = new Context({
                 'parent': this,
                 'functions': functions,
                 'variables': variables
-            }));
+            });
+            this.set("context", context);
+            this.listenTo(context, "output_log", function(arguments) {
+                // self.get("output_buffer").push(Array.prototype.slice.call(arguments));
+                // console.log();
+                // buffer.push(arguments);
+                // self.set("output_buffer", buffer);
+                // console.log(self.get("output_buffer"));
+            });
         },
         closeDocument: function(doc) {
             var idx = this.get("open_documents").indexOf(doc);
@@ -129,6 +138,7 @@ define([
                 parameters.push(value);
             });
             context.set({"_state": 0, "_debug": debug_step});
+            this.trigger("started_run");
             try {
                 this.get("active_document").get("struktogram").evaluate(parameters, context);
             } catch(e) {
@@ -137,9 +147,16 @@ define([
             }
         },
 
+        flushOutput: function() {
+            var buffer = this.get("output_buffer");
+            this.set("output_buffer", []);
+            this.trigger("flush_output", buffer);
+        },
+
         finishRun: function() {
             var doc = this.get("active_document");
             doc.set({'_last_run': (new Date()).getTime()});
+            this.trigger("finished_run");
         }
 
     });

@@ -81,7 +81,12 @@ var expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LSTEXPRESSION\[(\d+)\]/, operator: "list", parameters: [1, 2]}
 ];
 
+var parser_cache = {};
+
 function Parser(code) {
+    if (parser_cache[code]) {
+        return parser_cache[code];
+    }
     this.raw_code = code;
     this.tokenized_code = "";
     this.expression_counter = 0;
@@ -96,6 +101,8 @@ function Parser(code) {
 
     this.tokenize(this.raw_code, "START");
     this.parse(this.tokenized_code);
+
+    parser_cache[code] = this;
 }
 
 Parser.prototype.stringParser = function(code, escaped) {

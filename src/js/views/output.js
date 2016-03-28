@@ -12,6 +12,19 @@ define([
         template: _.template(outputTemplate),
 
         initialize: function() {
+            var self = this;
+            this.listenTo(this.model, 'started_run', function() {
+                self.clear();
+                self.log("Started...");
+            });
+            this.listenTo(this.model, 'finished_run', function() {
+                self.log("Ended.");
+            });
+            this.listenTo(this.model, 'flush_output', function(buffer) {
+                buffer.forEach(function(arguments) {
+                    self.log.apply(self, arguments);
+                });
+            });
         },
 
         onClose: function() {},

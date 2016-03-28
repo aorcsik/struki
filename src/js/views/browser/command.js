@@ -11,7 +11,7 @@ define([
 
         initialize: function() {
             var self = this;
-            this.listenTo(this.model, "evaluate", function() {
+            this.listenTo(this.model, "debugstop", function() {
                 $(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("evaluating");
             });

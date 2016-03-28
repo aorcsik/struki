@@ -15,7 +15,8 @@ define([
             this.set("functions", $.extend({
                 "print": new FunctionWrapper({
                     'func': function() {
-                        $("#output").data('view').log.apply($("#output").data('view'), arguments);
+                        //self.getGlobalContext().get("parent").get("output_buffer").push(arguments);
+                        self.trigger("output_log", arguments);
                     }
                 }),
                 "size": new FunctionWrapper({
@@ -179,6 +180,9 @@ define([
             }));
             this.listenTo(this.get("context"), "change", function(e) {
                 self.trigger("change", e);
+            });
+            this.listenTo(this.get("context"), "output_log", function(arguments) {
+                self.trigger("output_log", arguments);
             });
             return this.get("context");
         }

@@ -50,7 +50,7 @@ define([
         },
         evaluateCondition: function(context) {
             try {
-                this.trigger("evaluate", this);
+                // this.trigger("evaluate", this);
                 return context.evaluateCondition(this.get("condition"));
             } catch (e) {
                 if (e == "DEBUG STOP") this.trigger("debugstop", this);
@@ -64,13 +64,14 @@ define([
         },
         evaluateRange: function(context, range) {
             try {
-                this.trigger("evaluate", this);
-                context.stepState();
+                // this.trigger("evaluate", this);
                 this.range_helper++;
                 if (this.range_helper < range.list.length) {
                     context.setVariable(range.var, range.list[this.range_helper]);
+                    context.stepState();
                     return true;
                 } else {
+                    context.stepState();
                     return false;
                 }
             } catch (e) {
@@ -79,22 +80,23 @@ define([
             }
         },
         evaluate: function(context) {
-            var variables;
+            var variables,
+                sequence = this.get("sequence");
             var return_value = null;
             if (this.get("range")) {
                 var range = this.initRange(context);
                 while (this.evaluateRange(context, range)) {
-                    return_value = this.get("sequence").evaluate(context);
+                    return_value = sequence.evaluate(context);
                     if (return_value !== null) return return_value;
                 }
             } else if (this.get("test_after")) {
                 do {
-                    return_value = this.get("sequence").evaluate(context);
+                    return_value = sequence.evaluate(context);
                     if (return_value !== null) return return_value;
                 } while (this.evaluateCondition(context));
             } else {
                 while (this.evaluateCondition(context)) {
-                    return_value = this.get("sequence").evaluate(context);
+                    return_value = sequence.evaluate(context);
                     if (return_value !== null) return return_value;
                 }
             }

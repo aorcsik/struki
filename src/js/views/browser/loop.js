@@ -16,7 +16,7 @@ define([
             var self = this;
             var SequenceBrowserView = require('views/browser/sequence');
             this.loop_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
-            this.listenTo(this.model, "evaluate", function() {
+            this.listenTo(this.model, "debugstop", function() {
                 $(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("evaluating");
             });
