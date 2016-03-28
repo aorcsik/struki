@@ -58,9 +58,15 @@ define([
         },
 
         createCommandCanvasView: function(command) {
-            if (command._type == "loop") return new LoopCanvasView({'model': command});
-            if (command._type == "command") return new CommandCanvasView({'model': command});
-            if (command._type == "conditional") return new ConditionalCanvasView({'model': command});
+            var self = this, cmd;
+            if (command._type == "loop") cmd = new LoopCanvasView({'model': command});
+            if (command._type == "command") cmd = new CommandCanvasView({'model': command});
+            if (command._type == "conditional") cmd = new ConditionalCanvasView({'model': command});
+            this.listenTo(cmd, "redraw", function(e) {
+                // console.log("redraw -> redraw", e);
+                self.trigger("redraw", e);
+            });
+            return cmd;
         },
 
         getSize: function() {

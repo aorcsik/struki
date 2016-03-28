@@ -7,7 +7,9 @@ define([
         lines: [],
         size: null,
         position: null,
+        debugstop: false,
         initialize: function() {
+            var self = this;
             this.position = {
                 "x": 0,
                 "y": 0
@@ -16,6 +18,11 @@ define([
                 'width': 0,
                 'height': 0
             };
+            this.listenTo(this.model, "debugstop", function() {
+                // console.log("debugstop -> redraw", self);
+                self.trigger("redraw", {'debugstop': self});
+                self.debugstop = true;
+            });
         },
         onClose: function() {},
 
@@ -55,6 +62,12 @@ define([
             this.size.width = 0;
             this.size.height = 0;
 
+            if (fix_width && lines && lines[line] && this.debugstop) {
+                ctx.fillStyle = design.active_background;
+                ctx.fillRect(x, y, fix_width, lines[line]);
+                ctx.fillStyle = design.active_color;
+            }
+
             height = design.margin.top;
             for (var i = 0; i < text_lines.length; i++) {
                 m = ctx.measureText(text_lines[i]);
@@ -70,6 +83,11 @@ define([
             height += design.margin.bottom;
             this.size.height += lines && lines[line] || height;
             this.lines[line] = this.size.height;
+
+            if (fix_width && this.debugstop) {
+                ctx.fillStyle = design.default_color;
+                this.debugstop = false;
+            }
 
             if (fix_width) {
                 ctx.strokeRect(

@@ -21,21 +21,31 @@ define([
                 "y": 0
             };
             this.branches = this.model.get("branches").map(function(branch) {
-                return new BranchCanvasView({'model': branch});
+                return self.createBranchView(branch);
             });
             this.listenTo(this.model, "change:add", function(branch, idx) {
-                self.branches.splice(idx, 0, new BranchCanvasView({'model': branch}));
+                self.branches.splice(idx, 0, self.createBranchView(branch));
             });
             this.listenTo(this.model, "change:remove", function(branch, idx) {
                 self.branches.splice(idx, 1);
             });
-            this.else_branch = new BranchCanvasView({'model': this.model.get("else_branch")});
+            this.else_branch = this.createBranchView(this.model.get("else_branch"));
         },
         onClose: function() {
             this.branches.forEach(function(branch) {
                 branch.close();
             });
             this.else_branch.close();
+        },
+
+        createBranchView: function(model) {
+            var self = this,
+                branch = new BranchCanvasView({'model': model});
+            this.listenTo(branch, "redraw", function(e) {
+                // console.log("redraw -> redraw", e);
+                self.trigger("redraw", e);
+            });
+            return branch;
         },
 
         onEvent: function(event) {

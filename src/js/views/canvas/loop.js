@@ -9,7 +9,9 @@ define([
         size: null,
         position: null,
         loop_sequence: null,
+        debugstop: false,
         initialize: function() {
+            var self = this;
             this.size = {
                 'width': 0,
                 'height': 0
@@ -20,6 +22,15 @@ define([
             };
             var SequenceCanvasView = require('views/canvas/sequence');
             this.loop_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
+            this.listenTo(this.loop_sequence, "redraw", function(e) {
+                // console.log("redraw -> redraw", e);
+                self.trigger("redraw", e);
+            });
+            this.listenTo(this.model, "debugstop", function() {
+                // console.log("debugstop -> redraw", self);
+                self.trigger("redraw", {'debugstop': self});
+                self.debugstop = true;
+            });
         },
         onClose: function() {
             this.loop_sequence.close();
@@ -51,7 +62,7 @@ define([
         },
 
         render: function(ctx, design, line, x, y, fix_width, lines) {
-            var m, i, height;
+            var m, i, height, active_height = 0, active_inset = 0;
 
             ctx.font = design.font_size + "px " + design.font_family;
             var text = this.model.get("condition");
@@ -67,6 +78,13 @@ define([
             this.size.height = 0;
             this.size.width = 0;
             if (this.model.get("range") || !this.model.get("test_after")) {
+                if (fix_width && lines && lines[line] && this.debugstop) {
+                    ctx.fillStyle = design.active_background;
+                    ctx.fillRect(x, y, fix_width, lines[line]);
+                    ctx.fillStyle = design.active_color;
+                    active_height = lines[line] - 0.5;
+                }
+
                 height = design.margin.top;
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);
@@ -82,6 +100,10 @@ define([
                 height += design.margin.bottom;
                 this.size.height += lines && lines[line] || height;
                 this.lines[line++] = height;
+
+                if (fix_width && this.debugstop) {
+                    ctx.fillStyle = design.default_color;
+                }
             }
             if (this.loop_sequence.commands.length === 0) {
                 height = design.font_size + design.margin.top + design.margin.bottom;
@@ -103,6 +125,13 @@ define([
                 line++;
             }
             if (!this.model.get("range") && this.model.get("test_after")) {
+                if (fix_width && lines && lines[line] && this.debugstop) {
+                    ctx.fillStyle = design.active_background;
+                    ctx.fillRect(x, y + this.size.height, fix_width, lines[line]);
+                    ctx.fillStyle = design.active_color;
+                    active_inset = lines[line] - 0.5;
+                }
+
                 height = design.margin.top;
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);
@@ -111,14 +140,26 @@ define([
                     if (fix_width) {
                         ctx.fillText(
                             text_lines[i],
-                            x + design.margin.left,
+                            x + Math.floor((fix_width - m.width) / 2),
                             y + this.size.height + height - 3);
                     }
                 }
                 height += design.margin.bottom;
                 this.size.height += lines && lines[line] || height;
                 this.lines[line++] = height;
+
+                if (fix_width && this.debugstop) {
+                    ctx.fillStyle = design.default_color;
+                }
             }
+
+            if (fix_width && this.debugstop) {
+                ctx.fillStyle = design.active_background;
+                ctx.fillRect(x, y + active_height, design.loop_inset, this.size.height - active_inset - active_height);
+                ctx.fillStyle = design.default_color;
+                this.debugstop = false;
+            }
+
 
             if (fix_width) ctx.strokeRect(
                 x,

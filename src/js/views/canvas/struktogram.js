@@ -21,6 +21,10 @@ define([
                 "y": 0
             };
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
+            this.listenTo(this.main_sequence, "redraw", function(e) {
+                // console.log("redraw -> redraw", e);
+                self.trigger("redraw", e);
+            });
         },
 
         onClose: function() {

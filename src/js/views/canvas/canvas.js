@@ -21,17 +21,29 @@ define([
                 "left": 10
             },
             "label_distance": 10,
-            "loop_inset": 20
+            "loop_inset": 20,
+            "default_color": "#000000",
+            "active_color": "#ffffff",
+            "active_background": "rgb(0,150,136)"
         },
         events: {
             "click": "onClickHandler"
         },
 
         initialize: function() {
-            var self = this;
+            var self = this,
+                render_delay;
             this.struktogram = new StruktogramCanvasView({'model': this.model.get("struktogram")});
             this.listenTo(this.model, 'change', function(e) {
-                window.setTimeout(function() {
+                window.clearTimeout(render_delay);
+                render_delay = window.setTimeout(function() {
+                    self.render();
+                }, 10);
+            });
+            this.listenTo(this.struktogram, 'redraw', function(e) {
+                // console.log("redraw", e);
+                window.clearTimeout(render_delay);
+                render_delay = window.setTimeout(function() {
                     self.render();
                 }, 10);
             });

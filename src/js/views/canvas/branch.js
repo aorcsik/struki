@@ -9,7 +9,9 @@ define([
         size: null,
         position: null,
         branch_sequence: null,
+        debugstop: false,
         initialize: function() {
+            var self = this;
             this.size = {
                 'width': 0,
                 'height': 0
@@ -20,6 +22,15 @@ define([
             };
             var SequenceCanvasView = require('views/canvas/sequence');
             this.branch_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
+            this.listenTo(this.branch_sequence, "redraw", function(e) {
+                // console.log("redraw -> redraw", e);
+                self.trigger("redraw", e);
+            });
+            this.listenTo(this.model, "debugstop", function() {
+                // console.log("debugstop -> redraw", self);
+                self.trigger("redraw", {'debugstop': self});
+                self.debugstop = true;
+            });
         },
         onClose: function() {
             this.branch_sequence.close();
@@ -62,6 +73,12 @@ define([
             this.position.y = y;
             this.size.height = 0;
             this.size.width = 0;
+
+            if (fix_width && lines && lines[line] && this.debugstop) {
+                ctx.fillStyle = design.active_background;
+                ctx.fillRect(x, y, fix_width, lines[line]);
+                ctx.fillStyle = design.active_color;
+            }
 
             if (!text) {
 
@@ -181,6 +198,11 @@ define([
                 this.size.height += lines && lines[line] || height;
                 this.lines[line++] = height;
 
+            }
+
+            if (fix_width && this.debugstop) {
+                ctx.fillStyle = design.default_color;
+                this.debugstop = false;
             }
 
             if (this.branch_sequence.commands.length === 0) {
