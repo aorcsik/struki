@@ -188,6 +188,7 @@ define([
                 $("#output").data('view').log("Ended.");
                 this.updateButtonState("run", true);
                 this.updateButtonState("pause", false);
+                this.model.finishRun();
                 return false;
             }
         },

@@ -135,6 +135,11 @@ define([
                 if (e.match && e.match(/^Compile/)) $("#output").data("view").error(e);
                 throw e;
             }
+        },
+
+        finishRun: function() {
+            var doc = this.get("active_document");
+            doc.set({'_last_run': (new Date()).getTime()});
         }
 
     });
