@@ -155,7 +155,7 @@ define([
 
             if (fix_width && this.debugstop) {
                 ctx.fillStyle = design.active_background;
-                ctx.fillRect(x, y + active_height, design.loop_inset, this.size.height - active_inset - active_height);
+                ctx.fillRect(x, y + active_height, design.loop_inset - 0.5, this.size.height - active_inset - active_height);
                 ctx.fillStyle = design.default_color;
                 this.debugstop = false;
             }
