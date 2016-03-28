@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'models/context',
-    'models/document'
-], function($, _, Backbone, Context, Document) {
+    'models/document',
+    'models/function_wrapper'
+], function($, _, Backbone, Context, Document, FunctionWrapper) {
     var UI = Backbone.Model.extend({
         defaults: {
             'browser_width':  [300, "px"],
@@ -48,7 +49,20 @@ define([
             return doc;
         },
         resetContext: function() {
-            var self = this, functions = {}, variables = {};
+            var self = this,
+                functions = {
+                    "print": new FunctionWrapper({
+                        'func': function() {
+                            self.get("output_buffer").push(arguments);
+                        }
+                    }),
+                    "size": new FunctionWrapper({
+                        'func': function(arg) {
+                            return arg.length;
+                        }
+                    })
+                },
+                variables = {};
             if (this.get("active_document")) {
                 var struktogram = this.get("active_document").get("struktogram");
                 functions[struktogram.get("name")] = struktogram;
@@ -62,9 +76,6 @@ define([
                 'variables': variables
             });
             this.set("context", context);
-            this.listenTo(context, "output_log", function(arguments) {
-                self.get("output_buffer").push(arguments);
-            });
         },
         closeDocument: function(doc) {
             var idx = this.get("open_documents").indexOf(doc);

@@ -12,19 +12,7 @@ define([
         initialize: function() {
             var self = this;
             this.set("variables", $.extend({}, this.get("variables")));
-            this.set("functions", $.extend({
-                "print": new FunctionWrapper({
-                    'func': function() {
-                        //self.getGlobalContext().get("parent").get("output_buffer").push(arguments);
-                        self.trigger("output_log", arguments);
-                    }
-                }),
-                "size": new FunctionWrapper({
-                    'func': function(arg) {
-                        return arg.length;
-                    }
-                })
-            }, this.get("functions")));
+            this.set("functions", $.extend({}, this.get("functions")));
         },
         stepState: function() {
             var global_context = this.getGlobalContext();
@@ -180,9 +168,6 @@ define([
             }));
             this.listenTo(this.get("context"), "change", function(e) {
                 self.trigger("change", e);
-            });
-            this.listenTo(this.get("context"), "output_log", function(arguments) {
-                self.trigger("output_log", arguments);
             });
             return this.get("context");
         }
