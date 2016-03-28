@@ -63,11 +63,7 @@ define([
             });
             this.set("context", context);
             this.listenTo(context, "output_log", function(arguments) {
-                // self.get("output_buffer").push(Array.prototype.slice.call(arguments));
-                // console.log();
-                // buffer.push(arguments);
-                // self.set("output_buffer", buffer);
-                // console.log(self.get("output_buffer"));
+                self.get("output_buffer").push(arguments);
             });
         },
         closeDocument: function(doc) {
