@@ -201,7 +201,7 @@ html, body {
 
 #browser ul {
     margin: 0;
-    padding: 0;
+    padding: 5px 0;
     list-style: none;
 }
 #browser .sorting ul, #browser ul.empty-sequence {
@@ -229,6 +229,14 @@ html, body {
     font-weight: bold;
     font-size: 1.2em;
 }
+
+#browser ul.drag-over {
+    background: rgba(55, 123, 181, 0.3);
+}
+#browser ul.drag-over > .sort-placeholder {
+    background: rgba(55, 123, 181, 0.3);
+}
+
 #browser .struktogram-container .material-icons {
     font-size: 16px;
 }
@@ -271,7 +279,7 @@ html, body {
 }
 #browser .sort-placeholder {
     height: 30px;
-    border: 2px dashed #3F51B5;
+    /*border: 2px dashed #3F51B5;*/
     border-radius: 5px;
 }
 #browser .ui-sortable-helper {
