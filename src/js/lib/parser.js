@@ -186,7 +186,9 @@ Parser.prototype.parse = function(code) {
         if (code === "") {
             throw "Compile Error: no code to parse";
         } else {
-            throw "Compile Error: unresolved tokens '" + code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";") + "'";
+            var unresolved_tokens = code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";");
+            if (unresolved_tokens[0] == '') throw "Compile Error: missing operator";
+            else throw "Compile Error: unresolved tokens '" + unresolved_tokens + "'";
         }
     } else {
         return this.expressions[match[1]];

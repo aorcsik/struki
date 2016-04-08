@@ -163,6 +163,7 @@ define([
                 return false;
             } else {
                 var self = this,
+                    result = true,
                     context = this.model.get("context"),
                     can_step_next = (this.max_steps === -1 || this.debug_step < this.max_steps),
                     can_step_prev = (this.debug_step > 1),
@@ -174,7 +175,16 @@ define([
                     try {
                         this.run();
                     } catch (e) {
-                        if (e !== "DEBUG STOP") throw e;
+                        if (e.match && e.match(/^Compile/)) {
+                            this.updateDebugStep(this.debug_step - dir);
+                            this.updateButtonStates({
+                                'back': this.debug_step > 1,
+                                'next': false,
+                                'run': true, 'pause': false
+                            });
+                            return false;
+                        }
+                        else if (e !== "DEBUG STOP") throw e;
                     }
                     this.updateButtonStates({
                         'back': this.debug_step > 1,
@@ -182,7 +192,7 @@ define([
                     });
                     this.model.flushOutput();
                     self.render();
-                    return true;
+                    return result;
                 }
                 this.updateMaxSteps(context_state);
                 this.updateDebugStep(context_state);
