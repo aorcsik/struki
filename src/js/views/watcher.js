@@ -128,6 +128,7 @@ define([
                 try {
                     self.run();
                     self.updateMaxSteps(self.model.get("context").get("_state"));
+                    self.model.clearOutputBuffer(); // no print in prerun
                     cb();
                 } catch (e) {
                     this.openErrorModal(e);
@@ -142,6 +143,7 @@ define([
                             try {
                                 self.run();
                                 self.updateMaxSteps(self.model.get("context").get("_state"));
+                                self.model.clearOutputBuffer(); // no print in prerun
                                 $modal.modal('hide');
                                 cb();
                             } catch (e) {

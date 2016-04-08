@@ -21,9 +21,13 @@ define([
                 self.log("Ended.");
             });
             this.listenTo(this.model, 'flush_output', function(buffer) {
+                var concat = "";
                 buffer.forEach(function(arguments) {
-                    self.log.apply(self, arguments);
+                    // self.log.apply(self, arguments);
+                    var args = Array.prototype.slice.call(arguments);
+                    concat += "<div>" + args.join(", ") + "</div>" + "\n";
                 });
+                this.$el.find(".panel-body").html(concat);
             });
         },
 

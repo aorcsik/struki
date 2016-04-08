@@ -154,6 +154,10 @@ define([
             }
         },
 
+        clearOutputBuffer: function() {
+            this.set("output_buffer", []);
+        },
+
         flushOutput: function() {
             var buffer = this.get("output_buffer");
             this.set("output_buffer", []);
