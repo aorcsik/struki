@@ -302,9 +302,16 @@ html, body {
     color: #fff;
     border: 0;
 }
+#browser .error {
+    background: rgb(200, 0, 0);
+    color: #fff;
+    border: 0;
+}
+
 #browser .command-line:hover .syntactic-sugar,
 #browser .editing .syntactic-sugar,
-#browser .evaluating .syntactic-sugar {
+#browser .evaluating .syntactic-sugar,
+#browser .error .syntactic-sugar {
     color: rgba(255,255,255,0.7);
 }
 #browser .editing .command-tools {

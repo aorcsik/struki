@@ -17,8 +17,14 @@ define([
             var SequenceBrowserView = require('views/browser/sequence');
             this.loop_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
             this.listenTo(this.model, "debugstop", function() {
+                $(".evaluating").removeClass("error");
                 $(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("evaluating");
+            });
+            this.listenTo(this.model, "errorstop", function() {
+                $(".evaluating").removeClass("error");
+                $(".evaluating").removeClass("evaluating");
+                self.$el.children(".command-line").addClass("error");
             });
         },
         onClose: function() {

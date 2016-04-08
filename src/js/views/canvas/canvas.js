@@ -24,7 +24,8 @@ define([
             "loop_inset": 20,
             "default_color": "#000000",
             "active_color": "#ffffff",
-            "active_background": "rgb(0,150,136)"
+            "active_background": "rgb(0,150,136)",
+            "error_background": "rgb(200,0,0)"
         },
         events: {
             "click": "onClickHandler"

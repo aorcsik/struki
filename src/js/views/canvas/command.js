@@ -7,7 +7,7 @@ define([
         lines: [],
         size: null,
         position: null,
-        debugstop: false,
+        highlight: null,
         initialize: function() {
             var self = this;
             this.position = {
@@ -19,9 +19,12 @@ define([
                 'height': 0
             };
             this.listenTo(this.model, "debugstop", function() {
-                // console.log("debugstop -> redraw", self);
-                self.trigger("redraw", {'debugstop': self});
-                self.debugstop = true;
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "active_background";
+            });
+            this.listenTo(this.model, "errorstop", function() {
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "error_background";
             });
         },
         onClose: function() {},
@@ -62,8 +65,8 @@ define([
             this.size.width = 0;
             this.size.height = 0;
 
-            if (fix_width && lines && lines[line] && this.debugstop) {
-                ctx.fillStyle = design.active_background;
+            if (fix_width && lines && lines[line] && this.highlight) {
+                ctx.fillStyle = design[this.highlight];
                 ctx.fillRect(x, y, fix_width, lines[line]);
                 ctx.fillStyle = design.active_color;
             }
@@ -84,9 +87,9 @@ define([
             this.size.height += lines && lines[line] || height;
             this.lines[line] = this.size.height;
 
-            if (fix_width && this.debugstop) {
+            if (fix_width && this.highlight) {
                 ctx.fillStyle = design.default_color;
-                this.debugstop = false;
+                this.highlight = false;
             }
 
             if (fix_width) {

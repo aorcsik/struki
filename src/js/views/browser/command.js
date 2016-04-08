@@ -12,8 +12,14 @@ define([
         initialize: function() {
             var self = this;
             this.listenTo(this.model, "debugstop", function() {
+                $(".evaluating").removeClass("error");
                 $(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("evaluating");
+            });
+            this.listenTo(this.model, "errorstop", function() {
+                $(".evaluating").removeClass("error");
+                $(".evaluating").removeClass("evaluating");
+                self.$el.children(".command-line").addClass("error");
             });
         },
         onClose: function() {

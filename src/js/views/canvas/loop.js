@@ -9,7 +9,7 @@ define([
         size: null,
         position: null,
         loop_sequence: null,
-        debugstop: false,
+        highlight: null,
         initialize: function() {
             var self = this;
             this.size = {
@@ -23,13 +23,15 @@ define([
             var SequenceCanvasView = require('views/canvas/sequence');
             this.loop_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
             this.listenTo(this.loop_sequence, "redraw", function(e) {
-                // console.log("redraw -> redraw", e);
                 self.trigger("redraw", e);
             });
             this.listenTo(this.model, "debugstop", function() {
-                // console.log("debugstop -> redraw", self);
-                self.trigger("redraw", {'debugstop': self});
-                self.debugstop = true;
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "active_background";
+            });
+            this.listenTo(this.model, "errorstop", function() {
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "error_background";
             });
         },
         onClose: function() {
@@ -78,8 +80,8 @@ define([
             this.size.height = 0;
             this.size.width = 0;
             if (this.model.get("range") || !this.model.get("test_after")) {
-                if (fix_width && lines && lines[line] && this.debugstop) {
-                    ctx.fillStyle = design.active_background;
+                if (fix_width && lines && lines[line] && this.highlight) {
+                    ctx.fillStyle = design[this.highlight];
                     ctx.fillRect(x, y, fix_width, lines[line]);
                     ctx.fillStyle = design.active_color;
                     active_height = lines[line] - 0.5;
@@ -101,7 +103,7 @@ define([
                 this.size.height += lines && lines[line] || height;
                 this.lines[line++] = height;
 
-                if (fix_width && this.debugstop) {
+                if (fix_width && this.highlight) {
                     ctx.fillStyle = design.default_color;
                 }
             }
@@ -125,8 +127,8 @@ define([
                 line++;
             }
             if (!this.model.get("range") && this.model.get("test_after")) {
-                if (fix_width && lines && lines[line] && this.debugstop) {
-                    ctx.fillStyle = design.active_background;
+                if (fix_width && lines && lines[line] && this.highlight) {
+                    ctx.fillStyle = design[this.highlight];
                     ctx.fillRect(x, y + this.size.height, fix_width, lines[line]);
                     ctx.fillStyle = design.active_color;
                     active_inset = lines[line] - 0.5;
@@ -148,16 +150,16 @@ define([
                 this.size.height += lines && lines[line] || height;
                 this.lines[line++] = height;
 
-                if (fix_width && this.debugstop) {
+                if (fix_width && this.highlight) {
                     ctx.fillStyle = design.default_color;
                 }
             }
 
-            if (fix_width && this.debugstop) {
-                ctx.fillStyle = design.active_background;
+            if (fix_width && this.highlight) {
+                ctx.fillStyle = design[this.highlight];
                 ctx.fillRect(x, y + active_height, design.loop_inset - 0.5, this.size.height - active_inset - active_height);
                 ctx.fillStyle = design.default_color;
-                this.debugstop = false;
+                this.highlight = false;
             }
 
 
