@@ -3,17 +3,17 @@ define([
     'underscore',
     'backbone',
     'models/variable',
-    'views/browser/sequence',
-    'text!../../../templates/browser/variable.html',
-    'text!../../../templates/browser/struktogram.html',
-    'text!../../../templates/browser/add_dropdown.html',
-], function($, _, Backbone, Variable, SequenceBrowserView, variableTemplate, struktogramTemplate, addDropdownTemplate){
-    var StruktogramBrowserView = Backbone.View.extend({
+    'views/editor/sequence',
+    'text!../../../templates/editor/variable.html',
+    'text!../../../templates/editor/struktogram.html',
+    'text!../../../templates/editor/add_dropdown.html',
+], function($, _, Backbone, Variable, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate, editorAddDropdownTemplate){
+    var EditorStruktogramView = Backbone.View.extend({
         className: "struktogram",
         main_sequence: null,
-        template: _.template(struktogramTemplate),
-        vartemp: _.template(variableTemplate),
-        adddroptemp: _.template(addDropdownTemplate),
+        template: _.template(editorStruktogramTemplate),
+        vartemp: _.template(editorVariableTemplate),
+        adddroptemp: _.template(editorAddDropdownTemplate),
         events: {
             "click .remove-command": "removeCommand",
             "click .add-command": "addCommand",
@@ -28,7 +28,7 @@ define([
         initialize: function() {
             var self = this,
                 render_timeout = null;
-            this.main_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
+            this.main_sequence = new EditorSequenceView({'model': this.model.get("sequence")});
             this.listenTo(this.model, "change", function(e) {
                 // TODO: better handling of callback timing
                 window.clearTimeout(render_timeout);
@@ -256,5 +256,5 @@ define([
             return this;
         }
     });
-    return StruktogramBrowserView;
+    return EditorStruktogramView;
 });

@@ -2,28 +2,26 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/browser/loop',
-    'views/browser/command',
-    'views/browser/conditional',
-    'text!../../../templates/browser/sequence.html'
-], function($, _, Backbone, LoopBrowserView, CommandBrowserView, ConditionalBrowserView, sequenceTemplate) {
-    var SequenceBrowserView = Backbone.View.extend({
+    'views/editor/loop',
+    'views/editor/command',
+    'views/editor/conditional',
+    'text!../../../templates/editor/sequence.html'
+], function($, _, Backbone, EditorLoopView, EditorCommandView, EditorConditionalView, editorSequenceTemplate) {
+    var EditorSequenceView = Backbone.View.extend({
         tagName: "ul",
         depth: 0,
         className: "sequence sortable-sequence",
         commands: null,
-        template: _.template(sequenceTemplate),
+        template: _.template(editorSequenceTemplate),
 
         initialize: function() {
             var self = this;
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
-                self.commands.splice(idx, 0, self.createCommandBrowserView(command));
-                // console.log("browser:add");
+                self.commands.splice(idx, 0, self.createEditorCommandView(command));
             });
             this.listenTo(this.model, "change:remove", function(command, idx) {
                 self.commands.splice(idx, 1);
-                // console.log("browser:remove");
             });
         },
         onClose: function() {
@@ -34,13 +32,13 @@ define([
         updateCommands: function() {
             var self = this;
             this.commands = this.model.get("commands").map(function(command) {
-                return self.createCommandBrowserView(command);
+                return self.createEditorCommandView(command);
             });
         },
-        createCommandBrowserView: function(command) {
-            if (command._type == "loop") return new LoopBrowserView({'model': command});
-            if (command._type == "command") return new CommandBrowserView({'model': command});
-            if (command._type == "conditional") return new ConditionalBrowserView({'model': command});
+        createEditorCommandView: function(command) {
+            if (command._type == "loop") return new EditorLoopView({'model': command});
+            if (command._type == "command") return new EditorCommandView({'model': command});
+            if (command._type == "conditional") return new EditorConditionalView({'model': command});
         },
         setDepth: function(depth) {
             this.depth = depth;
@@ -64,5 +62,5 @@ define([
             return this;
         }
     });
-    return SequenceBrowserView;
+    return EditorSequenceView;
 });

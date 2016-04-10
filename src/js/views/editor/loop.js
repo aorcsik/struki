@@ -3,19 +3,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!../../../templates/browser/loop.html'
-], function(require, $, _, Backbone, loopTemplate) {
-    var LoopCanvasView = Backbone.View.extend({
+    'text!../../../templates/editor/loop.html'
+], function(require, $, _, Backbone, editorLoopTemplate) {
+    var EditorLoopView = Backbone.View.extend({
         tagName: "li",
         className: "loop",
         loop_sequence: null,
-        template: _.template(loopTemplate),
+        template: _.template(editorLoopTemplate),
         depth: 0,
 
         initialize: function() {
             var self = this;
-            var SequenceBrowserView = require('views/browser/sequence');
-            this.loop_sequence = new SequenceBrowserView({'model': this.model.get("sequence")});
+            var EditorSequenceView = require('views/editor/sequence');
+            this.loop_sequence = new EditorSequenceView({'model': this.model.get("sequence")});
             this.listenTo(this.model, "debugstop", function() {
                 self.$el.closest(".struktogram").find(".error").removeClass("error");
                 self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
@@ -55,5 +55,5 @@ define([
             return this;
         }
     });
-    return LoopCanvasView;
+    return EditorLoopView;
 });

@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/browser/struktogram',
+    'views/editor/struktogram',
     'text!../../templates/ui-editor.html'
-], function($, _, Backbone, StruktogramBrowserView, UIEditorTemplate){
+], function($, _, Backbone, EditorStruktogramView, UIEditorTemplate){
     var UIEditorView = Backbone.View.extend({
         className: "ui-editor",
         events: {
@@ -37,7 +37,7 @@ define([
         },
 
         openDocument: function(doc) {
-            this.struktogram = new StruktogramBrowserView({'model': doc.get("struktogram")});
+            this.struktogram = new EditorStruktogramView({'model': doc.get("struktogram")});
             this.listenTo(doc, "change", function(e) {
                 $(".evaluating").removeClass("evaluating");
             });
