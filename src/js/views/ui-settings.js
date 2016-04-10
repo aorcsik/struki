@@ -2,13 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!../../templates/settings.html'
-], function($, _, Backbone, settingsTemplate){
-    var SettingsView = Backbone.View.extend({
+    'text!../../templates/ui-settings.html'
+], function($, _, Backbone, UISettingsTemplate){
+    var UISettingsView = Backbone.View.extend({
         events: {
             "click .btn-primary": "saveSettings"
         },
-        template: _.template(settingsTemplate),
+        template: _.template(UISettingsTemplate),
 
         initialize: function() {
 
@@ -36,5 +36,5 @@ define([
             return this;
         }
     });
-    return SettingsView;
+    return UISettingsView;
 });

@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/settings',
+    'views/ui-settings',
     'text!../../templates/ui-toolbar.html'
-], function($, _, Backbone, SettingsView, UIToolbarTemplate){
+], function($, _, Backbone, UISettingsView, UIToolbarTemplate){
     var UIToolbarView = Backbone.View.extend({
         className: "ui-toolbar navbar navbar-inverse",
         events: {
@@ -44,7 +44,7 @@ define([
         },
 
         openSettings: function() {
-            var settings = new SettingsView({'model': this.model});
+            var settings = new UISettingsView({'model': this.model});
             settings.$el.appendTo($("body"));
             settings.render();
         },
