@@ -1,0 +1,195 @@
+.ui-editor {
+    position: absolute;
+    width: 300px;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+}
+
+.ui-editor ul {
+    margin: 0;
+    padding: 5px 0;
+    list-style: none;
+}
+.ui-editor .struktogram-container {
+    overflow: auto;
+}
+.ui-editor .command-line {
+    clear: both;
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    position: relative;
+}
+.ui-editor .command-line .command-line,
+.ui-editor ul.sequence .command-line {
+    height: 30px;
+    padding: 5px;
+}
+.ui-editor .title {
+    padding: 5px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.ui-editor ul.drag-over {
+    background: rgba(55, 123, 181, 0.3);
+}
+.ui-editor ul.drag-over > .sort-placeholder {
+    background: rgba(55, 123, 181, 0.3);
+}
+
+.ui-editor .struktogram-container .material-icons {
+    font-size: 16px;
+}
+.ui-editor .struktogram-container .icon,
+.ui-editor .struktogram-container .command-tools {
+    position: absolute;
+    top: 8px;
+}
+.ui-editor .icon {
+    left: 5px;
+    opacity: 0.8;
+}
+.ui-editor .command-tools  {
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity .3s;
+    display: none;
+}
+.ui-editor .save-command { right: 6px; opacity: 0.3; }
+.ui-editor .close-struktogram,
+.ui-editor .remove-command { right: 6px; }
+.ui-editor .edit-command { right: 26px; }
+.ui-editor .add-command { right: 46px; }
+
+.ui-editor .command-line:hover > .command-tools  {
+    display: block;
+    opacity: 0.5;
+}
+.ui-editor .command-line:hover > .command-tools:hover {
+    opacity: 1.0;
+}
+
+.ui-editor .command-padding {
+    float: left;
+    margin-left: 28px;
+    height: 20px;
+}
+.ui-editor .syntactic-sugar {
+    color: #3F51B5;
+}
+.ui-editor .sort-placeholder {
+    height: 30px;
+    /*border: 2px dashed #3F51B5;*/
+    border-radius: 5px;
+}
+.ui-editor .ui-sortable-helper {
+    background: #fff;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    opacity: 0.5;
+
+}
+
+.ui-editor .command-line:hover,
+.ui-editor .editing {
+    background: rgb(51, 122, 183);
+    color: #fff;
+    border: 0;
+}
+.ui-editor .evaluating {
+    background: rgb(0, 150, 136);
+    color: #fff;
+    border: 0;
+}
+.ui-editor .error {
+    background: rgb(200, 0, 0);
+    color: #fff;
+    border: 0;
+}
+
+.ui-editor .command-line:hover .syntactic-sugar,
+.ui-editor .editing .syntactic-sugar,
+.ui-editor .evaluating .syntactic-sugar,
+.ui-editor .error .syntactic-sugar {
+    color: rgba(255,255,255,0.7);
+}
+.ui-editor .editing .command-tools {
+    display: block;
+}
+.ui-editor form {
+    overflow: auto;
+    border: 2px solid rgb(51, 122, 183);
+    border-top: 0;
+}
+
+.ui-editor .form-header {
+    background: #ddd;
+    padding: 3px 5px;
+    margin: 0;
+}
+.ui-editor .form-header .material-icons {
+    margin-top: 3px;
+    margin-right: 3px;
+    cursor: pointer;
+    float: right;
+}
+.ui-editor .form-header > div {
+    padding: 0;
+}
+.ui-editor .form-group {
+    margin: 0;
+    overflow: auto;
+}
+.ui-editor .form-group > div {
+    padding: 0 5px;
+}
+.ui-editor .form-group select,
+.ui-editor .form-group input[type='text'],
+.ui-editor .form-group textarea {
+    width: 100%;
+    margin: 0;
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
+}
+.ui-editor .form-control {
+    height: 25px;
+}
+.ui-editor select.form-control,
+.ui-editor textarea.form-control {
+    height: auto;
+}
+.ui-editor .form-group label.control-label {
+    margin-top: 10px;
+}
+.ui-editor .remove-parameter,
+.ui-editor .remove-variable {
+    float: right;
+    margin: 8px 3px 0 0;
+    cursor: pointer;
+}
+
+.ui-editor .command-dropdown {
+    position: absolute;
+    background: #fff;
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    right: 46px;
+    top: 8px;
+    color: #000;
+}
+.ui-editor .command-dropdown li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+}
+.ui-editor .command-dropdown li:hover {
+    background: rgb(51, 122, 183);
+    color: #fff;
+}

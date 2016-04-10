@@ -12,13 +12,13 @@ define([
         initialize: function() {
             var self = this;
             this.listenTo(this.model, "debugstop", function() {
-                $("#browser .error").removeClass("error");
-                $("#browser .evaluating").removeClass("evaluating");
+                self.$el.closest(".struktogram").find(".error").removeClass("error");
+                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("evaluating");
             });
             this.listenTo(this.model, "errorstop", function() {
-                $("#browser .error").removeClass("error");
-                $("#browser .evaluating").removeClass("evaluating");
+                self.$el.closest(".struktogram").find(".error").removeClass("error");
+                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
                 self.$el.children(".command-line").addClass("error");
             });
         },

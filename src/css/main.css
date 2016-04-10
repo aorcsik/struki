@@ -26,27 +26,8 @@ html, body {
 }
 
 
-#browser, #properties, #watcher, #output {
-    position: absolute;
-}
-
-
-#browser, #properties {
-    width: 300px;
-}
-
-#browser {
-    left: 0;
-    bottom: 0;
-    background: #fff;
-}
-
-#properties {
-    right: 0;
-    border-left: 1px solid #333;
-}
-
 #watcher, #output {
+    position: absolute;
     height: 200px;
     bottom: 0;
 }
@@ -54,11 +35,12 @@ html, body {
 #output {
     padding: 10px 7px 10px 15px;
 }
-#watcher .panel, #output .panel {
+#watcher .panel,
+#output .panel {
     height: 100%;
 }
 
-#browser .vertical-divider,
+.ui-editor .vertical-divider,
 #output .vertical-divider {
     position: absolute;
     top: 50%;
@@ -71,7 +53,7 @@ html, body {
     cursor: ew-resize;
     z-index: 1000;
 }
-#browser .vertical-divider {
+.ui-editor .vertical-divider {
     right: -15px;
 }
 #output .horizontal-divider {
@@ -86,203 +68,6 @@ html, body {
     cursor: ns-resize;
     z-index: 1000;
 }
-
-#browser ul {
-    margin: 0;
-    padding: 5px 0;
-    list-style: none;
-}
-#browser .sorting ul, #browser ul.empty-sequence {
-    /* padding: 0 0 5px 0; */
-}
-/* #browser ul.drag-over {
-    background: rgba(63, 81, 181, 0.1);
-} */
-
-#browser .struktogram-container {
-    overflow: auto;
-}
-#browser .command-line {
-    clear: both;
-    font-family: "Ubuntu Mono", "Courier New", monospace;
-    position: relative;
-}
-#browser .command-line .command-line,
-#browser ul.sequence .command-line {
-    height: 30px;
-    padding: 5px;
-}
-#browser .title {
-    padding: 5px;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-#browser ul.drag-over {
-    background: rgba(55, 123, 181, 0.3);
-}
-#browser ul.drag-over > .sort-placeholder {
-    background: rgba(55, 123, 181, 0.3);
-}
-
-#browser .struktogram-container .material-icons {
-    font-size: 16px;
-}
-#browser .struktogram-container .icon,
-#browser .struktogram-container .command-tools {
-    position: absolute;
-    top: 8px;
-}
-#browser .icon {
-    left: 5px;
-    opacity: 0.8;
-}
-#browser .command-tools  {
-    opacity: 0;
-    cursor: pointer;
-    transition: opacity .3s;
-    display: none;
-}
-#browser .save-command { right: 6px; opacity: 0.3; }
-#browser .close-struktogram,
-#browser .remove-command { right: 6px; }
-#browser .edit-command { right: 26px; }
-#browser .add-command { right: 46px; }
-
-#browser .command-line:hover > .command-tools  {
-    display: block;
-    opacity: 0.5;
-}
-#browser .command-line:hover > .command-tools:hover {
-    opacity: 1.0;
-}
-
-#browser .command-padding {
-    float: left;
-    margin-left: 28px;
-    height: 20px;
-}
-#browser .syntactic-sugar {
-    color: #3F51B5;
-}
-#browser .sort-placeholder {
-    height: 30px;
-    /*border: 2px dashed #3F51B5;*/
-    border-radius: 5px;
-}
-#browser .ui-sortable-helper {
-    background: #fff;
-    border-radius: 5px;
-    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-    opacity: 0.5;
-
-}
-
-#browser .command-line:hover,
-#browser .editing {
-    background: rgb(51, 122, 183);
-    color: #fff;
-    border: 0;
-}
-#browser .evaluating {
-    background: rgb(0, 150, 136);
-    color: #fff;
-    border: 0;
-}
-#browser .error {
-    background: rgb(200, 0, 0);
-    color: #fff;
-    border: 0;
-}
-
-#browser .command-line:hover .syntactic-sugar,
-#browser .editing .syntactic-sugar,
-#browser .evaluating .syntactic-sugar,
-#browser .error .syntactic-sugar {
-    color: rgba(255,255,255,0.7);
-}
-#browser .editing .command-tools {
-    display: block;
-}
-#browser form {
-    overflow: auto;
-    border: 2px solid rgb(51, 122, 183);
-    border-top: 0;
-}
-
-#browser .form-header {
-    background: #ddd;
-    padding: 3px 5px;
-    margin: 0;
-}
-#browser .form-header .material-icons {
-    margin-top: 3px;
-    margin-right: 3px;
-    cursor: pointer;
-    float: right;
-}
-#browser .form-header > div {
-    padding: 0;
-}
-#browser .form-group {
-    margin: 0;
-    overflow: auto;
-}
-#browser .form-group > div {
-    padding: 0 5px;
-}
-#browser .form-group select,
-#browser .form-group input[type='text'],
-#browser .form-group textarea {
-    width: 100%;
-    margin: 0;
-    font-family: "Ubuntu Mono", "Courier New", monospace;
-    font-size: 1.0em;
-}
-#browser .form-control {
-    height: 25px;
-}
-#browser select.form-control,
-#browser textarea.form-control {
-    height: auto;
-}
-#browser .form-group label.control-label {
-    margin-top: 10px;
-}
-#browser .remove-parameter,
-#browser .remove-variable {
-    float: right;
-    margin: 8px 3px 0 0;
-    cursor: pointer;
-}
-
-#browser .command-dropdown {
-    position: absolute;
-    background: #fff;
-    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-    z-index: 1000;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    right: 46px;
-    top: 8px;
-    color: #000;
-}
-#browser .command-dropdown li {
-    padding: 5px 10px;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
-}
-#browser .command-dropdown li:hover {
-    background: rgb(51, 122, 183);
-    color: #fff;
-}
-
-
 
 #watcher {
     right: 0;

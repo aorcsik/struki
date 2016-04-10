@@ -8,7 +8,7 @@ define([
 ], function($, _, Backbone, Context, Document, FunctionWrapper) {
     var UI = Backbone.Model.extend({
         defaults: {
-            'browser_width':  [300, "px"],
+            'editor_width':  [300, "px"],
             'output_width':   [ 50, "%" ],
             'output_height':  [200, "px"],
 
@@ -106,10 +106,10 @@ define([
         getWindowHeight: function() {
             return this.get("window_height");
         },
-        getBrowserWidth: function(max_width, min_width) {
+        getEditorWidth: function(max_width, min_width) {
             min_width = min_width || 0;
             max_width = max_width || this.get("window_width");
-            return Math.max(min_width, Math.min(max_width - min_width, Math.floor(this.getObjectSize("browser_width", max_width))));
+            return Math.max(min_width, Math.min(max_width - min_width, Math.floor(this.getObjectSize("editor_width", max_width))));
         },
         getOutputWidth: function(max_width, min_width) {
             min_width = min_width || 0;

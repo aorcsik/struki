@@ -3,14 +3,14 @@ define([
     'underscore',
     'backbone',
     'views/browser/struktogram',
-    'text!../../templates/browser.html'
-], function($, _, Backbone, StruktogramBrowserView, browserTemplate){
-    var BrowserView = Backbone.View.extend({
-        id: "browser",
+    'text!../../templates/ui-editor.html'
+], function($, _, Backbone, StruktogramBrowserView, UIEditorTemplate){
+    var UIEditorView = Backbone.View.extend({
+        className: "ui-editor",
         events: {
             "click .close-struktogram": "closeDocument"
         },
-        template: _.template(browserTemplate),
+        template: _.template(UIEditorTemplate),
         stuktogram: null,
 
         initialize: function() {
@@ -55,5 +55,5 @@ define([
             return this;
         }
     });
-    return BrowserView;
+    return UIEditorView;
 });
