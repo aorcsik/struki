@@ -78,7 +78,7 @@ define([
 
             if (fix_width && lines && lines[line] && this.highlight) {
                 ctx.fillStyle = design[this.highlight];
-                ctx.fillRect(x, y, fix_width, lines[line]);
+                ctx.fillRect(x, y, solo || fix_width, lines[line]);
                 ctx.fillStyle = design.active_color;
             }
 
@@ -160,6 +160,7 @@ define([
                     ctx.lineTo(x, y + this.size.height + (lines && lines[line] || height));
                     ctx.stroke();
                     ctx.font = 14 + "px " + design.font_family;
+                    ctx.fillStyle = design.default_color;
                     ctx.fillText(
                         "I",
                         x + 3,

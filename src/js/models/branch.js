@@ -46,7 +46,7 @@ define([
         evaluateCondition: function(context) {
             try {
                 // this.trigger("evaluate", this);
-                return context.evaluateCondition(this.get("condition") || "I");
+                return this.get("condition") ? context.evaluateCondition(this.get("condition")) : true;
             } catch (e) {
                 if (e.match && e.match(/^Compile/)) this.trigger("errorstop", this);
                 if (e == "DEBUG STOP") this.trigger("debugstop", this);
