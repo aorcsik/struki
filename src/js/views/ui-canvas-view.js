@@ -4,15 +4,15 @@
     'backbone',
     'models/variable',
     'views/canvas/canvas',
-    'text!../../templates/editor.html'
-], function($, _, Backbone, Variable, CanvasView, editorTemplate){
-    var EditorView = Backbone.View.extend({
-        id: "editor",
+    'text!../../templates/ui-canvas-view.html'
+], function($, _, Backbone, Variable, CanvasView, UICanvasViewTemplate){
+    var UICanvasView = Backbone.View.extend({
+        className: "ui-canvas-view",
         events: {
             "click .panel-heading li": "handleSelectTab",
             "click .panel-heading li .close-tab": "handleCloseTab"
         },
-        template: _.template(editorTemplate),
+        template: _.template(UICanvasViewTemplate),
         canvas: null,
 
         initialize: function() {
@@ -66,5 +66,5 @@
             return this;
         }
     });
-    return EditorView;
+    return UICanvasView;
 });

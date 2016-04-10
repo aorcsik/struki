@@ -82,7 +82,7 @@ define([
         },
 
         getPNGDownloadLink: function() {
-            var img = $("#editor canvas")[0].toDataURL("image/png"),
+            var img = this.$el.find("canvas")[0].toDataURL("image/png"),
                 filename = this.model.get("active_document").get("struktogram").get("name") + ".png";
             if (navigator.msSaveBlob) {
                 var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");

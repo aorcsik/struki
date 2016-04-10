@@ -7,9 +7,9 @@ define([
     'views/output',
     'views/watcher',
     'views/properties',
-    'views/editor',
+    'views/ui-canvas-view',
     'text!../../examples/struki.json'
-], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, EditorView, exampleJSON){
+], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
@@ -28,7 +28,7 @@ define([
             this.output = new OutputView({'model': this.model});
             this.watcher = new WatcherView({'model': this.model});
             this.properties = new PropertiesView({'model': this.model});
-            this.editor = new EditorView({'model': this.model});
+            this.canvas = new UICanvasView({'model': this.model});
 
             this.listenTo(this.model, 'change', function() {
                 self.updateLayout();
@@ -100,14 +100,14 @@ define([
                 'width': window_width - browser_width - output_width,
                 'height': output_height
             });
-            this.editor.$el.css({
+            this.canvas.$el.css({
                 'right': 0,
                 'top': toolbar_height,
                 'left': browser_width,
                 'bottom': output_height
             });
-            this.editor.$el.find(".canvas-container").css({
-                'height': this.editor.$el.height() - this.editor.$el.find(".panel-heading").outerHeight()
+            this.canvas.$el.find(".canvas-container").css({
+                'height': this.canvas.$el.height() - this.canvas.$el.find(".panel-heading").outerHeight()
             });
             this.browser.$el.find(".struktogram-container").css({
                 'height': this.browser.$el.height()
@@ -128,14 +128,14 @@ define([
             this.output.$el.appendTo(this.$el);
             this.watcher.$el.appendTo(this.$el);
             this.properties.$el.appendTo(this.$el).hide();
-            this.editor.$el.appendTo(this.$el);
+            this.canvas.$el.appendTo(this.$el);
 
             this.toolbar.render();
             this.browser.render();
             this.output.render();
             this.watcher.render();
             this.properties.render();
-            this.editor.render();
+            this.canvas.render();
 
             this.model.updateWindowSize($(window).width(), $(window).height());
             $(window).resize(function() {

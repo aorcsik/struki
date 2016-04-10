@@ -1,0 +1,67 @@
+.ui-canvas-view {
+    padding: 10px 10px 10px 15px;
+}
+.ui-canvas-view .panel-heading {
+    padding: 0;
+}
+.ui-canvas-view .panel-heading ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: auto;
+}
+.ui-canvas-view .panel-heading ul li {
+    float: left;
+    background: #fff;
+    height: 40px;
+    padding: 10px;
+    margin-right: 1px;
+    cursor: pointer;
+    transition: background .3s;
+}
+.ui-canvas-view .panel-heading ul li .close-tab {
+    float: right;
+    margin: 2px 0 0 5px;
+    font-size: 1.2em;
+    opacity: 0;
+
+    transition: opacity .3s;
+}
+.ui-canvas-view .panel-heading ul li:hover .close-tab {
+    opacity: 0.3;
+}
+.ui-canvas-view .panel-heading ul li:hover .close-tab:hover {
+    opacity: 1;
+}
+.ui-canvas-view .panel-heading ul li:hover {
+    background: rgba(63, 81, 181, 0.05);
+}
+.ui-canvas-view .panel-heading ul .active {
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3F51B5;
+}
+.ui-canvas-view .empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 2.0em;
+    opacity: 0.3;
+    width: 80%;
+}
+.ui-canvas-view .empty strong {
+    position: relative;
+    display: inline-block;
+    padding-left: 30px;
+}
+.ui-canvas-view .empty .material-icons {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 1.0em;
+}
+.ui-canvas-view .canvas-container {
+    text-align: center;
+    overflow: auto;
+}
