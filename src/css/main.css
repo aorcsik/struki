@@ -26,19 +26,8 @@ html, body {
 }
 
 
-#watcher, #output {
-    position: absolute;
-    height: 200px;
-    bottom: 0;
-}
 
-#output {
-    padding: 10px 7px 10px 15px;
-}
-#watcher .panel,
-#output .panel {
-    height: 100%;
-}
+
 
 .ui-editor .vertical-divider,
 #output .vertical-divider {
@@ -69,93 +58,39 @@ html, body {
     z-index: 1000;
 }
 
-#watcher {
-    right: 0;
-    padding: 10px 10px 10px 7px;
-}
-#watcher .panel-body {
-    overflow: auto;
-}
-#watcher .form-group {
-    margin: 0;
-    overflow: auto;
-    padding: 0;
-}
-#watcher .form-group > div,
-#watcher .form-group > label {
-    padding: 0;
-}
-#watcher .form-group label {
-    padding-left: 10px;
-}
-#watcher .form-group label,
-#watcher .form-group input,
-#watcher .form-group .context-data {
-    font-family: "Ubuntu Mono", "Courier New", monospace;
-    font-size: 1.0em;
-}
-#watcher .form-control {
-    height: 25px;
-}
-#watcher .form-group label.control-label {
-    margin-top: 6px;
-}
-
-#output .panel-heading,
-#watcher .panel-heading {
+.ui-panel .panel-heading {
     padding: 0;
     height: 35px;
 }
-#output .panel-title,
-#watcher .debug-counter {
+.ui-panel .panel-title,
+.ui-watcher .debug-counter {
     padding: 7px 10px;
     color: #999;
     height: 35px;
 }
-#watcher .debug-counter {
+
+.ui-panel .control-reset {
     float: right;
 }
-#watcher .context-header {
-    background: #ddd;
-    padding: 3px 5px;
-    margin: 0;
-}
-#output .control-reset,
-#watcher .control-reset {
-    float: right;
-}
-#output .btn,
-#watcher .btn {
+.ui-panel .btn {
     height: 35px;
     padding: 5px 10px;
     margin: 0;
 }
-#output .panel-body,
-#watcher .panel-body {
+.ui-panel .panel-body {
     overflow: auto;
     padding: 0;
 }
 
-#watcher_modal .text-danger {
-    padding-left: 30px;
-    position: relative;
-}
-#watcher_modal .text-danger .material-icons {
+#output {
     position: absolute;
-    left: 0;
-    margin-top: -2px;
+    height: 200px;
+    bottom: 0;
+    padding: 10px 7px 10px 15px;
 }
-
-#settings_modal .modal-header {
-    padding-left: 45px;
-    position: relative;
+#output .panel {
+    height: 100%;
 }
-#settings_modal .modal-header .material-icons {
-    position: absolute;
-    left: 15px;
-    margin-top: 1px;
-}
-
 #output .panel-body {
     font-family: "Ubuntu Mono", "Courier New", monospace;
     font-size: 1.0em;

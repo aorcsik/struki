@@ -101,7 +101,7 @@ define([
         },
 
         run: function() {
-            $("#watcher").data("view").run();
+            $(".ui-watcher").data("view").run();
         },
 
         render: function() {

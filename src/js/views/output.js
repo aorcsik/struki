@@ -6,6 +6,7 @@ define([
 ], function($, _, Backbone, outputTemplate){
     var OutputView = Backbone.View.extend({
         id: "output",
+        className: "ui-panel",
         events: {
             "click .control-reset": "clear"
         },

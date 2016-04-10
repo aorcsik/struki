@@ -5,11 +5,10 @@ define([
     'views/ui-toolbar',
     'views/ui-editor',
     'views/output',
-    'views/watcher',
-    'views/properties',
+    'views/ui-watcher',
     'views/ui-canvas',
     'text!../../examples/struki.json'
-], function($, _, Backbone, UIToolbarView, UIEditorView, OutputView, WatcherView, PropertiesView, UICanvasView, exampleJSON){
+], function($, _, Backbone, UIToolbarView, UIEditorView, OutputView, UIWatcherView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
@@ -26,8 +25,7 @@ define([
             this.toolbar = new UIToolbarView({'model': this.model});
             this.editor = new UIEditorView({'model': this.model});
             this.output = new OutputView({'model': this.model});
-            this.watcher = new WatcherView({'model': this.model});
-            this.properties = new PropertiesView({'model': this.model});
+            this.watcher = new UIWatcherView({'model': this.model});
             this.canvas = new UICanvasView({'model': this.model});
 
             this.listenTo(this.model, 'change', function() {
@@ -127,14 +125,12 @@ define([
             this.editor.$el.appendTo(this.$el);
             this.output.$el.appendTo(this.$el);
             this.watcher.$el.appendTo(this.$el);
-            this.properties.$el.appendTo(this.$el).hide();
             this.canvas.$el.appendTo(this.$el);
 
             this.toolbar.render();
             this.editor.render();
             this.output.render();
             this.watcher.render();
-            this.properties.render();
             this.canvas.render();
 
             this.model.updateWindowSize($(window).width(), $(window).height());

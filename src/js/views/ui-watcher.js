@@ -3,12 +3,12 @@ define([
     'underscore',
     'backbone',
     'lib/parser',
-    'text!../../templates/watcher.html',
+    'text!../../templates/ui-watcher.html',
     'text!../../templates/watcher/context.html',
     'text!../../templates/watcher/modal.html'
-], function($, _, Backbone, Parser, watcherTemplate, contextTemplate, modalTemplate){
-    var WatcherView = Backbone.View.extend({
-        id: "watcher",
+], function($, _, Backbone, Parser, UIWatcherTemplate, watcherContextTemplate, watcherModalTemplate){
+    var UIWatcherView = Backbone.View.extend({
+        className: "ui-watcher ui-panel",
         events: {
             "click .control-run": "delayed_run",
             "click .control-pause": "pause",
@@ -16,9 +16,9 @@ define([
             "click .control-next": "next",
             "click .control-reset": "reset"
         },
-        template: _.template(watcherTemplate),
-        contexttemp: _.template(contextTemplate),
-        modaltemp: _.template(modalTemplate),
+        template: _.template(UIWatcherTemplate),
+        contexttemp: _.template(watcherContextTemplate),
+        modaltemp: _.template(watcherModalTemplate),
 
         initialize: function() {
             var self = this;
@@ -268,5 +268,5 @@ define([
             return this;
         }
     });
-    return WatcherView;
+    return UIWatcherView;
 });

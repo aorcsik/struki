@@ -1,0 +1,64 @@
+.ui-watcher {
+    position: absolute;
+    height: 200px;
+    bottom: 0;
+    right: 0;
+    padding: 10px 10px 10px 7px;
+}
+.ui-watcher .panel {
+    height: 100%;
+}
+.ui-watcher .panel-body {
+    overflow: auto;
+}
+.ui-watcher .form-group {
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+}
+.ui-watcher .form-group > div,
+.ui-watcher .form-group > label {
+    padding: 0;
+}
+.ui-watcher .form-group label {
+    padding-left: 10px;
+}
+.ui-watcher .form-group label,
+.ui-watcher .form-group input,
+.ui-watcher .form-group .context-data {
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
+}
+.ui-watcher .form-control {
+    height: 25px;
+}
+.ui-watcher .form-group label.control-label {
+    margin-top: 6px;
+}
+.ui-watcher .panel-heading {
+    padding: 0;
+    height: 35px;
+}
+.ui-watcher .debug-counter {
+    padding: 7px 10px;
+    color: #999;
+    height: 35px;
+}
+.ui-watcher .debug-counter {
+    float: right;
+}
+.ui-watcher .context-header {
+    background: #ddd;
+    padding: 3px 5px;
+    margin: 0;
+}
+
+.ui-watcher_modal .text-danger {
+    padding-left: 30px;
+    position: relative;
+}
+.ui-watcher_modal .text-danger .material-icons {
+    position: absolute;
+    left: 0;
+    margin-top: -2px;
+}

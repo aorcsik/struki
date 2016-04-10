@@ -29,3 +29,13 @@
 	position: absolute;
 	z-index: -1;
 }
+
+#settings_modal .modal-header {
+    padding-left: 45px;
+    position: relative;
+}
+#settings_modal .modal-header .material-icons {
+    position: absolute;
+    left: 15px;
+    margin-top: 1px;
+}
