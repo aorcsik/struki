@@ -1,0 +1,31 @@
+.ui-toolbar {
+    margin: 0;
+    width: 100%;
+    position: absolute;
+}
+
+.navbar-nav li i.material-icons {
+    font-size: 1.3em;
+    display: inline-block;
+    margin-top: -2px;
+}
+.navbar-brand strong {
+    display: inline-block;
+    border: 1px solid #fff;
+    padding: 0 8px;
+}
+.navbar-nav > li a {
+    transition: background .3s;
+}
+.navbar .navbar-nav>li>a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+#open_docuemnt_input {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}

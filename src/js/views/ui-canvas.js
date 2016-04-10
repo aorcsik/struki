@@ -7,7 +7,7 @@
     'text!../../templates/ui-canvas.html'
 ], function($, _, Backbone, Variable, CanvasView, UICanvasTemplate){
     var UICanvasView = Backbone.View.extend({
-        className: "ui-canvas-view",
+        className: "ui-canvas",
         events: {
             "click .panel-heading li": "handleSelectTab",
             "click .panel-heading li .close-tab": "handleCloseTab"

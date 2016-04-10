@@ -2,14 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/toolbar',
+    'views/ui-toolbar',
     'views/browser',
     'views/output',
     'views/watcher',
     'views/properties',
     'views/ui-canvas',
     'text!../../examples/struki.json'
-], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, UICanvasView, exampleJSON){
+], function($, _, Backbone, UIToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
@@ -23,7 +23,7 @@ define([
         initialize: function() {
             var self = this;
 
-            this.toolbar = new ToolbarView({'model': this.model});
+            this.toolbar = new UIToolbarView({'model': this.model});
             this.browser = new BrowserView({'model': this.model});
             this.output = new OutputView({'model': this.model});
             this.watcher = new WatcherView({'model': this.model});

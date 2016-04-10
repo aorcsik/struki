@@ -3,11 +3,10 @@ define([
     'underscore',
     'backbone',
     'views/settings',
-    'text!../../templates/toolbar.html'
-], function($, _, Backbone, SettingsView, toolbarTemplate){
-    var ToolbarView = Backbone.View.extend({
-        id: "toolbar",
-        className: "navbar navbar-inverse",
+    'text!../../templates/ui-toolbar.html'
+], function($, _, Backbone, SettingsView, UIToolbarTemplate){
+    var UIToolbarView = Backbone.View.extend({
+        className: "ui-toolbar navbar navbar-inverse",
         events: {
             "click #new_document": "newDocument",
             "click #open_document": "openDocumentDialog",
@@ -16,7 +15,7 @@ define([
             "click #nav_settings": "openSettings",
             "change #open_docuemnt_input": "openDocument"
         },
-        template: _.template(toolbarTemplate),
+        template: _.template(UIToolbarTemplate),
 
         initialize: function() {
             var self = this;
@@ -112,5 +111,5 @@ define([
             return this;
         }
     });
-    return ToolbarView;
+    return UIToolbarView;
 });
