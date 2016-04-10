@@ -1,0 +1,15 @@
+.ui-output {
+    position: absolute;
+    height: 200px;
+    bottom: 0;
+    padding: 10px 7px 10px 15px;
+}
+.ui-output .panel {
+    height: 100%;
+}
+.ui-output .panel-body {
+    font-family: "Ubuntu Mono", "Courier New", monospace;
+    font-size: 1.0em;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}

@@ -149,7 +149,7 @@ define([
             try {
                 this.get("active_document").get("struktogram").evaluate(parameters, context);
             } catch(e) {
-                if (e.match && e.match(/^Compile/)) $("#output").data("view").error(e);
+                if (e.match && e.match(/^Compile/)) $(".ui-output").data("view").error(e);
                 throw e;
             }
         },

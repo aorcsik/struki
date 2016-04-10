@@ -4,18 +4,18 @@ define([
     'backbone',
     'views/ui-toolbar',
     'views/ui-editor',
-    'views/output',
+    'views/ui-output',
     'views/ui-watcher',
     'views/ui-canvas',
     'text!../../examples/struki.json'
-], function($, _, Backbone, UIToolbarView, UIEditorView, OutputView, UIWatcherView, UICanvasView, exampleJSON){
+], function($, _, Backbone, UIToolbarView, UIEditorView, UIOutputView, UIWatcherView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
             "mousemove": "handleMouseMove",
             "mouseup": "handleMouseUp",
-            "mousedown #output .vertical-divider": "startHorizontalResizeOutput",
-            "mousedown #output .horizontal-divider": "startVerticalResizeOutput",
+            "mousedown .ui-output .vertical-divider": "startHorizontalResizeOutput",
+            "mousedown .ui-output .horizontal-divider": "startVerticalResizeOutput",
             "mousedown .ui-editor .vertical-divider": "startHorizontalResizeEditor"
         },
 
@@ -24,7 +24,7 @@ define([
 
             this.toolbar = new UIToolbarView({'model': this.model});
             this.editor = new UIEditorView({'model': this.model});
-            this.output = new OutputView({'model': this.model});
+            this.output = new UIOutputView({'model': this.model});
             this.watcher = new UIWatcherView({'model': this.model});
             this.canvas = new UICanvasView({'model': this.model});
 

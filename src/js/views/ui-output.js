@@ -2,15 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!../../templates/output.html'
-], function($, _, Backbone, outputTemplate){
-    var OutputView = Backbone.View.extend({
-        id: "output",
-        className: "ui-panel",
+    'text!../../templates/ui-output.html'
+], function($, _, Backbone, UIOutputTemplate){
+    var UIOutputView = Backbone.View.extend({
+        className: "ui-output ui-panel",
         events: {
             "click .control-reset": "clear"
         },
-        template: _.template(outputTemplate),
+        template: _.template(UIOutputTemplate),
 
         initialize: function() {
             var self = this;
@@ -23,9 +22,8 @@ define([
             });
             this.listenTo(this.model, 'flush_output', function(buffer) {
                 var concat = "";
-                buffer.forEach(function(arguments) {
-                    // self.log.apply(self, arguments);
-                    var args = Array.prototype.slice.call(arguments);
+                buffer.forEach(function(args) {
+                    args = Array.prototype.slice.call(args);
                     concat += "<div>" + args.join(", ") + "</div>" + "\n";
                 });
                 this.$el.find(".panel-body").html(concat);
@@ -55,5 +53,5 @@ define([
             return this;
         }
     });
-    return OutputView;
+    return UIOutputView;
 });

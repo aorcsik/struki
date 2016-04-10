@@ -25,12 +25,8 @@ html, body {
     background: rgba(255,255,255,0.9);
 }
 
-
-
-
-
 .ui-editor .vertical-divider,
-#output .vertical-divider {
+.ui-output .vertical-divider {
     position: absolute;
     top: 50%;
     right: -8px;
@@ -45,7 +41,7 @@ html, body {
 .ui-editor .vertical-divider {
     right: -15px;
 }
-#output .horizontal-divider {
+.ui-output .horizontal-divider {
     position: absolute;
     top: 0;
     right: -8px;
@@ -80,20 +76,4 @@ html, body {
 .ui-panel .panel-body {
     overflow: auto;
     padding: 0;
-}
-
-#output {
-    position: absolute;
-    height: 200px;
-    bottom: 0;
-    padding: 10px 7px 10px 15px;
-}
-#output .panel {
-    height: 100%;
-}
-#output .panel-body {
-    font-family: "Ubuntu Mono", "Courier New", monospace;
-    font-size: 1.0em;
-    padding-left: 10px;
-    padding-bottom: 10px;
 }
