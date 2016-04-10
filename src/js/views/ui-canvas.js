@@ -4,15 +4,15 @@
     'backbone',
     'models/variable',
     'views/canvas/canvas',
-    'text!../../templates/ui-canvas-view.html'
-], function($, _, Backbone, Variable, CanvasView, UICanvasViewTemplate){
+    'text!../../templates/ui-canvas.html'
+], function($, _, Backbone, Variable, CanvasView, UICanvasTemplate){
     var UICanvasView = Backbone.View.extend({
         className: "ui-canvas-view",
         events: {
             "click .panel-heading li": "handleSelectTab",
             "click .panel-heading li .close-tab": "handleCloseTab"
         },
-        template: _.template(UICanvasViewTemplate),
+        template: _.template(UICanvasTemplate),
         canvas: null,
 
         initialize: function() {

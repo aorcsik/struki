@@ -7,7 +7,7 @@ define([
     'views/output',
     'views/watcher',
     'views/properties',
-    'views/ui-canvas-view',
+    'views/ui-canvas',
     'text!../../examples/struki.json'
 ], function($, _, Backbone, ToolbarView, BrowserView, OutputView, WatcherView, PropertiesView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
