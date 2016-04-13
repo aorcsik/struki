@@ -4,6 +4,11 @@
     position: absolute;
 }
 
+.unsafe .navbar.navbar-inverse {
+    background: rgb(200, 0, 0);
+}
+
+
 .navbar-nav li i.material-icons {
     font-size: 1.3em;
     display: inline-block;

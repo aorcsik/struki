@@ -66,37 +66,40 @@ define([
             return new Blob([JSON.stringify(json)]);
         },
 
-        getJSONDownalodLink: function() {
+        getJSONDownalodLink: function(text) {
             var json = this.model.get("active_document").toJSON(),
                 filename = this.model.get("active_document").get("struktogram").get("name") + ".json";
             if (navigator.msSaveBlob) {
                 var blob = this.JSONtoBlob(json);
-                return $("<a id='json_download' href='javascript:void(0);'>JSON</a>").on("click", function() {
+                return $("<a id='json_download' href='javascript:void(0);'>" + text + "</a>").on("click", function() {
                     navigator.msSaveBlob(blob, filename);
                 });
             } else {
                 var datauri = this.JSONtoDataURI(json);
-                return $("<a id='json_download' href='" + datauri + "' target='_blank' download='" + filename + "'>JSON</a>");
+                return $("<a id='json_download' href='" + datauri + "' target='_blank' download='" + filename + "'>" + text + "</a>");
             }
         },
 
-        getPNGDownloadLink: function() {
-            var img = this.$el.find("canvas")[0].toDataURL("image/png"),
-                filename = this.model.get("active_document").get("struktogram").get("name") + ".png";
-            if (navigator.msSaveBlob) {
-                var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");
-                return $("<a id='png_download' href='javascript:void(0);'>PNG</a>").on("click", function() {
-                    navigator.msSaveBlob(blob, filename);
-                });
-            } else {
-                return $("<a id='png_download' href='" + img + "' target='_blank' download='" + filename + "'>PNG</a>");
+        getPNGDownloadLink: function(text) {
+            if ($(".ui-canvas canvas").size() > 0) {
+                var img = $(".ui-canvas canvas")[0].toDataURL("image/png"),
+                    filename = this.model.get("active_document").get("struktogram").get("name") + ".png";
+                if (navigator.msSaveBlob) {
+                    var blob = b64toBlob(image.replace("data:image/png;base64,",""),"image/png");
+                    return $("<a id='png_download' href='javascript:void(0);'>" + text + "</a>").on("click", function() {
+                        navigator.msSaveBlob(blob, filename);
+                    });
+                } else {
+                    return $("<a id='png_download' href='" + img + "' target='_blank' download='" + filename + "'>" + text + "</a>");
+                }
             }
+            return $("<span id='png_download'>" + text + "</span>");
         },
 
         updateSaveLinks: function() {
             if (this.model.get("active_document")) {
-                $("#json_download").replaceWith(this.getJSONDownalodLink());
-                $("#png_download").replaceWith(this.getPNGDownloadLink());
+                $("#json_download").replaceWith(this.getJSONDownalodLink($("#json_download").html()));
+                $("#png_download").replaceWith(this.getPNGDownloadLink($("#png_download").html()));
             }
         },
 

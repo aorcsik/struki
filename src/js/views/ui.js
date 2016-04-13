@@ -116,6 +116,12 @@ define([
             this.watcher.$el.find(".panel-body").css({
                 'height': this.watcher.$el.height() - this.watcher.$el.find(".panel-heading").outerHeight()
             });
+
+            if (this.model.get("unsafe")) {
+                this.$el.addClass("unsafe");
+            } else {
+                this.$el.removeClass("unsafe");
+            }
         },
 
         render: function() {
@@ -138,9 +144,9 @@ define([
                 self.model.updateWindowSize($(window).width(), $(window).height());
             });
 
-            window.setTimeout(function() {
-                self.model.openDocumentFromJSON(JSON.parse(exampleJSON));
-            }, 500);
+            // window.setTimeout(function() {
+            //     self.model.openDocumentFromJSON(JSON.parse(exampleJSON));
+            // }, 500);
 
             return this;
         }

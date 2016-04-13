@@ -3,11 +3,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'router',
+    'models/ui',
+    'views/ui',
+    'views/local-storage',
     'bootstrap',
     'bootstrap_material_design',
     'jquery_ui'
-], function($, _, Backbone, Router) {
+], function($, _, Backbone, UI, UIView, LocalStorage) {
 
     Backbone.View.prototype.close = function() {
         // console.log("Close View", this.cid);
@@ -22,7 +24,12 @@ define([
     var App = Backbone.View.extend({
         initialize: function() {
             $.material.init();
-            var router = new Router();
+
+            var ui = new UI(),
+                ui_view = new UIView({'model': ui}),
+                local_storage = new LocalStorage({'model': ui});
+            ui_view.$el.appendTo($("body"));
+            ui_view.render();
         }
     });
 
