@@ -34,12 +34,17 @@ define([
             return doc;
         },
         openDocument: function(doc) {
-            var self = this;
+            var self = this,
+                active_document = this.get("active_document");
+            if (active_document) {
+                this.stopListening(active_document, "change");
+            }
             if (doc !== null) {
                 var idx = this.get("open_documents").indexOf(doc);
                 if (idx < 0) {
                     this.get("open_documents").push(doc);
-                    this.listenTo(doc.get("struktogram"), "change", function() {
+                    this.listenTo(doc, "change", function(e) {
+                        self.trigger("change", e);
                         self.resetContext();
                     });
                 }

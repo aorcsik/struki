@@ -15,7 +15,7 @@
             <% } else { %>
                 <li data-cid="<%= doc.cid %>">
             <% } %>
-                <%= doc.get("struktogram").get("name") %>
+                <span class="document-title"><%= doc.get("struktogram").get("name") %></span>
                 <i class="material-icons close-tab">&#xE14C;</i>
             </li>
             <% }); %>

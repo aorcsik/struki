@@ -22,12 +22,16 @@
                 this.canvas = new CanvasView({'model': self.model.get("active_document")});
             }
             this.listenTo(this.model, "change", function(e) {
-                if (e.changed.active_document === undefined) return;
-                if (self.canvas) {
-                    this.canvas.close();
+                if (e.changed.active_document !== undefined) {
+                    if (self.canvas) {
+                        this.canvas.close();
+                    }
+                    self.canvas = null;
+                    self.render();
                 }
-                self.canvas = null;
-                self.render();
+                if (e.changed.name !== undefined) {
+                    this.$el.find(".active .document-title").text(e.changed.name);
+                }
             });
         },
 
