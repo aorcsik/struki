@@ -7,7 +7,7 @@
         <i class="material-icons command-tools remove-command">&#xE14C;</i>
     <% } %>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
-    <%= model.get("code") %>
+    <%= model.get("code").replace(/\s*return/, "<span class='syntactic-sugar'>return</span>") %>
 </div>
 <% if (edit) { %>
 <form>
