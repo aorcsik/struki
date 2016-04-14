@@ -234,7 +234,7 @@ define([
                         $(".sortable-sequence").removeClass("drag-over");
                         $(event.target).addClass("drag-over");
                         var sequence_depth = $(event.target).data("depth");
-                        // $(ui.placeholder).css("margin-left", (1 + sequence_depth) * 30);
+                        $(ui.placeholder).css("margin-left", (1 + sequence_depth) * 30);
                     },
                     start: function() {
                         self.$el.addClass("sorting");

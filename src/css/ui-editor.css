@@ -7,8 +7,8 @@
 }
 
 .ui-editor ul {
-    margin: 0;
-    padding: 5px 0;
+    margin: 5px 0 0 0;
+    padding: 0;
     list-style: none;
 }
 .ui-editor .struktogram-container {
@@ -21,8 +21,8 @@
 }
 .ui-editor .command-line .command-line,
 .ui-editor ul.sequence .command-line {
-    height: 30px;
-    padding: 5px;
+    height: 25px;
+    padding: 2px;
 }
 .ui-editor .title {
     padding: 5px;
@@ -43,7 +43,7 @@
 .ui-editor .struktogram-container .icon,
 .ui-editor .struktogram-container .command-tools {
     position: absolute;
-    top: 8px;
+    top: 5px;
 }
 .ui-editor .icon {
     left: 5px;
