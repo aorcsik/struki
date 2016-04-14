@@ -160,7 +160,6 @@ define([
             var context = this.get("context"),
                 struktogram = this.get("active_document").get("struktogram"),
                 parameters = [];
-            this.saved_variables = $.extend({}, context.get("variables"));
             struktogram.get("parameters").forEach(function(parameter) {
                 var value = context.get("variables")[parameter.get("name")];
                 if (parameter.get("type") == "Int") {
@@ -186,7 +185,7 @@ define([
         finishRun: function(result) {
             var doc = this.get("active_document");
             doc.set({'_last_run': (new Date()).getTime()});
-            this.trigger("finished_run", result);
+            this.trigger("finished_run", this.get("context").toString(result));
         },
         clearOutputBuffer: function() {
             this.set("output_buffer", []);

@@ -10,7 +10,7 @@ define([
         lines: null,
         size: null,
         position: null,
-        commands: [],
+        commands: null,
 
         initialize: function() {
             var self = this;
@@ -22,6 +22,7 @@ define([
                 "x": 0,
                 "y": 0
             };
+            self.commands = [];
             this.updateCommands();
             this.listenTo(this.model, "change:add", function(command, idx) {
                 self.commands.splice(idx, 0, self.createCommandCanvasView(command));

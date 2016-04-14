@@ -4,7 +4,7 @@ define([
     'backbone'
 ], function($, _, Backbone){
     var CommandCanvasView = Backbone.View.extend({
-        lines: [],
+        lines: null,
         size: null,
         position: null,
         highlight: null,

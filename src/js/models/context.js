@@ -39,7 +39,7 @@ define([
                 if (value.constructor === String) return ("\"" + value.replace(/[\\"]/, "\\$1") + "\"").replace(/"/g, '&quot;');
                 if (value.constructor === Array) {
                     return "[" + value.map(function(item) {
-                        self.toString(item);
+                        return self.toString(item);
                     }).join(",") + "]";
                 }
             }

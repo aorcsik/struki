@@ -47,9 +47,9 @@ define([
                 this.$el.find(".form-control").each(function() {
                     variables[$(this).attr("name")] = (new Parser($(this).val())).evaluate(context);
                 });
-                this.saved_variables = $.extend({}, variables);
+                this.saved_variables = $.extend(true, {}, variables);
             } else {
-                variables = $.extend({}, this.saved_variables);
+                variables = $.extend(true, {}, this.saved_variables);
             }
             context.set("variables", variables);
             // if unsafe, don't do a full run, just set the state to -1
