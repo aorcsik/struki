@@ -34,13 +34,15 @@ define([
 
         onClose: function() {},
 
+        result: null,
         debug_step: 0,
         max_steps: null,
         saved_variables: null,
-        run: function() {
+        run: function(debug_step) {
             var variables,
                 context = this.model.get("context");
-            if (this.debug_step === 0) {
+            debug_step = debug_step || 0;
+            if (debug_step === 0) {
                 variables = context.get("variables");
                 this.$el.find(".form-control").each(function() {
                     variables[$(this).attr("name")] = (new Parser($(this).val())).evaluate(context);
@@ -51,10 +53,10 @@ define([
             }
             context.set("variables", variables);
             // if unsafe, don't do a full run, just set the state to -1
-            if (this.model.get("unsafe") && this.debug_step == 0) {
+            if (this.model.get("unsafe") && debug_step === 0) {
                 context.set({"_state": -1});
             } else {
-                this.model.run(this.debug_step);
+                this.result = this.model.run(debug_step);
             }
         },
 
@@ -164,10 +166,9 @@ define([
                 });
                 return false;
             } else {
-                var self = this,
-                    result = true,
+                var result = true,
                     context = this.model.get("context"),
-                    can_step_next = (this.max_steps === -1 || this.debug_step < this.max_steps),
+                    can_step_next = (this.max_steps === -1 || this.debug_step <= this.max_steps),
                     can_step_prev = (this.debug_step > 1),
                     can_step = ((dir == 1 && can_step_next) || (dir == -1 && can_step_prev)),
                     context_state = context.get("_state"),
@@ -175,7 +176,7 @@ define([
                 if (!is_ended && can_step) {
                     this.updateDebugStep(this.debug_step + dir);
                     try {
-                        this.run();
+                        this.run(this.debug_step);
                     } catch (e) {
                         if (e.match && e.match(/^Compile/)) {
                             this.updateDebugStep(this.debug_step - dir);
@@ -202,7 +203,7 @@ define([
                     'next': this.max_steps === -1 || this.debug_step < this.max_steps,
                     'run': true, 'pause': false
                 });
-                this.model.finishRun();
+                this.model.finishRun(this.result);
                 self.render();
                 return false;
             }
@@ -214,7 +215,7 @@ define([
             if (this.max_steps === null) {
                 this.prerun(function() {
                     self.delayed_run();
-                })
+                });
             } else {
                 this.run_delay = window.setTimeout(function() {
                     self.updateButtonStates({'run': false, 'pause': true});
@@ -229,6 +230,7 @@ define([
         },
 
         softReset: function() {
+            this.result = null;
             this.updateDebugStep(0);
             this.updateMaxSteps(null);
             this.saved_variables = null;

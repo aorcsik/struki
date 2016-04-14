@@ -15,18 +15,20 @@ define([
             var self = this;
             this.listenTo(this.model, 'started_run', function() {
                 self.clear();
-                self.log("Started...");
             });
-            this.listenTo(this.model, 'finished_run', function() {
-                self.log("Ended.");
+            this.listenTo(this.model, 'finished_run', function(result) {
+                self.info("Ended.");
+                self.result("Result: " + result);
             });
             this.listenTo(this.model, 'flush_output', function(buffer) {
+                self.clear();
+                self.info("Started...");
                 var concat = "";
                 buffer.forEach(function(args) {
                     args = Array.prototype.slice.call(args);
                     concat += "<div>" + args.join(", ") + "</div>" + "\n";
                 });
-                this.$el.find(".panel-body").html(concat);
+                this.$el.find(".panel-body").append(concat);
             });
         },
 
@@ -36,7 +38,15 @@ define([
             this.$el.find(".panel-body").append($("<div class='text-danger'>" + err + "</div>"));
             this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);
         },
-        log: function() {
+        info: function(info) {
+            this.$el.find(".panel-body").append($("<div class='text-info'>" + info + "</div>"));
+            this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);
+        },
+        result: function(success) {
+            this.$el.find(".panel-body").append($("<div class='text-success'>" + success + "</div>"));
+            this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);
+        },
+        log: function(type) {
             var args = Array.prototype.slice.call(arguments);
             this.$el.find(".panel-body").append($("<div>" + args.join(", ") + "</div>"));
             this.$el.find(".panel-body").scrollTop(this.$el.find(".panel-body")[0].scrollHeight);

@@ -11,13 +11,13 @@
         <ul class="nav navbar-nav">
             <li><a href="javascript:void(0)" id="new_document"><i class="material-icons">&#xE24D;</i> New</a></li>
             <li><a href="javascript:void(0)" id="open_document">
-                <i class="material-icons">&#xE2C6;</i> Import</a>
+                <i class="material-icons">&#xE2C4;</i> Import</a>
                 <input type="file" name="open_file" id="open_docuemnt_input">
             </li>
             <% if (model.get("active_document")) { %>
             <li class="dropdown">
                 <a id="save_dropdown" href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="material-icons">&#xE2C4;</i> Export
+                    <i class="material-icons">&#xE2C6;</i> Export
                     <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a id="json_download" href="javascript:void(0)"><i class="material-icons">&#xE86F;</i> JSON</a></li>

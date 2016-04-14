@@ -177,16 +177,16 @@ define([
             context.set({"_state": 0, "_debug": debug_step});
             this.trigger("started_run");
             try {
-                this.get("active_document").get("struktogram").evaluate(parameters, context);
+                return this.get("active_document").get("struktogram").evaluate(parameters, context);
             } catch(e) {
                 if (e.match && e.match(/^Compile/)) $(".ui-output").data("view").error(e);
                 throw e;
             }
         },
-        finishRun: function() {
+        finishRun: function(result) {
             var doc = this.get("active_document");
             doc.set({'_last_run': (new Date()).getTime()});
-            this.trigger("finished_run");
+            this.trigger("finished_run", result);
         },
         clearOutputBuffer: function() {
             this.set("output_buffer", []);
