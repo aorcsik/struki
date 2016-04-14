@@ -53,11 +53,11 @@
     margin: 0;
 }
 
-.ui-watcher_modal .text-danger {
+#watcher_modal .text-danger {
     padding-left: 30px;
     position: relative;
 }
-.ui-watcher_modal .text-danger .material-icons {
+#watcher_modal .text-danger .material-icons {
     position: absolute;
     left: 0;
     margin-top: -2px;

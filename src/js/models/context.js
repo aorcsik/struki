@@ -17,7 +17,6 @@ define([
         stepState: function() {
             var global_context = this.getGlobalContext();
             global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
-            // console.log(this.get('_debug'), this.get('_state'));
             if (global_context.get("_state") >= global_context.get("parent").get("max_iterations")) {
                 throw "Too many iterations, possible infinite loop.";
             }
@@ -46,56 +45,37 @@ define([
             return "";
         },
         defineVariable: function(name, initial_value) {
-            var variables = this.get("variables");
+            var variables = $.extend({}, this.get("variables"));
             variables[name] = initial_value;
-            this.set({
-                "variables": variables,
-                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
-            });
+            this.set({"variables": variables});
         },
         setVariable: function(name, value) {
-            var variables = this.get("variables");
-
+            var variables = $.extend({}, this.get("variables"));
             if (variables[name] !== undefined) variables[name] = value;
             else throw "Compile Error: undefined variable '" + name + "'";
-            this.set({
-                "variables": variables,
-                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
-            });
+            this.set({"variables": variables});
         },
         unsetVariable: function(name) {
-            var variables = this.get("variables");
+            var variables = $.extend({}, this.get("variables"));
             delete variables[name];
-            this.set({
-                "variables": variables,
-                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
-            });
+            this.set({"variables": variables});
         },
         incrementVariable: function(name, step) {
-            var variables = this.get("variables");
+            var variables = $.extend({}, this.get("variables"));
             variables[name] = variables[name] + (step || 1);
-            this.set({
-                "variables": variables,
-                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
-            });
+            this.set({"variables": variables});
         },
         decrementVariable: function(name, step) {
             this.incrementVariable(name, -1 * step);
         },
         evaluateCondition: function(condition) {
-            //console.log("evaluate condition: " + condition);
             var parser = new Parser(condition);
             var result = parser.evaluate(this);
             this.stepState();
             return result;
         },
         evaluateCode: function(code, ret) {
-            //console.log("evaluate code: " + code);
-            var ret = ret || false;
+            ret = ret || false;
             if (code.match(/^\s*return\s*/, code)) {
                 code = code.replace(/^\s*return\s*/, "", code);
                 ret = true;
@@ -107,7 +87,6 @@ define([
         },
         evaluateRange: function(range_condition) {
             var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
-            // console.log("evaluate range: " + range_condition, match);
             if (match !== null) {
                 return {
                     'var': match[1],
@@ -117,13 +96,9 @@ define([
             throw "Compile Error: bad range expression";
         },
         defineFunction: function(name, func) {
-            var functions = this.get("functions");
+            var functions = $.extend({}, this.get("functions"));
             functions[name] = new FunctionWrapper({'func': func});
-            this.set({
-                "functions": functions,
-                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
-            });
+            this.set({"functions": functions});
         },
         applyFunction: function(name, params) {
             if (this.get("functions")[name] !== undefined) return this.get("functions")[name].evaluate(params, this);
@@ -163,13 +138,15 @@ define([
             this.set("context", new Context({
                 "parent": this,
                 "name": this.get("name") + ":" + name,
-                "variables": $.extend({}, this.get("variables")),
                 "functions": $.extend({}, this.get("functions"))
             }));
             this.listenTo(this.get("context"), "change", function(e) {
                 self.trigger("change", e);
             });
             return this.get("context");
+        },
+        removeSubContext: function() {
+            this.set("context", null);
         }
     });
     return Context;

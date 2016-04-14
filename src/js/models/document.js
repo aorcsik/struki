@@ -20,33 +20,27 @@ define([
             });
             return struktogram;
         },
-        addHelperStruktogram: function() {
+        newHelper: function() {
             var self = this,
                 helpers = this.get("helpers").map(function(helper) { return helper; }),
                 name = this.get("struktogram").get("name") + "_helper" + (helpers.length + 1),
                 struktogram = new Struktogram({'name': name, 'helper': true, 'document': this});
             struktogram.get("sequence").newCommand();
             helpers.push(struktogram);
-            this.set({
-                'helpers': helpers,
-                '_updated_at': (new Date()).getTime()
-            });
+            this.set({'helpers': helpers});
             this.listenTo(struktogram, 'change', function(e) {
                 self.trigger('change', e);
             });
             return struktogram;
         },
-        removeHelperStruktogram: function(struktogram) {
+        removeHelper: function(struktogram) {
             var self = this,
                 helpers = this.get("helpers").map(function(helper) { return helper; }),
                 idx = helpers.indexOf(struktogram);
             if (idx > -1 && idx < helpers.length) {
                 var removed = helpers.splice(idx, 1);
                 this.stopListening(removed[0]);
-                this.set({
-                    'helpers': helpers,
-                    '_updated_at': (new Date()).getTime()
-                });
+                this.set({'helpers': helpers});
             }
         },
         toJSON: function() {
@@ -65,10 +59,12 @@ define([
                 helper.fromJSON(helper_json);
                 helpers.push(helper);
                 self.listenTo(helper, 'change', function(e) {
+                    // console.log("struktogram -> document", e);
                     self.trigger('change', e);
                 });
             });
-            this.listenTo(this.get("struktogram"), 'change', function(e) {
+            this.listenTo(struktogram, 'change', function(e) {
+                // console.log("struktogram -> document", e);
                 self.trigger('change', e);
             });
             this.set({

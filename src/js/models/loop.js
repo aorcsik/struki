@@ -16,6 +16,7 @@ define([
             var Sequence = require('models/sequence');
             this.set("sequence", new Sequence({'parent': this}));
             this.listenTo(this.get("sequence"), 'change', function(e) {
+                // console.log("sequence -> loop", e);
                 self.trigger('change', e);
             });
         },
@@ -41,6 +42,7 @@ define([
                     "range": json.range
                 });
                 this.listenTo(this.get("sequence"), 'change', function(e) {
+                    // console.log("sequence -> loop", e);
                     self.trigger('change', e);
                 });
             }

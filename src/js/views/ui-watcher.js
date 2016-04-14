@@ -166,7 +166,7 @@ define([
                 });
                 return false;
             } else {
-                var result = true,
+                var debugstop = false,
                     context = this.model.get("context"),
                     can_step_next = (this.max_steps === -1 || this.debug_step <= this.max_steps),
                     can_step_prev = (this.debug_step > 1),
@@ -187,15 +187,19 @@ define([
                             });
                             return false;
                         }
-                        else if (e !== "DEBUG STOP") throw e;
+                        else if (e === "DEBUG STOP") debugstop = true;
+                        else throw e;
+
                     }
                     this.updateButtonStates({
                         'back': this.debug_step > 1,
                         'next': this.max_steps === -1 || this.debug_step <= this.max_steps
                     });
                     this.model.flushOutput();
-                    self.render();
-                    return result;
+                    if (debugstop) {
+                        self.render();
+                        return true;
+                    }
                 }
                 this.updateMaxSteps(context_state);
                 this.updateDebugStep(context_state);

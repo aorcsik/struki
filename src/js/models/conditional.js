@@ -25,7 +25,7 @@ define([
         },
         addBranch: function(branch, idx) {
             var self = this,
-                branches = this.get("branches");
+                branches = this.get("branches").map(function(branch) { return branch; });
             if (idx === undefined || idx > branches.length) {
                 idx = branches.length;
                 branches.push(branch);
@@ -33,11 +33,7 @@ define([
                 branches.splice(idx, 0, branch);
             }
             this.trigger('change:add', branch, idx);
-            this.set({
-                'branches': branches,
-                '_updated_at': (new Date()).getTime()
-            });
-            // this.trigger('change', this);
+            this.set({'branches': branches});
             this.listenTo(branch, 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -46,16 +42,12 @@ define([
             this.removeBranchByIndex(this.get("branches").indexOf(branch));
         },
         removeBranchByIndex: function(idx) {
-            var branches = this.get("branches");
+            var branches = this.get("branches").map(function(branch) { return branch; });
             if (idx > -1 && idx < branches.length) {
                 var removed = branches.splice(idx, 1);
                 this.trigger('change:remove', removed[0], idx);
                 this.stopListening(removed[0]);
-                this.set({
-                    'branches': branches,
-                    '_updated_at': (new Date()).getTime()
-                });
-                // this.trigger('change', this);
+                this.set({'branches': branches});
             }
         },
         toJSON: function() {

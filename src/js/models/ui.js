@@ -67,6 +67,7 @@ define([
             }
             this.set("active_document", doc);
             this.listenTo(doc, "change", function(e) {
+                // console.log("document -> ui", e);
                 self.trigger("change", e);
                 self.resetContext();
                 this.trigger("document_changed", doc);
@@ -146,6 +147,9 @@ define([
                 functions[struktogram.get("name")] = struktogram;
                 struktogram.get("parameters").forEach(function(parameter) {
                     variables[parameter.get("name")] = null;
+                });
+                this.get("active_document").get("helpers").forEach(function(helper) {
+                    functions[helper.get("name")] = helper;
                 });
             }
             var context = new Context({

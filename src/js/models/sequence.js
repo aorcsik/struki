@@ -29,7 +29,7 @@ define([
         },
         addCommand: function(command, idx) {
             var self = this,
-                commands = this.get("commands");
+                commands = this.get("commands").map(function(command) { return command; });
             if (idx === undefined || idx > commands.length) {
                 idx = commands.length;
                 commands.push(command);
@@ -37,11 +37,9 @@ define([
                 commands.splice(idx, 0, command);
             }
             this.trigger('change:add', command, idx);
-            this.set({
-                'commands': commands,
-                '_updated_at': (new Date()).getTime()
-            });
+            this.set({'commands': commands});
             this.listenTo(command, 'change', function(e) {
+                // console.log(command._type + " -> sequence", e);
                 self.trigger('change', e);
             });
         },
@@ -49,15 +47,12 @@ define([
             this.removeCommandByIndex(this.get("commands").indexOf(command));
         },
         removeCommandByIndex: function(idx) {
-            var commands = this.get("commands");
+            var commands = this.get("commands").map(function(command) { return command; });
             if (idx > -1 && idx < commands.length) {
                 var removed = commands.splice(idx, 1);
                 this.trigger('change:remove', removed[0], idx);
                 this.stopListening(removed[0]);
-                this.set({
-                    'commands': commands,
-                    '_updated_at': (new Date()).getTime()
-                });
+                this.set({'commands': commands});
             }
         },
         toJSON: function() {
@@ -71,7 +66,7 @@ define([
         fromJSON: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
-                json.commands.forEach(function(command_json) {
+                var commands = json.commands.map(function(command_json) {
                     var command;
                     if (command_json.type && command_json.type === "command") {
                         command = new Command({'parent': this});
@@ -83,8 +78,13 @@ define([
                         command = new Loop({'parent': this});
                     }
                     command.fromJSON(command_json);
-                    self.addCommand(command);
+                    self.listenTo(command, 'change', function(e) {
+                        // console.log(command._type + " -> sequence", e);
+                        self.trigger('change', e);
+                    });
+                    return command;
                 });
+                this.set({"commands": commands});
             }
         },
         getStruktogram: function() {

@@ -42,7 +42,7 @@ define([
 
         removeHelper: function(e) {
             var helper = $(e.target).closest(".struktogram").data("view").model;
-            this.model.get("active_document").removeHelperStruktogram(helper);
+            this.model.get("active_document").removeHelper(helper);
             return false;
         },
 

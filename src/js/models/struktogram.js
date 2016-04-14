@@ -16,6 +16,7 @@ define([
             this.set("parameters", []);
             this.set("variables", []);
             this.listenTo(this.get("sequence"), 'change', function(e) {
+                // console.log("sequence -> struktogram", e);
                 self.trigger('change', e);
             });
         },
@@ -54,6 +55,7 @@ define([
                     "sequence": sequence
                 });
                 this.listenTo(this.get("sequence"), 'change', function(e) {
+                    // console.log("sequence -> struktogram", e);
                     self.trigger('change', e);
                 });
             }
@@ -63,7 +65,7 @@ define([
         },
         evaluate: function(parameters, parent_context) {
             var context = parent_context.newContext(this.get("name")),
-                variables = context.get("variables");
+                variables = $.extend({}, context.get("variables"));
             this.get("parameters").forEach(function(parameter, idx) {
                 variables[parameter.get("name")] = parameters[idx];
             });
@@ -75,7 +77,10 @@ define([
                 "_counter": context.get("_counter") ? context.get("_counter") + 1 : 1,
                 "_updated_at": (new Date()).getTime()
             });
-            return this.get("sequence").evaluate(context);
+            var result = this.get("sequence").evaluate(context);
+            parent_context.removeSubContext();
+            this.trigger("return", result);
+            return result;
         }
     });
     return Struktogram;

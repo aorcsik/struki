@@ -187,7 +187,7 @@ define([
                     conditional.newBranch();
                 }
                 else if (type === "helper") {
-                    cmd.get('document').addHelperStruktogram();
+                    cmd.get('document').newHelper();
                 }
             });
         },

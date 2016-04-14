@@ -35,19 +35,9 @@ define([
             var self = this,
                 render_delay;
             this.struktogram = new StruktogramCanvasView({'model': this.model});
-            this.listenTo(this.model, 'change', function(e) {
-                window.clearTimeout(render_delay);
-                render_delay = window.setTimeout(function() {
-                    self.render();
-                }, 10);
-            });
-            this.listenTo(this.struktogram, 'redraw', function(e) {
-                // console.log("redraw", e);
-                window.clearTimeout(render_delay);
-                render_delay = window.setTimeout(function() {
-                    self.render();
-                }, 10);
-            });
+            this.listenTo(this.model, 'change', this.throttleRender);
+            this.listenTo(this.model, 'return', this.throttleRender);
+            this.listenTo(this.struktogram, 'redraw', this.throttleRender);
         },
 
         onClose: function() {
@@ -62,7 +52,17 @@ define([
             });
         },
 
+        render_delay: null,
+        throttleRender: function(e) {
+            var self = this;
+            window.clearTimeout(this.render_delay);
+            this.render_delay = window.setTimeout(function() {
+                self.render();
+            }, 10);
+        },
+
         render: function() {
+
             var ctx = this.el.getContext('2d');
             ctx.clearRect(0, 0, this.el.width, this.el.height);
             this.struktogram.render(ctx, this.design, 0, 0, 0);
