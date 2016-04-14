@@ -34,7 +34,7 @@ define([
         initialize: function() {
             var self = this,
                 render_delay;
-            this.struktogram = new StruktogramCanvasView({'model': this.model.get("struktogram")});
+            this.struktogram = new StruktogramCanvasView({'model': this.model});
             this.listenTo(this.model, 'change', function(e) {
                 window.clearTimeout(render_delay);
                 render_delay = window.setTimeout(function() {

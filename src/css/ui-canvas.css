@@ -66,3 +66,9 @@
     text-align: center;
     overflow: auto;
 }
+
+.ui-canvas .canvas-container canvas {
+    float: left;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}

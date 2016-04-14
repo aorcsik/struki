@@ -13,20 +13,24 @@
             "click .panel-heading li .close-tab": "handleCloseTab"
         },
         template: _.template(UICanvasTemplate),
-        canvas: null,
+        struktogram: null,
+        helpers: null,
 
         initialize: function() {
             var self = this;
-            this.canvas = null;
-            if (self.model.get("active_document")) {
-                this.canvas = new CanvasView({'model': self.model.get("active_document")});
-            }
+            this.struktogram = null;
+            this.helpers = [];
             this.listenTo(this.model, "change", function(e) {
-                if (e.changed.active_document !== undefined) {
-                    if (self.canvas) {
-                        this.canvas.close();
+                if (e.changed.active_document !== undefined ||
+                    e.changed.helpers !== undefined) {
+                    if (self.struktogram) {
+                        self.struktogram.close();
+                        self.helpers.forEach(function(helper) {
+                            helper.close();
+                        });
                     }
-                    self.canvas = null;
+                    self.struktogram = null;
+                    self.helpers = [];
                     self.render();
                 }
                 if (e.changed.name !== undefined) {
@@ -54,14 +58,23 @@
         onClose: function() {},
 
         render: function() {
+            var self = this;
             if (this.model.get("active_document")) {
-                this.canvas = new CanvasView({'model': this.model.get("active_document")});
+                this.struktogram = new CanvasView({'model': this.model.get("active_document").get("struktogram")});
+                this.helpers = this.model.get("active_document").get("helpers").map(function(helper) {
+                    return new CanvasView({'model': helper});
+                });
                 this.$el.html(this.template({
                     "empty": false,
                     "model": this.model
                 }));
-                this.$el.find(".canvas-container").append(this.canvas.$el);
-                this.canvas.render();
+                var $canvas_container = this.$el.find(".canvas-container");
+                $canvas_container.append(this.struktogram.$el);
+                this.struktogram.render();
+                this.helpers.forEach(function(helper) {
+                    $canvas_container.append(helper.$el);
+                    helper.render();
+                });
             } else {
                 this.$el.html(this.template({
                     "empty": true

@@ -38,7 +38,7 @@ define([
         },
         removeHelperStruktogram: function(struktogram) {
             var self = this,
-                helpers = this.get("helpers"),
+                helpers = this.get("helpers").map(function(helper) { return helper; }),
                 idx = helpers.indexOf(struktogram);
             if (idx > -1 && idx < helpers.length) {
                 var removed = helpers.splice(idx, 1);
