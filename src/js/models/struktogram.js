@@ -7,7 +7,9 @@ define([
 ], function($, _, Backbone, Variable, Sequence) {
     var Struktogram = Backbone.Model.extend({
         _type: "struktogram",
-        defaults: {},
+        defaults: {
+            'helper': false
+        },
         initialize: function() {
             var self = this;
             this.set("sequence", new Sequence({'parent': this}));
@@ -21,6 +23,7 @@ define([
             return {
                 'type': this._type,
                 'name': this.get("name"),
+                'helper': this.get("helper"),
                 'parameters': this.get("parameters").map(function(parameter) {
                     return parameter.toJSON();
                 }),
@@ -37,6 +40,7 @@ define([
                 sequence.fromJSON(json.sequence);
                 this.set({
                     "name": json.name,
+                    "helper": json.helper || false,
                     "variables": json.variables.map(function(variable_json) {
                         var variable = new Variable();
                         variable.fromJSON(variable_json);

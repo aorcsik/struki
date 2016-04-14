@@ -158,7 +158,7 @@ define([
             }
             else if (cmd._type === "struktogram") {
                 $cmd.children(".command-line").append(this.adddroptemp({
-                    "options": {'command': true, 'loop': true, 'conditional': true, 'branch': false}
+                    "options": {'helper': true, 'command': true, 'loop': true, 'conditional': true, 'branch': false}
                 }));
             }
 
@@ -185,6 +185,9 @@ define([
                     var $conditional = $cmd.closest(".conditional"),
                         conditional = $conditional.data('view').model;
                     conditional.newBranch();
+                }
+                else if (type === "helper") {
+                    cmd.get('document').addHelperStruktogram();
                 }
             });
         },

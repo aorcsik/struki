@@ -8,6 +8,7 @@ define([
         defaults: {},
         initialize: function() {
             var self = this;
+            this.set("helpers", []);
         },
         newStruktogram: function(name) {
             var self = this,
@@ -19,16 +20,60 @@ define([
             });
             return struktogram;
         },
+        addHelperStruktogram: function() {
+            var self = this,
+                helpers = this.get("helpers").map(function(helper) { return helper; }),
+                name = this.get("struktogram").get("name") + "_helper" + (helpers.length + 1),
+                struktogram = new Struktogram({'name': name, 'helper': true, 'document': this});
+            struktogram.get("sequence").newCommand();
+            helpers.push(struktogram);
+            this.set({
+                'helpers': helpers,
+                '_updated_at': (new Date()).getTime()
+            });
+            this.listenTo(struktogram, 'change', function(e) {
+                self.trigger('change', e);
+            });
+            return struktogram;
+        },
+        removeHelperStruktogram: function(struktogram) {
+            var self = this,
+                helpers = this.get("helpers"),
+                idx = helpers.indexOf(struktogram);
+            if (idx > -1 && idx < helpers.length) {
+                var removed = helpers.splice(idx, 1);
+                this.stopListening(removed[0]);
+                this.set({
+                    'helpers': helpers,
+                    '_updated_at': (new Date()).getTime()
+                });
+            }
+        },
         toJSON: function() {
-            return this.get("struktogram").toJSON();
+            return {
+                'struktogram': this.get("struktogram").toJSON(),
+                'helpers': this.get("helpers").map(function(helper) { return helper.toJSON(); })
+            };
         },
         fromJSON: function(json) {
             var self = this,
+                helpers = [],
                 struktogram = new Struktogram({'document': this});
-            struktogram.fromJSON(json);
-            this.set("struktogram", struktogram);
+            struktogram.fromJSON(json.struktogram);
+            json.helpers.map(function(helper_json) {
+                var helper = new Struktogram({'document': this});
+                helper.fromJSON(helper_json);
+                helpers.push(helper);
+                self.listenTo(helper, 'change', function(e) {
+                    self.trigger('change', e);
+                });
+            });
             this.listenTo(this.get("struktogram"), 'change', function(e) {
                 self.trigger('change', e);
+            });
+            this.set({
+                "struktogram": struktogram,
+                "helpers": helpers
             });
         }
     });

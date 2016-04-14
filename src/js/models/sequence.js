@@ -41,7 +41,6 @@ define([
                 'commands': commands,
                 '_updated_at': (new Date()).getTime()
             });
-            // this.trigger('change', this);
             this.listenTo(command, 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -59,7 +58,6 @@ define([
                     'commands': commands,
                     '_updated_at': (new Date()).getTime()
                 });
-                // this.trigger('change', this);
             }
         },
         toJSON: function() {

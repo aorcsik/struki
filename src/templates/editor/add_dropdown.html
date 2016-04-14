@@ -1,4 +1,5 @@
 <ul class="command-dropdown">
+    <% if (options.helper) { %><li data-type="helper"><i class="material-icons icon">&#xE86F;</i> Helper</li><% } %>
     <% if (options.command) { %><li data-type="command"><i class="material-icons icon">&#xE86F;</i> Command</li><% } %>
     <% if (options.conditional) { %><li data-type="conditional"><i class="material-icons icon">&#xE0B6;</i> Conditional</li><% } %>
     <% if (options.branch) { %><li data-type="branch"><i class="material-icons icon">&#xE0B6;</i> Branch</li><% } %>

@@ -56,6 +56,7 @@
     display: none;
 }
 .ui-editor .save-command { right: 6px; opacity: 0.3; }
+.ui-editor .remove-helper,
 .ui-editor .close-struktogram,
 .ui-editor .remove-command { right: 6px; }
 .ui-editor .edit-command { right: 26px; }
