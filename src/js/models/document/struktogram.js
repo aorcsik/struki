@@ -2,8 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/variable',
-    'models/sequence'
+    'models/document/variable',
+    'models/document/sequence'
 ], function($, _, Backbone, Variable, Sequence) {
     var Struktogram = Backbone.Model.extend({
         _type: "struktogram",
@@ -62,6 +62,22 @@ define([
         },
         getStruktogram: function() {
             return this;
+        },
+        updateStruktogram: function(update) {
+            if (update.variables) {
+                update.variables = update.variables.map(function(data) {
+                    return new Variable(data);
+                });
+            }
+            if (update.parameters) {
+                update.parameters = update.parameters.map(function(data) {
+                    return new Variable(data);
+                });
+            }
+            this.set($.extend({
+                "_counter": this.get("_counter") ? this.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
+            }, update));
         },
         evaluate: function(parameters, parent_context) {
             var context = parent_context.newContext(this.get("name")),

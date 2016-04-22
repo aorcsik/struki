@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/command',
-    'models/conditional',
-    'models/loop'
+    'models/document/command',
+    'models/document/conditional',
+    'models/document/loop'
 ], function($, _, Backbone, Command, Conditional, Loop) {
     var Sequence = Backbone.Model.extend({
         _type: "sequence",

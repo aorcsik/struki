@@ -2,8 +2,7 @@ define([
     'require',
     'jquery',
     'underscore',
-    'backbone',
-    'models/sequence'
+    'backbone'
 ], function(require, $, _, Backbone) {
     var Branch = Backbone.Model.extend({
         _type: "branch",
@@ -12,7 +11,7 @@ define([
         },
         initialize: function() {
             var self = this;
-            var Sequence = require('models/sequence');
+            var Sequence = require('models/document/sequence');
             this.set("sequence", new Sequence({'parent': this}));
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 self.trigger('change', e);
@@ -28,7 +27,7 @@ define([
         fromJSON: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
-                var Sequence = require('models/sequence');
+                var Sequence = require('models/document/sequence');
                 var sequence = new Sequence({'parent': this});
                 sequence.fromJSON(json.sequence);
                 this.set({

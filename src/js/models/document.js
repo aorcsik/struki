@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/struktogram'
+    'models/document/struktogram'
 ], function($, _, Backbone, Struktogram) {
     var Document = Backbone.Model.extend({
         defaults: {},

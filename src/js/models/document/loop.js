@@ -13,7 +13,7 @@ define([
         },
         initialize: function() {
             var self = this;
-            var Sequence = require('models/sequence');
+            var Sequence = require('models/document/sequence');
             this.set("sequence", new Sequence({'parent': this}));
             this.listenTo(this.get("sequence"), 'change', function(e) {
                 // console.log("sequence -> loop", e);
@@ -32,7 +32,7 @@ define([
         fromJSON: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
-                var Sequence = require('models/sequence');
+                var Sequence = require('models/document/sequence');
                 var sequence = new Sequence({'parent': this});
                 sequence.fromJSON(json.sequence);
                 this.set({

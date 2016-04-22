@@ -2,10 +2,9 @@
     'jquery',
     'underscore',
     'backbone',
-    'models/variable',
     'views/canvas/canvas',
     'text!../../templates/ui-canvas.html'
-], function($, _, Backbone, Variable, CanvasView, UICanvasTemplate){
+], function($, _, Backbone, CanvasView, UICanvasTemplate){
     var UICanvasView = Backbone.View.extend({
         className: "ui-canvas",
         events: {

@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/branch'
+    'models/document/branch'
 ], function($, _, Backbone, Branch) {
     var Conditional = Backbone.Model.extend({
         _type: "conditional",

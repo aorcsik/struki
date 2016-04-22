@@ -2,12 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/variable',
     'views/editor/sequence',
     'text!../../../templates/editor/variable.html',
     'text!../../../templates/editor/struktogram.html',
     'text!../../../templates/editor/add_dropdown.html',
-], function($, _, Backbone, Variable, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate, editorAddDropdownTemplate){
+], function($, _, Backbone, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate, editorAddDropdownTemplate){
     var EditorStruktogramView = Backbone.View.extend({
         className: "struktogram",
         main_sequence: null,
@@ -105,16 +104,16 @@ define([
             }
             else if (cmd._type === "struktogram") {
                 var name = $cmd.find("#" + cmd.cid + "_name").val().replace(/^\s+|\s+$/g, '');
-                cmd.set({
+                cmd.updateStruktogram({
                     "name": name || cmd.get("name"),
                     "parameters": this.$el.find(".parameters .form-group").map(function() {
                         var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
                             type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');
                         if (name !== "" && type !== "")
-                            return new Variable({
+                            return {
                                 'name': name,
                                 'type': type
-                            });
+                            };
                         return null;
                     }).get().filter(function(item) {
                         return item !== null;
@@ -123,16 +122,14 @@ define([
                         var name = $(this).find("input[name=variable_name]").val().replace(/^\s+|\s+$/g, ''),
                             type = $(this).find("input[name=variable_type]").val().replace(/^\s+|\s+$/g, '');
                         if (name !== "" && type !== "")
-                            return new Variable({
+                            return {
                                 'name': name,
                                 'type': type
-                            });
+                            };
                         return null;
                     }).get().filter(function(item) {
                         return item !== null;
-                    }),
-                    "_counter": cmd.get("_counter") ? cmd.get("_counter") + 1 : 1,
-                    "_updated_at": (new Date()).getTime()
+                    })
                 });
             }
             else {
