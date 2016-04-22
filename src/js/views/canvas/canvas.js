@@ -73,6 +73,7 @@ define([
             });
 
             this.struktogram.render(ctx, this.design, 0, 4.5, 4.5, this.struktogram.getSize().width);
+            this.$el.data("name", this.model.get("name"));
         }
     });
     return CanvasView;
