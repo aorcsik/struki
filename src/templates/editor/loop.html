@@ -17,7 +17,7 @@
             while
         <% } } %>
     </span>
-    <%= model.get("condition") %>
+    <%= model.get("condition").replace(/</, "&lt;").replace(/>/, "&gt;") %>
 </div>
 <% if (edit) { %>
 <form>
