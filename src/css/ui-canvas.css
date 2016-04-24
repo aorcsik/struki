@@ -13,14 +13,28 @@
 }
 .ui-canvas .panel-heading ul li {
     float: left;
-    background: #fff;
+    background: rgba(255,255,255,0.3);
     height: 40px;
     padding: 10px;
     margin-right: 1px;
     cursor: pointer;
     /*transition: background .3s; */
 }
-.ui-canvas .panel-heading ul li .close-tab {
+.ui-canvas .panel-heading ul li .document-title {
+    margin-right: 5px;
+}
+.ui-canvas .panel-heading ul li input {
+    background: rgba(255, 255, 255, 0.7);
+    color: #000;
+    height: 20px;
+    border: 0;
+    padding: 0 5px;
+    width: 100px;
+}
+.ui-canvas .panel {
+    height: 100%;
+}
+.ui-canvas .panel-heading ul li .material-icons {
     float: right;
     margin: 2px 0 0 5px;
     font-size: 1.2em;
@@ -28,12 +42,14 @@
 
     transition: opacity .3s;
 }
-.ui-canvas .panel-heading ul li:hover .close-tab {
+.ui-canvas .panel-heading ul li.edit .material-icons,
+.ui-canvas .panel-heading ul li:hover .material-icons {
     opacity: 0.3;
 }
-.ui-canvas .panel-heading ul li:hover .close-tab:hover {
+.ui-canvas .panel-heading ul li:hover .material-icons:hover {
     opacity: 1;
 }
+.ui-canvas .panel-heading ul li.edit,
 .ui-canvas .panel-heading ul li:hover {
     background: rgba(63, 81, 181, 0.05);
     color: #fff;
@@ -41,6 +57,7 @@
 .ui-canvas .panel-heading ul .active {
     padding-bottom: 8px;
     border-bottom: 2px solid #3F51B5;
+    background: #fff;
 }
 .ui-canvas .empty {
     position: absolute;

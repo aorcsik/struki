@@ -41,7 +41,12 @@ define([
         "test after": {'hu-HU': "hátul tesztelő"},
         "test before": {'hu-HU': "elöl tesztelő"},
         "range": {'hu-HU': "intervallum bejárás"},
-        "code": {'hu-HU': "kód"}
+        "code": {'hu-HU': "kód"},
+        "Structogram": {'hu-HU': "Struktogram"},
+        "Command": {'hu-HU': "Parancs"},
+        "Loop": {'hu-HU': "Ciklus"},
+        "Conditional": {'hu-HU': "Elágazás"},
+        "Branch": {'hu-HU': "Ág"},
     };
 
     Localization.prototype.gettext = function(phrase, text_only, locale) {

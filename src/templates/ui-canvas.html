@@ -7,13 +7,21 @@
     <div class="panel-heading">
         <ul>
             <% _.each(model.get("open_documents"), function(doc) { %>
-            <% if (model.get("active_document") === doc) { %>
+            <% if (edit == doc.cid) { %>
+                <li class="edit" data-cid="<%= doc.cid %>">
+            <% } else { if (model.get("active_document") === doc) { %>
                 <li class="active" data-cid="<%= doc.cid %>">
             <% } else { %>
                 <li data-cid="<%= doc.cid %>">
-            <% } %>
-                <span class="document-title"><%= doc.get("struktogram").get("name") %></span>
+            <% } } %>
+            <% if (edit == doc.cid) { %>
+                <input type="text" name="name" value="<%= doc.get('name') %>">
+                <i class="material-icons save-name">&#xE5CA;</i>
+            <% } else { %>
+                <span class="document-title"><%= doc.get("name") %></span>
                 <i class="material-icons close-tab">&#xE14C;</i>
+                <i class="material-icons edit-name">&#xE3C9;</i>
+            <% } %>
             </li>
             <% }); %>
         </ul>

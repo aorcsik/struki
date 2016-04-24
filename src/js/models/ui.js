@@ -44,7 +44,6 @@ define([
 
         newDocument: function(name) {
             var doc = new Document({"ui": this});
-            doc.newStruktogram(name || "new");
             this.openDocument(doc);
             return doc;
         },
@@ -78,10 +77,13 @@ define([
             return doc;
         },
         closeDocument: function(doc) {
-            var idx = this.get("open_documents").indexOf(doc);
+            var open_documents = this.get("open_documents").map(function(doc) { return doc; }),
+                idx = open_documents.indexOf(doc);
             if (idx > -1) {
-                this.get("open_documents").splice(idx, 1);
+                open_documents.splice(idx, 1);
+                this.set("open_documents", open_documents);
                 this.trigger("document_closed", doc);
+
                 if (this.get("active_document") === doc) {
                     if (this.get("open_documents").length === 0) {
                         this.openDocument(null);
@@ -90,8 +92,6 @@ define([
                     } else {
                         this.openDocument(this.get("open_documents")[idx]);
                     }
-                } else {
-                    this.trigger("change", this);
                 }
             }
         },
@@ -163,26 +163,11 @@ define([
         },
 
         run: function(debug_step) {
-            var context = this.get("context"),
-                struktogram = this.get("active_document").get("struktogram"),
-                parameters = [];
-            struktogram.get("parameters").forEach(function(parameter) {
-                var value = context.get("variables")[parameter.get("name")];
-                if (parameter.get("type") == "Int") {
-                    value = parseInt(value, 10);
-                } else if (parameter.get("type") == "Bool") {
-                    if (value === "I") value = true;
-                    else if (value == "H") value = false;
-                    else value = Boolean(value);
-                } else if (parameter.get("type") == "Float") {
-                    value = parseFloat(value);
-                }
-                parameters.push(value);
-            });
+            var context = this.get("context");
             context.set({"_state": 0, "_debug": debug_step});
             this.trigger("started_run");
             try {
-                return this.get("active_document").get("struktogram").evaluate(parameters, context);
+                this.get("active_document").evaluate(context);
             } catch(e) {
                 if (e.match && e.match(/^Compile/)) $(".ui-output").data("view").error(e);
                 throw e;

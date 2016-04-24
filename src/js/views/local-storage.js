@@ -7,7 +7,12 @@ define([
         initialize: function() {
             var self = this;
             this.listenTo(this.model, "change", function(e) {
-                self.saveUISettings();
+                for (var i = 0; i < self.model.settings_keys.length; i++) {
+                    if (e.changed[self.model.settings_keys[i]] !== undefined) {
+                        self.saveUISettings();
+                        return;
+                    }
+                }
             });
             this.listenTo(this.model, "document_changed", function(doc) {
                 self.saveDocument(doc);
@@ -42,14 +47,14 @@ define([
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
             if (window.localStorage && JSON.stringify) {
-                var key = this.document_prefix + doc.cid,
+                var key = this.document_prefix + doc.get("uuid"),
                     value = doc.serialize();
                 window.localStorage.setItem(key, JSON.stringify(value));
             }
         },
         removeDocument: function(doc) {
             if (window.localStorage) {
-                var key = this.document_prefix + doc.cid;
+                var key = this.document_prefix + doc.get("uuid");
                 window.localStorage.removeItem(key);
             }
         },

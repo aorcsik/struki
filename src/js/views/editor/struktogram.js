@@ -146,16 +146,19 @@ define([
 
             if (cmd._type === "loop") {
                 $cmd.children(".command-line").append(this.adddroptemp({
+                    "L": Localization,
                     "options": {'command': true, 'loop': true, 'conditional': true, 'branch': false}
                 }));
             }
             else if (cmd._type === "branch") {
                 $cmd.children(".command-line").append(this.adddroptemp({
+                    "L": Localization,
                     "options": {'command': true, 'loop': true, 'conditional': true, 'branch': true}
                 }));
             }
             else if (cmd._type === "struktogram") {
                 $cmd.children(".command-line").append(this.adddroptemp({
+                    "L": Localization,
                     "options": {'helper': true, 'command': true, 'loop': true, 'conditional': true, 'branch': false}
                 }));
             }

@@ -138,6 +138,7 @@ define([
             this.set("context", new Context({
                 "parent": this,
                 "name": this.get("name") + ":" + name,
+                "variables": $.extend({}, this.get("variables")),
                 "functions": $.extend({}, this.get("functions"))
             }));
             this.listenTo(this.get("context"), "change", function(e) {

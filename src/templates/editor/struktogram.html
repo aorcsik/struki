@@ -24,7 +24,7 @@
     <div class="form-group">
         <label for="<%= model.cid %>_name" class="col-md-4 control-label"><%= L.gettext("name") %></label>
         <div class="col-md-8">
-            <input id="<%= model.cid %>_name" name="name" type="text" class="form-control" value="<%= model.get('name') %>">
+            <input id="<%= model.cid %>_name" <% if (!model.get('helper')) { %>disabled="disabled"<% } %> name="name" type="text" class="form-control" value="<%= model.get('name') %>">
         </div>
     </div>
     <div class="row form-header">

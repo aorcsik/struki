@@ -10,7 +10,9 @@
         className: "ui-canvas",
         events: {
             "click .panel-heading li": "handleSelectTab",
-            "click .panel-heading li .close-tab": "handleCloseTab"
+            "click .panel-heading li .close-tab": "handleCloseTab",
+            "click .panel-heading li .edit-name": "handleEditName",
+            "click .panel-heading li .save-name": "handleSaveName",
         },
         template: _.template(UICanvasTemplate),
         struktogram: null,
@@ -22,6 +24,7 @@
             this.helpers = [];
             this.listenTo(this.model, "change", function(e) {
                 if (e.changed.active_document !== undefined ||
+                    e.changed.open_documents !== undefined ||
                     e.changed.helpers !== undefined) {
                     if (self.struktogram) {
                         self.struktogram.close();
@@ -37,6 +40,25 @@
                     this.$el.find(".active .document-title").text(e.changed.name);
                 }
             });
+        },
+
+        handleEditName: function(e) {
+            var doc_cid = $(e.target).closest("li").data("cid");
+            this.render(doc_cid);
+            return false;
+        },
+
+        handleSaveName: function(e) {
+            var self = this;
+                doc_cid = $(e.target).closest("li").data("cid"),
+                new_name = $(e.target).closest("li").find("input[name='name']").val().replace(/^\s+|\s+$/, "");
+            this.model.get("open_documents").forEach(function(doc) {
+                if (doc.cid === doc_cid && new_name) {
+                    doc.set("name", new_name);
+                    self.render();
+                }
+            });
+            return false;
         },
 
         handleSelectTab: function(e) {
@@ -57,7 +79,7 @@
 
         onClose: function() {},
 
-        render: function() {
+        render: function(edit) {
             var self = this;
             if (this.model.get("active_document")) {
                 this.struktogram = new CanvasView({'model': this.model.get("active_document").get("struktogram")});
@@ -66,7 +88,9 @@
                 });
                 this.$el.html(this.template({
                     "empty": false,
-                    "model": this.model
+                    "model": this.model,
+                    "L": Localization,
+                    "edit": edit
                 }));
                 var $canvas_container = this.$el.find(".canvas-container");
                 $canvas_container.append(this.struktogram.$el);

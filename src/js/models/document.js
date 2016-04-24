@@ -7,18 +7,18 @@ define([
     var Document = Backbone.Model.extend({
         defaults: {},
         initialize: function() {
-            var self = this;
-            this.set("helpers", []);
-        },
-        newStruktogram: function(name) {
             var self = this,
-                struktogram = new Struktogram({'name': name, 'document': this});
-            this.set("struktogram", struktogram);
-            this.get("struktogram").get("sequence").newCommand();
+                struktogram = new Struktogram({'name': "main", 'document': this});
+            this.set({
+                "uuid": uuid(),
+                "name": this.get("name") || "new",
+                "struktogram": struktogram
+            });
+            this.get("struktogram").get("sequence").newCommand({'code': "return 0"});
             this.listenTo(this.get("struktogram"), 'change', function(e) {
                 self.trigger('change', e);
             });
-            return struktogram;
+            this.set("helpers", []);
         },
         newHelper: function() {
             var self = this,
@@ -45,6 +45,8 @@ define([
         },
         serialize: function() {
             return {
+                'uuid': this.get("uuid"),
+                'name': this.get("name"),
                 'struktogram': this.get("struktogram").serialize(),
                 'helpers': this.get("helpers").map(function(helper) { return helper.serialize(); })
             };
@@ -53,6 +55,7 @@ define([
             var self = this,
                 helpers = [],
                 struktogram = new Struktogram({'document': this});
+            json.struktogram.name = "main";
             struktogram.deserialize(json.struktogram);
             json.helpers.map(function(helper_json) {
                 var helper = new Struktogram({'document': this});
@@ -68,9 +71,29 @@ define([
                 self.trigger('change', e);
             });
             this.set({
+                "uuid": json.uuid || uuid(),
+                "name": json.name || "noname",
                 "struktogram": struktogram,
                 "helpers": helpers
             });
+        },
+        evaluate: function(context) {
+            var main = this.get("struktogram"),
+                parameters = [];
+            main.get("parameters").forEach(function(parameter) {
+                var value = context.get("variables")[parameter.get("name")];
+                if (parameter.get("type") == "Int") {
+                    value = parseInt(value, 10);
+                } else if (parameter.get("type") == "Bool") {
+                    if (value === "I") value = true;
+                    else if (value == "H") value = false;
+                    else value = Boolean(value);
+                } else if (parameter.get("type") == "Float") {
+                    value = parseFloat(value);
+                }
+                parameters.push(value);
+            });
+            return main.evaluate(parameters, context);
         }
     });
     return Document;
