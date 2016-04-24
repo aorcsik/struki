@@ -43,17 +43,21 @@ define([
             return this.get("parent").getStruktogram();
         },
         evaluateCondition: function(context) {
+
+        },
+        evaluate: function(context) {
+            var result = {'condition': false, 'result': null};
             try {
-                // this.trigger("evaluate", this);
-                return this.get("condition") ? context.evaluateCondition(this.get("condition")) : true;
+                result.condition = context.evaluateCondition(this.get("condition") ? this.get("condition") : "I");
             } catch (e) {
                 if (e.match && e.match(/^Compile/)) this.trigger("errorstop", this);
                 if (e == "DEBUG STOP") this.trigger("debugstop", this);
                 throw e;
             }
-        },
-        evaluate: function(context) {
-            return this.get("sequence").evaluate(context);
+            if (result.condition) {
+                result.result = this.get("sequence").evaluate(context);
+            }
+            return result;
         }
     });
     return Branch;

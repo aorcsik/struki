@@ -82,13 +82,14 @@ define([
             return this.get("parent").getStruktogram();
         },
         evaluate: function(context) {
+            var result;
             for (var i = 0; i < this.get("branches").length; i++) {
-                if (this.get("branches")[i].evaluateCondition(context)) {
-                    return this.get("branches")[i].evaluate(context);
+                result = this.get("branches")[i].evaluate(context);
+                if (result.condition === true) {
+                    return result.result;
                 }
             }
-            this.get("else_branch").evaluateCondition(context);
-            return this.get("else_branch").evaluate(context);
+            return this.get("else_branch").evaluate(context).result;
         }
 
     });
