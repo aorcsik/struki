@@ -18,7 +18,7 @@
     padding: 10px;
     margin-right: 1px;
     cursor: pointer;
-    transition: background .3s;
+    /*transition: background .3s; */
 }
 .ui-canvas .panel-heading ul li .close-tab {
     float: right;
@@ -36,6 +36,7 @@
 }
 .ui-canvas .panel-heading ul li:hover {
     background: rgba(63, 81, 181, 0.05);
+    color: #fff;
 }
 .ui-canvas .panel-heading ul .active {
     padding-bottom: 8px;
@@ -48,8 +49,9 @@
     transform: translate(-50%, -50%);
     text-align: center;
     font-size: 2.0em;
-    opacity: 0.3;
+    opacity: 0.5;
     width: 80%;
+    color: #fff;
 }
 .ui-canvas .empty strong {
     position: relative;

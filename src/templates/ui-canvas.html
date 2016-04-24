@@ -1,9 +1,6 @@
 <% if (empty) { %>
 <div class="empty">
-    <strong><i class="material-icons">&#xE169;</i> Open</strong>
-    or create a
-    <strong><i class="material-icons">&#xE146;</i> New</strong>
-    document.
+    <%= L.gettext("Load or create a new document") %>
 </div>
 <% } else { %>
 <div class="panel panel-default unselectable">

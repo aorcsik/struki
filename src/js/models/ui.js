@@ -8,6 +8,8 @@ define([
 ], function($, _, Backbone, Context, Document, FunctionWrapper) {
     var UI = Backbone.Model.extend({
         defaults: {
+            'locale': "en-US",
+
             'editor_width':  [300, "px"],
             'output_width':  [ 50, "%" ],
             'output_height': [200, "px"],
@@ -22,7 +24,7 @@ define([
             this.set("output_buffer", []);
         },
 
-        settings_keys: ['unsafe', 'step_delay', 'max_iterations'],
+        settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations'],
         getSettings: function() {
             var self = this, settings = {};
             this.settings_keys.forEach(function(key) {

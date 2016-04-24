@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'views/editor/sequence',
     'text!../../../templates/editor/variable.html',
     'text!../../../templates/editor/struktogram.html',
     'text!../../../templates/editor/add_dropdown.html',
-], function($, _, Backbone, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate, editorAddDropdownTemplate){
+], function($, _, Backbone, Localization, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate, editorAddDropdownTemplate){
     var EditorStruktogramView = Backbone.View.extend({
         className: "struktogram",
         main_sequence: null,
@@ -211,12 +212,14 @@ define([
             if (only_command_line) {
                 this.$el.children("form").remove();
                 this.$el.children(".command-line").replaceWith(this.template({
+                    "L": Localization,
                     "edit": edit,
                     "model": this.model,
                     "vartemp": this.vartemp
                 }));
             } else {
                 this.$el.html(this.template({
+                    "L": Localization,
                     "edit": edit,
                     "model": this.model,
                     "vartemp": this.vartemp

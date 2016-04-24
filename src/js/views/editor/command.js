@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'text!../../../templates/editor/command.html'
-], function($, _, Backbone, editorCommandTemplate) {
+], function($, _, Backbone, Localization, editorCommandTemplate) {
     var EditorCommandView = Backbone.View.extend({
         tagName: "li",
         template: _.template(editorCommandTemplate),
@@ -35,13 +36,15 @@ define([
                 this.$el.children(".command-line").replaceWith(this.template({
                     "edit": edit,
                     "depth": this.depth,
-                    "model": this.model
+                    "model": this.model,
+                    "L": Localization
                 }));
             } else {
                 this.$el.html(this.template({
                     "edit": edit,
                     "depth": this.depth,
-                    "model": this.model
+                    "model": this.model,
+                    "L": Localization
                 }));
                 this.$el.data("view", this);
             }

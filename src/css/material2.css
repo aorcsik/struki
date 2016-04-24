@@ -1,0 +1,23 @@
+html, body {
+    background-image: url("../images/material2.jpg");
+}
+.ui-toolbar.navbar.navbar-inverse {
+    background-color: rgb(26, 41, 44);
+}
+
+.ui-editor ul.drag-over,
+.ui-editor ul.drag-over > .sort-placeholder {
+    background: rgba(47, 77, 80, 0.3);
+}
+
+.ui-editor .command-line:hover,
+.ui-editor .editing,
+.ui-editor .command-dropdown li:hover,
+.ui-canvas .panel-heading ul li:hover {
+    background: rgb(47, 77, 80);
+}
+
+.ui-editor form,
+.ui-canvas .panel-heading ul .active {
+    border-color: rgb(47, 77, 80);
+}

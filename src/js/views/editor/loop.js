@@ -3,8 +3,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'text!../../../templates/editor/loop.html'
-], function(require, $, _, Backbone, editorLoopTemplate) {
+], function(require, $, _, Backbone, Localization, editorLoopTemplate) {
     var EditorLoopView = Backbone.View.extend({
         tagName: "li",
         className: "loop",
@@ -38,12 +39,14 @@ define([
             if (only_command_line) {
                 this.$el.children("form").remove();
                 this.$el.children(".command-line").replaceWith(this.template({
+                    "L": Localization,
                     "edit": edit,
                     "depth": this.depth,
                     "model": this.model
                 }));
             } else {
                 this.$el.html(this.template({
+                    "L": Localization,
                     "edit": edit,
                     "depth": this.depth,
                     "model": this.model

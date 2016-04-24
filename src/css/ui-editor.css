@@ -7,8 +7,8 @@
 }
 
 .ui-editor ul {
-    margin: 5px 0 0 0;
-    padding: 0;
+    margin: 0 0 0 0;
+    padding: 1px;
     list-style: none;
 }
 .ui-editor .struktogram-container {
@@ -31,10 +31,14 @@
 }
 
 .ui-editor ul.drag-over {
-    background: rgba(55, 123, 181, 0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 .ui-editor ul.drag-over > .sort-placeholder {
-    background: rgba(55, 123, 181, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+ul.empty-sequence {
+    padding-bottom: 10px;
 }
 
 .ui-editor .struktogram-container .material-icons {
@@ -80,7 +84,6 @@
 }
 .ui-editor .sort-placeholder {
     height: 30px;
-    /*border: 2px dashed #3F51B5;*/
     border-radius: 5px;
 }
 .ui-editor .ui-sortable-helper {

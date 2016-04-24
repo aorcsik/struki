@@ -3,8 +3,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'text!../../../templates/editor/branch.html'
-], function(require, $, _, Backbone, editorBranchTemplate){
+], function(require, $, _, Backbone, Localization, editorBranchTemplate){
     var EditorBranchView = Backbone.View.extend({
         tagName: "li",
         className: "branch",
@@ -45,14 +46,16 @@ define([
                     "edit": edit,
                     "depth": this.depth,
                     "branch": this.branch_type,
-                    "model": this.model
+                    "model": this.model,
+                    "L": Localization
                 }));
             } else {
                 this.$el.html(this.template({
                     "edit": edit,
                     "depth": this.depth,
                     "branch": this.branch_type,
-                    "model": this.model
+                    "model": this.model,
+                    "L": Localization
                 }));
                 this.$el.append(this.branch_sequence.$el);
                 this.branch_sequence.setDepth(this.depth).render();

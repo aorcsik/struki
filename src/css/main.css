@@ -15,14 +15,20 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background-image: url("../images/material.jpg");
-    background-size: 100% 100%;
+    background-size: cover;
+}
+
+.__localization {
+    display: inline !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #content {
     position: relative;
     height: 100%;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.5);
 }
 
 .ui-editor .vertical-divider,
@@ -31,7 +37,7 @@ html, body {
     top: 50%;
     right: -8px;
     margin-top: -10px;
-    color: #999;
+    color: rgba(255,255,255,0.5);
     width: 20px;
     height: 20px;
     text-align: center;
@@ -46,7 +52,7 @@ html, body {
     top: 0;
     right: -8px;
     margin-top: -10px;
-    color: #999;
+    color: rgba(255,255,255,0.5);
     width: 20px;
     height: 20px;
     text-align: center;
@@ -76,6 +82,10 @@ html, body {
 .ui-panel .panel-body {
     overflow: auto;
     padding: 0;
+}
+
+.ui-settings .form-group label.control-label {
+    margin-top: 4px;
 }
 
 .ui-settings .modal-header {

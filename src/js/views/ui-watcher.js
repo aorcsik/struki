@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'lib/parser',
     'text!../../templates/ui-watcher.html',
     'text!../../templates/watcher/context.html',
     'text!../../templates/watcher/modal.html'
-], function($, _, Backbone, Parser, UIWatcherTemplate, watcherContextTemplate, watcherModalTemplate){
+], function($, _, Backbone, Localization, Parser, UIWatcherTemplate, watcherContextTemplate, watcherModalTemplate){
     var UIWatcherView = Backbone.View.extend({
         className: "ui-watcher ui-panel",
         events: {
@@ -269,6 +270,15 @@ define([
                     'context': this.model.get("context"),
                     'button_states': this.button_states
                 }));
+                this.$el.find(".panel-heading a").each(function() {
+                    var title = $(this).attr("title");
+                    $(this).attr("title", "");
+                    $(this).tooltip({
+                        'title': function() {
+                            return Localization.gettext(title, true);
+                        }
+                    });
+                });
             }
             this.$el.data('view', this);
             return this;

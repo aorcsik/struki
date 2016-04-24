@@ -3,28 +3,43 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title"><i class="material-icons">&#xE8B8;</i> Settings</h4>
+                <h4 class="modal-title"><i class="material-icons">&#xE8B8;</i> <%= L.gettext("Settings") %></h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <fieldset>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><%= L.gettext("Language") %></label>
+                            <% L.languages.forEach(function(language) { %>
+                            <div class="col-md-3">
+                                <div class="radio radio-primary">
+                                    <label>
+                                        <input type="radio" name="language" value="<%= language.locale %>" <% if (language.locale == L.locale) { %> checked="checked"<% } %>>
+                                        <span class="circle"></span>
+                                        <span class="check"></span>
+                                        <%= L.gettext(language.name) %>
+                                    </label>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
                         <div class="form-group">
                             <div class="col-md-offset-3 col-md-9">
                                 <div class="togglebutton">
                                     <label>
                                         <input name="unsafe" type="checkbox"<% if (model.get("unsafe")) { %> checked<%}%>>
                                         <span class="toggle"></span>
-                                        Unsafe running
+                                        <%= L.gettext("Unsafe running") %>
                                     </label>
                                 </div>
                             </div>
-                            <label for="txtMaxIterations" class="col-md-3 control-label">Max iterations</label>
+                            <label for="txtMaxIterations" class="col-md-3 control-label"><%= L.gettext("Max iterations") %></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="txtMaxIterations" name="max_iterations" value="<%= model.get('max_iterations') %>">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="txtStepDelay" class="col-md-3 control-label">Step delay [ms]</label>
+                            <label for="txtStepDelay" class="col-md-3 control-label"><%= L.gettext("Step delay") %> [ms]</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="txtStepDelay" name="step_delay" value="<%= model.get('step_delay') %>">
                             </div>
@@ -33,8 +48,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= L.gettext("Cancel") %></button>
+                <button type="button" class="btn btn-primary"><%= L.gettext("Save") %></button>
             </div>
         </div>
     </div>

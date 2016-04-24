@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'text!../../templates/ui-output.html'
-], function($, _, Backbone, UIOutputTemplate){
+], function($, _, Backbone, Localization, UIOutputTemplate){
     var UIOutputView = Backbone.View.extend({
         className: "ui-output ui-panel",
         events: {
@@ -57,7 +58,7 @@ define([
 
         render: function() {
             this.$el.html(this.template({
-
+                "L": Localization
             }));
             this.$el.data('view', this);
             return this;

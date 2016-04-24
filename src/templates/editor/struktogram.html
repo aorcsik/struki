@@ -12,37 +12,37 @@
         }).join(",") %>)
     </div>
     <% _.each(model.get("variables"), function(variable) { %>
-        <%= vartemp({'variable': variable, 'edit': null}) %>
+        <%= vartemp({'L': L, 'variable': variable, 'edit': null}) %>
     <% }); %>
 </div>
 <% if (edit) { %>
 <form>
     <div class="row form-header">
-        <div class="col-md-10">Properties</div>
+        <div class="col-md-10"><%= L.gettext("Properties") %></div>
         <div class="col-md-2">&nbsp;</div>
     </div>
     <div class="form-group">
-        <label for="<%= model.cid %>_name" class="col-md-4 control-label">name</label>
+        <label for="<%= model.cid %>_name" class="col-md-4 control-label"><%= L.gettext("name") %></label>
         <div class="col-md-8">
             <input id="<%= model.cid %>_name" name="name" type="text" class="form-control" value="<%= model.get('name') %>">
         </div>
     </div>
     <div class="row form-header">
-        <div class="col-md-10">Parameters</div>
+        <div class="col-md-10"><%= L.gettext("Parameters") %></div>
         <div class="col-md-2"><i class="material-icons add-parameter">&#xE145;</i></div>
     </div>
     <div class="parameters">
     <% _.each(model.get("parameters"), function(parameter) { %>
-        <%= vartemp({'variable': parameter, 'edit': "parameter"}) %>
+        <%= vartemp({'L': L, 'variable': parameter, 'edit': "parameter"}) %>
     <% }); %>
     </div>
     <div class="row form-header">
-        <div class="col-md-10">Variables</div>
+        <div class="col-md-10"><%= L.gettext("Local variables") %></div>
         <div class="col-md-2"><i class="material-icons add-variable">&#xE145;</i></div>
     </div>
     <div class="variables">
     <% _.each(model.get("variables"), function(variable) { %>
-        <%= vartemp({'variable': variable, 'edit': "variable"}) %>
+        <%= vartemp({'L': L, 'variable': variable, 'edit': "variable"}) %>
     <% }); %>
     </div>
 </form>

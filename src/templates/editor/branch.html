@@ -20,11 +20,11 @@
 <% if (edit) { %>
 <form>
     <div class="row form-header">
-        <div class="col-md-10">Properties</div>
+        <div class="col-md-10"><%= L.gettext("Properties") %></div>
         <div class="col-md-2">&nbsp;</div>
     </div>
     <div class="form-group">
-        <label for="<%= model.cid %>_condition" class="col-md-4 control-label">condition</label>
+        <label for="<%= model.cid %>_condition" class="col-md-4 control-label"><%= L.gettext("condition") %></label>
         <div class="col-md-8">
             <textarea id="<%= model.cid %>_condition" class="form-control" rows="3" name="condition"><%= model.get('condition') %></textarea>
         </div>

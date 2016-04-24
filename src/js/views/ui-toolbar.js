@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'views/ui-settings',
     'text!../../templates/ui-toolbar.html'
-], function($, _, Backbone, UISettingsView, UIToolbarTemplate){
+], function($, _, Backbone, Localization, UISettingsView, UIToolbarTemplate){
     var UIToolbarView = Backbone.View.extend({
         className: "ui-toolbar navbar navbar-inverse",
         events: {
@@ -99,11 +100,14 @@ define([
 
         updateSaveLinks: function() {
             if (this.model.get("active_document")) {
-                var self = this;
-                this.$el.find(".dropdown-menu li").remove();
-                this.$el.find(".dropdown-menu").append($("<li>").append(this.getJSONDownalodLink('<i class="material-icons">&#xE86F;</i>')));
+                var self = this,
+                    $menu = this.$el.find(".dropdown-menu");
+                $menu.find("li").remove();
+                $menu.append($("<li>").append(this.getJSONDownalodLink('<i class="material-icons">&#xE86F;</i>')));
+                $menu.append($("<li class='divider'></li>"));
+                // $menu.append($("<li class='dropdown-header'>Dropdown header</li>"));
                 this.getPNGDownloadLinks('<i class="material-icons">&#xE3F4;</i>').forEach(function(link) {
-                    self.$el.find(".dropdown-menu").append($("<li>").append(link));
+                    $menu.append($("<li>").append(link));
                 });
             }
         },
@@ -114,6 +118,7 @@ define([
 
         render: function() {
             this.$el.html(this.template({
+                "L": Localization,
                 "model": this.model,
             }));
             return this;

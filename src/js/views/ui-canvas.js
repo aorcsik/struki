@@ -2,9 +2,10 @@
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'views/canvas/canvas',
     'text!../../templates/ui-canvas.html'
-], function($, _, Backbone, CanvasView, UICanvasTemplate){
+], function($, _, Backbone, Localization, CanvasView, UICanvasTemplate){
     var UICanvasView = Backbone.View.extend({
         className: "ui-canvas",
         events: {
@@ -76,7 +77,8 @@
                 });
             } else {
                 this.$el.html(this.template({
-                    "empty": true
+                    "empty": true,
+                    "L": Localization
                 }));
             }
             return this;

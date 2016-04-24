@@ -2,13 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'views/ui-toolbar',
     'views/ui-editor',
     'views/ui-output',
     'views/ui-watcher',
     'views/ui-canvas',
     'text!../../examples/struki.json'
-], function($, _, Backbone, UIToolbarView, UIEditorView, UIOutputView, UIWatcherView, UICanvasView, exampleJSON){
+], function($, _, Backbone, Localization, UIToolbarView, UIEditorView, UIOutputView, UIWatcherView, UICanvasView, exampleJSON){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
@@ -28,8 +29,12 @@ define([
             this.watcher = new UIWatcherView({'model': this.model});
             this.canvas = new UICanvasView({'model': this.model});
 
-            this.listenTo(this.model, 'change', function() {
+            Localization.setLocale(this.model.get("locale"));
+            this.listenTo(this.model, 'change', function(e) {
                 self.updateLayout();
+                if (e.changed.locale !== undefined) {
+                    Localization.setLocale(self.model.get("locale"));
+                }
             });
         },
 
