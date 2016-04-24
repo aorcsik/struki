@@ -8,13 +8,13 @@ define([
         defaults: {
             "code": "–––"
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'type': this._type,
                 'code': this.get("code")
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             if (json.type && json.type === this._type) {
                 this.set({
                     "code": json.code

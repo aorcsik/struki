@@ -43,7 +43,7 @@ define([
         saveDocument: function(doc) {
             if (window.localStorage && JSON.stringify) {
                 var key = this.document_prefix + doc.cid,
-                    value = doc.toJSON();
+                    value = doc.serialize();
                 window.localStorage.setItem(key, JSON.stringify(value));
             }
         },

@@ -55,15 +55,15 @@ define([
                 this.set({'commands': commands});
             }
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'type': this._type,
                 'commands': this.get("commands").map(function(command) {
-                    return command.toJSON();
+                    return command.serialize();
                 })
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
                 var commands = json.commands.map(function(command_json) {
@@ -77,7 +77,7 @@ define([
                     if (command_json.type && command_json.type === "loop") {
                         command = new Loop({'parent': this});
                     }
-                    command.fromJSON(command_json);
+                    command.deserialize(command_json);
                     self.listenTo(command, 'change', function(e) {
                         // console.log(command._type + " -> sequence", e);
                         self.trigger('change', e);

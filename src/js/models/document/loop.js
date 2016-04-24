@@ -20,21 +20,21 @@ define([
                 self.trigger('change', e);
             });
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'type': this._type,
                 'condition': this.get("condition"),
                 'test_after': this.get("test_after"),
                 'range': this.get("range"),
-                'sequence': this.get("sequence").toJSON()
+                'sequence': this.get("sequence").serialize()
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
                 var Sequence = require('models/document/sequence');
                 var sequence = new Sequence({'parent': this});
-                sequence.fromJSON(json.sequence);
+                sequence.deserialize(json.sequence);
                 this.set({
                     "sequence": sequence,
                     "condition": json.condition,

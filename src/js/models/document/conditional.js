@@ -50,20 +50,20 @@ define([
                 this.set({'branches': branches});
             }
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'type': this._type,
                 'branches': this.get("branches").map(function(branch) {
-                    return branch.toJSON();
+                    return branch.serialize();
                 }),
-                'else_branch': this.get("else_branch").toJSON()
+                'else_branch': this.get("else_branch").serialize()
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
                 var else_branch = new Branch({'parent': this});
-                else_branch.fromJSON(json.else_branch);
+                else_branch.deserialize(json.else_branch);
                 this.set({
                     'branches': [],
                     'else_branch': else_branch
@@ -73,7 +73,7 @@ define([
                 });
                 json.branches.forEach(function(branch_json) {
                     var branch = new Branch({'parent': this});
-                    branch.fromJSON(branch_json);
+                    branch.deserialize(branch_json);
                     self.addBranch(branch);
                 });
             }

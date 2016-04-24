@@ -68,7 +68,7 @@ define([
         },
 
         getJSONDownalodLink: function(text) {
-            var json = this.model.get("active_document").toJSON(),
+            var json = this.model.get("active_document").serialize(),
                 filename = this.model.get("active_document").get("struktogram").get("name") + ".json";
             if (navigator.msSaveBlob) {
                 var blob = this.JSONtoBlob(json);

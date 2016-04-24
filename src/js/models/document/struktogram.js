@@ -20,36 +20,36 @@ define([
                 self.trigger('change', e);
             });
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'type': this._type,
                 'name': this.get("name"),
                 'helper': this.get("helper"),
                 'parameters': this.get("parameters").map(function(parameter) {
-                    return parameter.toJSON();
+                    return parameter.serialize();
                 }),
                 'variables': this.get("variables").map(function(variable) {
-                    return variable.toJSON();
+                    return variable.serialize();
                 }),
-                'sequence': this.get("sequence").toJSON()
+                'sequence': this.get("sequence").serialize()
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
                 var sequence = new Sequence({'parent': this});
-                sequence.fromJSON(json.sequence);
+                sequence.deserialize(json.sequence);
                 this.set({
                     "name": json.name,
                     "helper": json.helper || false,
                     "variables": json.variables.map(function(variable_json) {
                         var variable = new Variable();
-                        variable.fromJSON(variable_json);
+                        variable.deserialize(variable_json);
                         return variable;
                     }),
                     "parameters": json.parameters.map(function(variable_json) {
                         var variable = new Variable();
-                        variable.fromJSON(variable_json);
+                        variable.deserialize(variable_json);
                         return variable;
                     }),
                     "sequence": sequence

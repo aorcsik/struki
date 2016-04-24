@@ -50,7 +50,7 @@ define([
         },
         openDocumentFromJSON: function(json) {
             var doc = new Document({"ui": this});
-            doc.fromJSON(json);
+            doc.deserialize(json);
             this.openDocument(doc);
             return doc;
         },

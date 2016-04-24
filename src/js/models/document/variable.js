@@ -6,13 +6,13 @@ define([
     var Variable = Backbone.Model.extend({
         defaults: {
         },
-        toJSON: function() {
+        serialize: function() {
             return {
                 'name': this.get("name"),
                 'type': this.get("type")
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             this.set(json);
         }
     });

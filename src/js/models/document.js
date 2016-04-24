@@ -43,20 +43,20 @@ define([
                 this.set({'helpers': helpers});
             }
         },
-        toJSON: function() {
+        serialize: function() {
             return {
-                'struktogram': this.get("struktogram").toJSON(),
-                'helpers': this.get("helpers").map(function(helper) { return helper.toJSON(); })
+                'struktogram': this.get("struktogram").serialize(),
+                'helpers': this.get("helpers").map(function(helper) { return helper.serialize(); })
             };
         },
-        fromJSON: function(json) {
+        deserialize: function(json) {
             var self = this,
                 helpers = [],
                 struktogram = new Struktogram({'document': this});
-            struktogram.fromJSON(json.struktogram);
+            struktogram.deserialize(json.struktogram);
             json.helpers.map(function(helper_json) {
                 var helper = new Struktogram({'document': this});
-                helper.fromJSON(helper_json);
+                helper.deserialize(helper_json);
                 helpers.push(helper);
                 self.listenTo(helper, 'change', function(e) {
                     // console.log("struktogram -> document", e);
