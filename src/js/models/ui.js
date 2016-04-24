@@ -143,12 +143,14 @@ define([
                         }
                     })
                 },
+                types = {},
                 variables = {};
             if (this.get("active_document")) {
                 var struktogram = this.get("active_document").get("struktogram");
                 functions[struktogram.get("name")] = struktogram;
                 struktogram.get("parameters").forEach(function(parameter) {
                     variables[parameter.get("name")] = null;
+                    types[parameter.get("name")] = parameter.get("type");
                 });
                 this.get("active_document").get("helpers").forEach(function(helper) {
                     functions[helper.get("name")] = helper;
@@ -157,6 +159,7 @@ define([
             var context = new Context({
                 'parent': this,
                 'functions': functions,
+                'types': types,
                 'variables': variables
             });
             this.set("context", context);

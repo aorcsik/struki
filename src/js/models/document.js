@@ -90,6 +90,8 @@ define([
                     else value = Boolean(value);
                 } else if (parameter.get("type") == "Float") {
                     value = parseFloat(value);
+                } else if (parameter.get("type") == "String") {
+                    value = "" + value;
                 }
                 parameters.push(value);
             });

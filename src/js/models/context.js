@@ -12,6 +12,7 @@ define([
 
         initialize: function() {
             var self = this;
+            this.set("types", $.extend({}, this.get("types")))
             this.set("variables", $.extend({}, this.get("variables")));
             this.set("functions", $.extend({}, this.get("functions")));
         },
@@ -45,13 +46,18 @@ define([
             return "";
         },
 
-        defineVariable: function(name, initial_value) {
-            var variables = $.extend({}, this.get("variables"));
+        defineVariable: function(name, type, initial_value) {
+            var types = $.extend({}, this.get("types")),
+                variables = $.extend({}, this.get("variables"));
             if (variables[name] !== undefined) {
                 throw "Compile Error: variable '" + name + "' is already defined";
             }
+            types[name] = type;
             variables[name] = initial_value;
-            this.set({"variables": variables});
+            this.set({
+                "types": types,
+                "variables": variables
+            });
         },
         getVariable: function(name) {
             if (this.get("variables")[name] === undefined) {
@@ -64,7 +70,17 @@ define([
             if (variables[name] === undefined) {
                 throw "Compile Error: undefined variable '" + name + "'";
             }
-            variables[name] = value;
+            var type = this.get("types")[name];
+            if (type === "Int") variables[name] = parseInt(value, 10);
+            else if (type === "Float") variables[name] = parseFloat(value, 10);
+            else if (type === "Bool") variables[name] = Boolean(value);
+            else if (type === "String") variables[name] = "" + value;
+            else if (type.match(/\*$/) && value.constructor !== Array) {
+                throw "Compile Error: type mismatch";
+            } else variables[name] = value;
+            if (isNaN(variables[name])) {
+                throw "Compile Error: type mismatch";
+            }
             this.set({"variables": variables});
         },
         unsetVariable: function(name) {
@@ -154,6 +170,7 @@ define([
             this.set("context", new Context({
                 "parent": this,
                 "name": this.get("name") + ":" + name,
+                "types": $.extend({}, this.get("types")),
                 "variables": $.extend({}, this.get("variables")),
                 "functions": $.extend({}, this.get("functions"))
             }));

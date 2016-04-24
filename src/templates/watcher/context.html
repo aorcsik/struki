@@ -3,15 +3,15 @@
     <% for (var name in context.get("variables")) { %>
         <% if (global) { %>
         <div class="form-group">
-            <label for="variable_<%= name %>" class="col-md-2 control-label"><%= name %></label>
-            <div class="col-md-10">
+            <label for="variable_<%= name %>" class="col-md-4 control-label"><%= name %>:<%= context.get("types")[name] %></label>
+            <div class="col-md-8">
                 <input id="variable_<%= name %>" name="<%= name %>" placeholder="Undefined" type="text" class="form-control" value="<%= context.getVariableAsString(name) %>">
             </div>
         </div>
         <% } else { %>
         <div class="form-group">
-            <label class="col-md-2 control-label"><%= name %></label>
-            <div class="col-md-10 context-data"><%= context.getVariableAsString(name) %></div>
+            <label class="col-md-4 control-label"><%= name %>:<%= context.get("types")[name] %></label>
+            <div class="col-md-8 context-data"><%= context.getVariableAsString(name) %></div>
         </div>
         <% } %>
     <% } %>
