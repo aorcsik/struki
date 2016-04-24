@@ -5,9 +5,7 @@ define([
 ], function($, _, Backbone) {
     var Command = Backbone.Model.extend({
         _type: "command",
-        defaults: {
-            "code": "–––"
-        },
+        defaults: {},
         serialize: function() {
             return {
                 'type': this._type,

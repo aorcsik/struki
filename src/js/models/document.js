@@ -25,7 +25,7 @@ define([
                 helpers = this.get("helpers").map(function(helper) { return helper; }),
                 name = this.get("struktogram").get("name") + "_helper" + (helpers.length + 1),
                 struktogram = new Struktogram({'name': name, 'helper': true, 'document': this});
-            struktogram.get("sequence").newCommand();
+            struktogram.get("sequence").newCommand({'code': "return 0"});
             helpers.push(struktogram);
             this.set({'helpers': helpers});
             this.listenTo(struktogram, 'change', function(e) {
