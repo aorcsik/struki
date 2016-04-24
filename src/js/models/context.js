@@ -9,11 +9,13 @@ define([
         defaults: {
             'name': "global"
         },
+
         initialize: function() {
             var self = this;
             this.set("variables", $.extend({}, this.get("variables")));
             this.set("functions", $.extend({}, this.get("functions")));
         },
+
         stepState: function() {
             var global_context = this.getGlobalContext();
             global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
@@ -24,18 +26,16 @@ define([
                 throw "DEBUG STOP";
             }
         },
-        getVariable: function(name) {
-            if (this.get("variables")[name] !== undefined) return this.get("variables")[name];
-            else throw "Compile Error: undefined variable '" + name + "'";
-        },
-        getVariableAsAtring: function(name) {
-            return this.toString(this.getVariable(name));
-        },
+
         toString: function(value) {
             var self = this;
             if (value !== null && value !== undefined) {
-                if (typeof value === "number") return value;
-                if (value.constructor === String) return ("\"" + value.replace(/[\\"]/, "\\$1") + "\"").replace(/"/g, '&quot;');
+                if (typeof value === "number") {
+                    return "" + value;
+                }
+                if (value.constructor === String) {
+                    return ("\"" + value.replace(/[\\"]/, "\\$1") + "\"").replace(/"/g, '&quot;');
+                }
                 if (value.constructor === Array) {
                     return "[" + value.map(function(item) {
                         return self.toString(item);
@@ -44,30 +44,83 @@ define([
             }
             return "";
         },
+
         defineVariable: function(name, initial_value) {
             var variables = $.extend({}, this.get("variables"));
+            if (variables[name] !== undefined) {
+                throw "Compile Error: variable '" + name + "' is already defined";
+            }
             variables[name] = initial_value;
             this.set({"variables": variables});
         },
+        getVariable: function(name) {
+            if (this.get("variables")[name] === undefined) {
+                throw "Compile Error: undefined variable '" + name + "'";
+            }
+            return this.get("variables")[name];
+        },
         setVariable: function(name, value) {
             var variables = $.extend({}, this.get("variables"));
-            if (variables[name] !== undefined) variables[name] = value;
-            else throw "Compile Error: undefined variable '" + name + "'";
+            if (variables[name] === undefined) {
+                throw "Compile Error: undefined variable '" + name + "'";
+            }
+            variables[name] = value;
             this.set({"variables": variables});
         },
         unsetVariable: function(name) {
             var variables = $.extend({}, this.get("variables"));
+            if (variables[name] === undefined) {
+                throw "Compile Error: undefined variable '" + name + "'";
+            }
             delete variables[name];
             this.set({"variables": variables});
         },
-        incrementVariable: function(name, step) {
-            var variables = $.extend({}, this.get("variables"));
-            variables[name] = variables[name] + (step || 1);
-            this.set({"variables": variables});
+        getVariableAsString: function(name) {
+            return this.toString(this.getVariable(name));
         },
-        decrementVariable: function(name, step) {
-            this.incrementVariable(name, -1 * step);
+        getArrayValue: function(keys) {
+            var array = this.getVariable(keys[0]);
+            var name = keys[0];
+            for (var i = 1; i < keys.length - 1; i++) {
+                if (array.constructor !== Array) {
+                    throw "Compile Error: " + name + " is not Array, but " + array.constructor.name;
+                }
+                array = array[keys[i]];
+                name += "[" + keys[i] + "]";
+            }
+            if (array.constructor !== Array && array.constructor !== String) {
+                throw "Compile Error: " + name + " is not Array or String, but " + array.constructor.name;
+            }
+            return array[keys[i]];
         },
+        setArrayValue: function(keys, value) {
+            var array = this.getVariable(keys[0]);
+            var name = keys[0];
+            for (var i = 1; i < keys.length - 1; i++) {
+                if (array.constructor !== Array) {
+                    throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+                }
+                array = array[keys[i]];
+                name += "[" + keys[i] + "]";
+            }
+            if (array.constructor !== Array) {
+                throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+            }
+            array[keys[i]] = value;
+        },
+
+        defineFunction: function(name, func) {
+            var functions = $.extend({}, this.get("functions"));
+            functions[name] = new FunctionWrapper({'func': func});
+            this.set({"functions": functions});
+        },
+        applyFunction: function(name, params) {
+            if (this.get("functions")[name] === undefined) {
+                throw "Compile Error: undefined function '" + name + "'";
+            }
+            return this.get("functions")[name].evaluate(params, this);
+        },
+
         evaluateCondition: function(condition) {
             var parser = new Parser(condition);
             var result = parser.evaluate(this);
@@ -87,52 +140,15 @@ define([
         },
         evaluateRange: function(range_condition) {
             var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
-            if (match !== null) {
-                return {
-                    'var': match[1],
-                    'list': this.evaluateCode(match[3], true)
-                };
+            if (match === null) {
+                throw "Compile Error: bad range expression";
             }
-            throw "Compile Error: bad range expression";
+            return {
+                'var': match[1],
+                'list': this.evaluateCode(match[3], true)
+            };
         },
-        defineFunction: function(name, func) {
-            var functions = $.extend({}, this.get("functions"));
-            functions[name] = new FunctionWrapper({'func': func});
-            this.set({"functions": functions});
-        },
-        applyFunction: function(name, params) {
-            if (this.get("functions")[name] !== undefined) return this.get("functions")[name].evaluate(params, this);
-            else throw "Compile Error: undefined function '" + name + "'";
-        },
-        getArrayValue: function(keys) {
-            var array = this.getVariable(keys[0]);
-            var name = keys[0];
-            for (var i = 1; i < keys.length - 1; i++) {
-                if (array.constructor === Array) array = array[keys[i]];
-                else throw "Compile Error: " + name + " is not Array, but " + array.constructor.name;
-                name += "[" + keys[i] + "]";
-            }
-            if (array.constructor === Array || array.constructor === String) return array[keys[i]];
-            else throw "Compile Error: " + name + " is not Array or String, but " + array.constructor.name;
-        },
-        setArrayValue: function(keys, value) {
-            var array = this.getVariable(keys[0]);
-            var name = keys[0];
-            for (var i = 1; i < keys.length - 1; i++) {
-                if (array.constructor === Array) array = array[keys[i]];
-                else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-                name += "[" + keys[i] + "]";
-            }
-            if (array.constructor === Array) array[keys[i]] = value;
-            else throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
-        },
-        getGlobalContext: function() {
-            if (this.get("name") === "global") {
-                return this;
-            } else {
-                return this.get("parent").getGlobalContext();
-            }
-        },
+
         newContext: function(name) {
             var self = this;
             this.set("context", new Context({
@@ -148,6 +164,9 @@ define([
         },
         removeSubContext: function() {
             this.set("context", null);
+        },
+        getGlobalContext: function() {
+            return this.get("name") === "global" ? this : this.get("parent").getGlobalContext();
         }
     });
     return Context;
