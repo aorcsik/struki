@@ -12,7 +12,7 @@ define([
 
         initialize: function() {
             var self = this;
-            this.set("types", $.extend({}, this.get("types")))
+            this.set("types", $.extend({}, this.get("types")));
             this.set("variables", $.extend({}, this.get("variables")));
             this.set("functions", $.extend({}, this.get("functions")));
         },

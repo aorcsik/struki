@@ -8,7 +8,7 @@
 
 .ui-editor ul {
     margin: 0 0 0 0;
-    padding: 1px;
+    padding: 1px 0;
     list-style: none;
 }
 .ui-editor .struktogram-container {
@@ -18,16 +18,18 @@
     clear: both;
     font-family: "Ubuntu Mono", "Courier New", monospace;
     position: relative;
+    white-space: nowrap;
 }
 .ui-editor .command-line .command-line,
 .ui-editor ul.sequence .command-line {
-    height: 25px;
+    height: 26px;
     padding: 2px;
+    white-space: nowrap;
 }
 .ui-editor .title {
-    padding: 5px;
+    padding: 2px 5px 2px 10px;
     font-weight: bold;
-    font-size: 1.2em;
+    /*font-size: 1.2em;*/
 }
 
 .ui-editor ul.drag-over {
@@ -48,6 +50,9 @@ ul.empty-sequence {
 .ui-editor .struktogram-container .command-tools {
     position: absolute;
     top: 5px;
+}
+.ui-editor .struktogram > .command-tools {
+    /*top: 7px;*/
 }
 .ui-editor .icon {
     left: 5px;
@@ -76,9 +81,13 @@ ul.empty-sequence {
 
 .ui-editor .command-padding {
     float: left;
-    margin-left: 28px;
+    margin-left: 1em;
     height: 20px;
 }
+.ui-editor .command-padding:first-of-type {
+    margin-left: 33px;
+}
+
 .ui-editor .syntactic-sugar {
     color: #3F51B5;
 }
@@ -197,3 +206,31 @@ ul.empty-sequence {
     background: rgb(51, 122, 183);
     color: #fff;
 }
+
+.struktogram-icon {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    background-size: 200%;
+    position: absolute;
+    background-position: top left;
+    top: 5px;
+    left: 10px;
+    background-image: url("../images/struktogram.png");
+}
+.command-dropdown .struktogram-icon {
+    top: 7px;
+}
+.ui-editor .error .struktogram-icon,
+.ui-editor .evaluating .struktogram-icon,
+.ui-editor .command-line:hover > .struktogram-icon,
+.ui-editor .command-line:hover > .command-line > .struktogram-icon,
+.ui-editor .command-line.editing > .struktogram-icon,
+.ui-editor .command-dropdown li:hover .struktogram-icon {
+    background-position: top right;
+}
+.struktogram-icon.command-icon { background-image: url("../images/command.png"); }
+.struktogram-icon.conditional-icon { background-image: url("../images/conditional.png"); }
+.struktogram-icon.loop-icon { background-image: url("../images/loop.png"); }
+.struktogram-icon.branch-icon { background-image: url("../images/branch.png"); }
+.struktogram-icon.variable-icon { background-image: url("../images/variable.png"); }

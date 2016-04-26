@@ -62,8 +62,14 @@ define([
         },
         range_helper: null,
         initRange: function(context) {
-            this.range_helper = -1;
-            return context.evaluateRange(this.get("condition"));
+            try {
+                this.range_helper = -1;
+                return context.evaluateRange(this.get("condition"));
+            } catch (e) {
+                if (e.match && e.match(/^Compile/)) this.trigger("errorstop", this);
+                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                throw e;
+            }
         },
         evaluateRange: function(context, range) {
             try {

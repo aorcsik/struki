@@ -1,5 +1,5 @@
 <div class="command-line loop-condition <% if (edit) { %>editing<% } %>">
-    <i class="material-icons icon">&#xE5D5;</i>
+    <i class="struktogram-icon loop-icon"></i>
     <% if (edit) { %>
         <i class="material-icons command-tools save-command">&#xE5CA;</i>
     <% } else { %>
@@ -17,7 +17,7 @@
             while
         <% } } %>
     </span>
-    <%= model.get("condition").replace(/</, "&lt;").replace(/>/, "&gt;") %>
+    <%= model.get("condition").replace(/</, "&lt;").replace(/>/, "&gt;").replace(/\bin\b/, "<span class='syntactic-sugar'>in</span>") %>
 </div>
 <% if (edit) { %>
 <form>
@@ -35,8 +35,8 @@
         <label for="<%= model.cid %>_type" class="col-md-4 control-label"><%= L.gettext("type") %></label>
         <div class="col-md-8">
             <select id="<%= model.cid %>_type" name="type" class="form-control">
-                <option value="0"<% if (!model.get("range") && !model.get("test_after")) { %> selected<% } %>><%= L.gettext("test after") %></option>
-                <option value="1"<% if (!model.get("range") && model.get("test_after")) { %> selected<% } %>><%= L.gettext("test before") %></option>
+                <option value="0"<% if (!model.get("range") && !model.get("test_after")) { %> selected<% } %>><%= L.gettext("test before") %></option>
+                <option value="1"<% if (!model.get("range") && model.get("test_after")) { %> selected<% } %>><%= L.gettext("test after") %></option>
                 <option value="2"<% if (model.get("range")) { %> selected<% } %>><%= L.gettext("range") %></option>
             </select>
         </div>
