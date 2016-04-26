@@ -66,12 +66,16 @@ define([
                 this.model.set("output_width", [new_size, "%"]);
             }
             if (this.output_vertical_resize) {
-                new_size = this.model.getWindowHeight() - e.pageY;
-                this.model.set("output_height", [new_size, "px"]);
+                available_space = this.model.getWindowHeight();
+                divider_position = this.model.getWindowHeight() - e.pageY;
+                new_size = Math.floor(divider_position / available_space * 1000) / 10;
+                this.model.set("output_height", [new_size, "%"]);
             }
             if (this.editor_horizontal_resize) {
-                new_size = e.pageX - 6;
-                this.model.set("editor_width", [new_size, "px"]);
+                available_space = this.model.getWindowWidth();
+                divider_position = e.pageX - 6;
+                new_size = Math.floor(divider_position / available_space * 1000) / 10;
+                this.model.set("editor_width", [new_size, "%"]);
             }
         },
 

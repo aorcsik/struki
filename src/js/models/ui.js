@@ -10,9 +10,9 @@ define([
         defaults: {
             'locale': "en-US",
 
-            'editor_width':  [300, "px"],
-            'output_width':  [ 50, "%" ],
-            'output_height': [200, "px"],
+            'editor_width':  [25, "%"],
+            'output_width':  [50, "%" ],
+            'output_height': [25, "%"],
 
             'unsafe': false,
             'step_delay': 500,
@@ -24,7 +24,7 @@ define([
             this.set("output_buffer", []);
         },
 
-        settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations'],
+        settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations', 'editor_width', 'output_width', 'output_height'],
         getSettings: function() {
             var self = this, settings = {};
             this.settings_keys.forEach(function(key) {
