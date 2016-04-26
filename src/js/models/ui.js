@@ -170,7 +170,7 @@ define([
             context.set({"_state": 0, "_debug": debug_step});
             this.trigger("started_run");
             try {
-                this.get("active_document").evaluate(context);
+                return this.get("active_document").evaluate(context);
             } catch(e) {
                 if (e.match && e.match(/^Compile/)) $(".ui-output").data("view").error(e);
                 throw e;
