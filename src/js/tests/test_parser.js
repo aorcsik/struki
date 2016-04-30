@@ -40,7 +40,7 @@ define([
             assert.equal((new Parser("!I")).evaluate(context), false, "not");
             assert.equal((new Parser("I & H")).evaluate(context), false, "and");
             assert.equal((new Parser("I | H")).evaluate(context), true, "or");
-            assert.equal((new Parser("I & H | (H | !H)")).evaluate(context), true, "precedence");
+            assert.equal((new Parser("I & H | !(H | !H)")).evaluate(context), false, "precedence");
         });
 
         QUnit.test("String values", function(assert) {
@@ -57,7 +57,7 @@ define([
         });
 
         QUnit.test("String index", function(assert) {
-            context.defineVariable("a", "hello");
+            context.defineVariable("a", "String", "hello");
             assert.deepEqual((new Parser("a[0]")).evaluate(context), "h", "a[0] = \"h\"");
             assert.deepEqual((new Parser("a[0] + a[1]")).evaluate(context), "he", "a[0] + a[1] = \"he\"");
         });
@@ -77,13 +77,13 @@ define([
         });
 
         QUnit.test("Array index", function(assert) {
-            context.defineVariable("a", [1, [1, 2]]);
+            context.defineVariable("a", "Int**", [1, [1, 2]]);
             assert.deepEqual((new Parser("a[0]")).evaluate(context), 1, "a[0] = 1");
             assert.deepEqual((new Parser("a[1][1]")).evaluate(context), 2, "a[1][1] = 2");
         });
 
         QUnit.test("Array push", function(assert) {
-            context.defineVariable("a", []);
+            context.defineVariable("a", "Int*", []);
             (new Parser("a[] := 2")).evaluate(context);
             assert.deepEqual(context.getVariable("a"), [2]);
         });
@@ -92,8 +92,9 @@ define([
             assert.deepEqual((new Parser("1..1")).evaluate(context), [1], "1..1");
             assert.deepEqual((new Parser("-1..1")).evaluate(context), [-1, 0, 1], "-1..1");
             assert.deepEqual((new Parser("1..-1")).evaluate(context), [1, 0, -1], "1..-1");
-            context.defineVariable("a", 5);
+            context.defineVariable("a", "Int", 5);
             assert.deepEqual((new Parser("1..a")).evaluate(context), [1, 2, 3, 4, 5], "1..a");
+            assert.deepEqual((new Parser("-1..1+[1]")).evaluate(context), [-1, 0, 1, 1], "-1..1 + [1]");
         });
 
         QUnit.test("Function call", function(assert) {
@@ -104,25 +105,25 @@ define([
         });
 
         QUnit.test("Set variable positive number", function(assert) {
-            context.defineVariable("a", 0);
+            context.defineVariable("a", "Int", 0);
             (new Parser("a := 1")).evaluate(context);
             assert.equal(context.getVariable("a"), 1);
         });
 
         QUnit.test("Set variable negative number", function(assert) {
-            context.defineVariable("a", 0);
+            context.defineVariable("a", "Int", 0);
             (new Parser("a := -1")).evaluate(context);
             assert.equal(context.getVariable("a"), -1);
         });
 
         QUnit.test("Increment number variable", function(assert) {
-            context.defineVariable("a", 0);
+            context.defineVariable("a", "Int", 0);
             (new Parser("a := a + 1")).evaluate(context);
             assert.equal(context.getVariable("a"), 1);
         });
 
         QUnit.test("Decrement number variable", function(assert) {
-            context.defineVariable("a", 0);
+            context.defineVariable("a", "Int", 0);
             (new Parser("a := a - 1")).evaluate(context);
             assert.equal(context.getVariable("a"), -1);
         });

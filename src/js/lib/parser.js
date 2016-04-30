@@ -29,7 +29,7 @@ Parser.prototype.token_patterns = [
     {type: "BOOL[%]",      pattern: /(I|H)/},
     {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
     {type: "STRING[%]",    pattern: /"/},
-    {type: "INTEGER[%]",   pattern: /[0-9]+/},
+    {type: "INTEGER[%]",   pattern: /(0|[1-9][0-9]*)/},
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/},
 
     {type: "OPERATOR_BRO[%]", pattern: /\[/},
@@ -83,12 +83,12 @@ Parser.prototype.expression_patterns = [
     {pattern: /OPERATOR_BRO\[(\d+)\]OPERATOR_BRC\[\1\]/, operator: "empty_array", parameters: []},
 
     {pattern: /OPERATOR_NEGEXPRESSION\[(\d+)\]/,                    operator: "neg", parameters: [1]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_RNGEXPRESSION\[(\d+)\]/, operator: "rng", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MULEXPRESSION\[(\d+)\]/, operator: "mul", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DIVEXPRESSION\[(\d+)\]/, operator: "div", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MODEXPRESSION\[(\d+)\]/, operator: "mod", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUMEXPRESSION\[(\d+)\]/, operator: "sum", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUBEXPRESSION\[(\d+)\]/, operator: "sub", parameters: [1, 2]},
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_RNGEXPRESSION\[(\d+)\]/, operator: "rng", parameters: [1, 2]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEXPRESSION\[(\d+)\]/,  operator: "gt",  parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEEXPRESSION\[(\d+)\]/, operator: "gte", parameters: [1, 2]},
