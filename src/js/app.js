@@ -29,7 +29,10 @@ define([
                 ui_view = new UIView({'model': ui}),
                 local_storage = new LocalStorage({'model': ui});
             ui_view.$el.appendTo($("body"));
+            local_storage.$el.appendTo($("body"));
+            $("#loading").remove();
             ui_view.render();
+            local_storage.render("Application loaded");
         }
     });
 

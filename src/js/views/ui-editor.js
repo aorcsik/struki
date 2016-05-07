@@ -33,6 +33,15 @@ define([
                 self.helpers = [];
                 self.render();
             });
+
+            $(window).on("keyup", function(e) {
+                if (e.keyCode == 27) {
+                    if ($(".editing form").size() > 0) {
+                        $(".editing form")[0].reset();
+                        $(".editing").removeClass("editing");
+                    }
+                }
+            });
         },
 
         onClose: function() {},
@@ -63,8 +72,7 @@ define([
                     helper.render();
                 });
 
-                var self = this,
-                    dropdown_delay = null,
+                var dropdown_delay = null,
                     $dropdown = this.$el.find(".command-dropdown");
                 $dropdown.on("mouseover", function() {
                     window.clearTimeout(dropdown_delay);

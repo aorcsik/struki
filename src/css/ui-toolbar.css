@@ -18,7 +18,19 @@
     display: inline-block;
     border: 1px solid #fff;
     padding: 0 8px;
+    line-height: 29px;
+    background: rgba(255,255,255,0.2);
 }
+.navbar-brand i.logo {
+    display: inline-block;
+    width: 104px;
+    height: 24px;
+    margin-top: 3px;
+    background: url("../images/logo.png");
+    background-size: 100%;
+    background-position: bottom left;
+}
+
 .navbar-nav > li a {
     transition: background .3s;
 }

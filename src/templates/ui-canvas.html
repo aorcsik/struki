@@ -8,19 +8,22 @@
         <ul>
             <% _.each(model.get("open_documents"), function(doc) { %>
             <% if (edit == doc.cid) { %>
-                <li class="edit" data-cid="<%= doc.cid %>">
+            <li class="edit" data-cid="<%= doc.cid %>">
+                <i class="material-icons">&#xE2C8;</i>
             <% } else { if (model.get("active_document") === doc) { %>
-                <li class="active" data-cid="<%= doc.cid %>">
+            <li class="active" data-cid="<%= doc.cid %>">
+                <i class="material-icons">&#xE2C7;</i>
             <% } else { %>
-                <li data-cid="<%= doc.cid %>">
+            <li data-cid="<%= doc.cid %>">
+                <i class="material-icons">&#xE2C8;</i>
             <% } } %>
             <% if (edit == doc.cid) { %>
                 <input type="text" name="name" value="<%= doc.get('name') %>">
-                <i class="material-icons save-name">&#xE5CA;</i>
+                <i class="material-icons tab-tools save-name">&#xE5CA;</i>
             <% } else { %>
                 <span class="document-title"><%= doc.get("name") %></span>
-                <i class="material-icons close-tab">&#xE14C;</i>
-                <i class="material-icons edit-name">&#xE3C9;</i>
+                <i class="material-icons tab-tools close-tab">&#xE14C;</i>
+                <i class="material-icons tab-tools edit-name">&#xE3C9;</i>
             <% } %>
             </li>
             <% }); %>

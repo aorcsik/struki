@@ -13,6 +13,8 @@
             "click .panel-heading li .close-tab": "handleCloseTab",
             "click .panel-heading li .edit-name": "handleEditName",
             "click .panel-heading li .save-name": "handleSaveName",
+            "click .panel-heading li input[name='name']": "handleInputClick",
+            "keyup .panel-heading li input[name='name']": "handleInputKeyup",
         },
         template: _.template(UICanvasTemplate),
         struktogram: null,
@@ -42,16 +44,33 @@
             });
         },
 
+        handleInputClick: function(e) {
+            return false;
+        },
+
+        handleInputKeyup: function(e) {
+            e.stopPropagation();
+            if (e.keyCode == 13) {
+                this.handleSaveName(e);
+            }
+            if (e.keyCode == 27) {
+                this.render();
+            }
+        },
+
         handleEditName: function(e) {
+            this.handleSelectTab(e);
             var doc_cid = $(e.target).closest("li").data("cid");
             this.render(doc_cid);
+            this.$el.find("input[name='name']").focus();
             return false;
         },
 
         handleSaveName: function(e) {
-            var self = this;
-                doc_cid = $(e.target).closest("li").data("cid"),
-                new_name = $(e.target).closest("li").find("input[name='name']").val().replace(/^\s+|\s+$/, "");
+            var self = this,
+                $tab = $(e.target).closest("li"),
+                doc_cid = $tab.data("cid"),
+                new_name = $tab.find("input[name='name']").val().replace(/^\s+|\s+$/, "");
             this.model.get("open_documents").forEach(function(doc) {
                 if (doc.cid === doc_cid && new_name) {
                     doc.set("name", new_name);
@@ -64,9 +83,11 @@
         handleSelectTab: function(e) {
             var self = this;
                 doc_cid = $(e.target).closest("li").data("cid");
-            this.model.get("open_documents").forEach(function(doc) {
-                if (doc.cid === doc_cid) self.model.openDocument(doc);
-            });
+            if (this.model.get("active_document").cid !== doc_cid) {
+                this.model.get("open_documents").forEach(function(doc) {
+                    if (doc.cid === doc_cid) self.model.openDocument(doc);
+                });
+            }
         },
         handleCloseTab: function(e) {
             var self = this;

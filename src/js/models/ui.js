@@ -65,14 +65,14 @@ define([
                     this.trigger("document_changed", doc);
                     this.get("open_documents").push(doc);
                 }
+                this.listenTo(doc, "change", function(e) {
+                    // console.log("document -> ui", e);
+                    self.trigger("change", e);
+                    self.resetContext();
+                    this.trigger("document_changed", doc);
+                });
             }
             this.set("active_document", doc);
-            this.listenTo(doc, "change", function(e) {
-                // console.log("document -> ui", e);
-                self.trigger("change", e);
-                self.resetContext();
-                this.trigger("document_changed", doc);
-            });
             this.resetContext();
             return doc;
         },

@@ -35,18 +35,22 @@
     height: 100%;
 }
 .ui-canvas .panel-heading ul li .material-icons {
+    float: left;
+    margin: 2px 5px 0 0;
+    font-size: 1.2em;
+}
+.ui-canvas .panel-heading ul li .tab-tools {
     float: right;
     margin: 2px 0 0 5px;
-    font-size: 1.2em;
     opacity: 0;
 
     transition: opacity .3s;
 }
-.ui-canvas .panel-heading ul li.edit .material-icons,
-.ui-canvas .panel-heading ul li:hover .material-icons {
+.ui-canvas .panel-heading ul li.edit .tab-tools,
+.ui-canvas .panel-heading ul li:hover .tab-tools {
     opacity: 0.3;
 }
-.ui-canvas .panel-heading ul li:hover .material-icons:hover {
+.ui-canvas .panel-heading ul li:hover .tab-tools:hover {
     opacity: 1;
 }
 .ui-canvas .panel-heading ul li.edit,

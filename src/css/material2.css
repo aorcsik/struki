@@ -10,6 +10,11 @@ html, body {
     background: rgba(47, 77, 80, 0.3);
 }
 
+.ui-canvas .panel-heading ul li,
+.ui-editor .struktogram > .command-line .title {
+    background: rgba(47, 77, 80, 0.2);
+}
+
 .ui-editor .command-line:hover,
 .ui-editor .editing > .command-line,
 .ui-editor .command-dropdown li:hover,
@@ -17,6 +22,7 @@ html, body {
 .ui-canvas .panel-heading ul li:hover {
     background: rgb(47, 77, 80);
 }
+
 
 .ui-editor form,
 .ui-canvas .panel-heading ul .active {

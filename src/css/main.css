@@ -97,3 +97,24 @@ html, body {
     left: 15px;
     margin-top: 1px;
 }
+
+.background-notification {
+    position: fixed;
+    left: 10px;
+    bottom: -100px;
+    opacity: 0;
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    z-index: 10000;
+    line-height: 2.0em;
+
+    transition: bottom .5s, opacity .5s;
+}
+.background-notification.visible {
+    bottom: 10px;
+    opacity: 1;
+}
+.background-notification > span {
+    display: block;
+}
