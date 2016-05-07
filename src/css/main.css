@@ -3,11 +3,11 @@
 }
 
 .unselectable {
-   -moz-user-select: -moz-none;
+   /* -moz-user-select: -moz-none;
    -khtml-user-select: none;
    -webkit-user-select: none;
    -ms-user-select: none;
-   user-select: none;
+   user-select: none; */
 }
 
 html, body {
@@ -103,18 +103,21 @@ html, body {
     left: 10px;
     bottom: -100px;
     opacity: 0;
-    padding: 10px 20px;
+    padding: 10px 15px;
     background: rgba(0,0,0,0.8);
     color: #fff;
     z-index: 10000;
     line-height: 2.0em;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 
-    transition: bottom .5s, opacity .5s;
+    transition: height .5s, bottom .5s, opacity .5s;
 }
 .background-notification.visible {
     bottom: 10px;
     opacity: 1;
 }
-.background-notification > span {
-    display: block;
+.background-notification .material-icons {
+    font-size: 1.2em;
+    margin: 5px 5px 0 0;
+    float: left;
 }

@@ -27,13 +27,19 @@ define([
             this.restoreDocuments();
         },
 
+        settings_save_timer: null,
         settings_key: "struki.settings",
         saveUISettings: function() {
+            var self = this;
             if (window.localStorage && JSON.stringify) {
-                var key = this.settings_key,
-                    value = this.model.getSettings();
-                window.localStorage.setItem(key, JSON.stringify(value));
-                this.render("Application settings were saved");
+                var key = self.settings_key,
+                    value = self.model.getSettings();
+                try {
+                    window.localStorage.setItem(key, JSON.stringify(value));
+                    self.render("Application settings were saved");
+                } catch(e) {
+                    this.render("Application settings save is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
+                }
             }
         },
         restoreUISettings: function() {
@@ -44,25 +50,32 @@ define([
                     this.model.setSettings(JSON.parse(value));
                     this.render("Application settings were restored");
                 } catch (e) {
-                    console.error(e);
+                    this.render("Application settings restore failed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "error");
                 }
             }
         },
 
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
+            var self = this;
             if (window.localStorage && JSON.stringify) {
-                var key = this.document_prefix + doc.get("uuid"),
-                    value = doc.serialize();
-                window.localStorage.setItem(key, JSON.stringify(value));
-                this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                var key = self.document_prefix + doc.get("uuid");
+                var value = doc.serialize();
+                try {
+                    window.localStorage.setItem(key, JSON.stringify(value));
+                    self.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                } catch(e) {
+                    this.render("Document autosave is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
+                }
             }
         },
         removeDocument: function(doc) {
             if (window.localStorage) {
                 var key = this.document_prefix + doc.get("uuid");
-                window.localStorage.removeItem(key);
-                this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                if (window.localStorage.getItem(key)) {
+                    window.localStorage.removeItem(key);
+                    this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                }
             }
         },
         restoreDocuments: function() {
@@ -75,29 +88,40 @@ define([
                         try {
                             var json = JSON.parse(value);
                             this.model.openDocumentFromJSON(json);
-                            this.render("Document <%= name %> loaded", {'name': "<strong>" + json.name + "</strong>"});
+                            this.render("Document <%= name %> autosave was loaded", {'name': "<strong>" + json.name + "</strong>"});
                         } catch (e) {
-                            console.error(e);
+                            this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "error");
                         }
                     }
                 }
             }
         },
 
+        message_repeat_timer: {},
         disappear_timer: null,
-        render: function(message, params, delay) {
+        render: function(message, params, type, delay) {
             var self = this;
-            params = $.extend({}, params);
             delay = (delay || 2000) + 300;
-            var $message = $("<div>").html(_.template(Localization.gettext(message))(params));
-            this.$el.append($message).addClass("visible");
-            window.setTimeout(function() {
-                $message.fadeOut(function() { $message.remove(); });
-            }, delay);
-            window.clearTimeout(this.disappear_timer);
-            this.disappear_timer = window.setTimeout(function() {
-                self.$el.removeClass("visible");
-            }, delay);
+            params = $.extend({}, params);
+            message = _.template(Localization.gettext(message))(params);
+            window.clearTimeout(this.message_repeat_timer[message]);
+            this.message_repeat_timer[message] = window.setTimeout(function() {
+                var $message = $("<div>").html("<i class='material-icons'>&#xE876;</i>" + message);
+                if (type == "error") {
+                    $message = $("<div>").html("<i class='material-icons'>&#xE000;</i>" + message).addClass("text-danger");
+                }
+                if (type == "warning") {
+                    $message = $("<div>").html("<i class='material-icons'>&#xE002;</i>" + message).addClass("text-warning");
+                }
+                self.$el.append($message).addClass("visible");
+                window.setTimeout(function() {
+                    $message.fadeOut(function() { $message.remove(); });
+                }, delay - 200);
+                window.clearTimeout(self.disappear_timer);
+                self.disappear_timer = window.setTimeout(function() {
+                    self.$el.removeClass("visible");
+                }, delay);
+            }, 10);
         }
     });
     return LocalStorage;
