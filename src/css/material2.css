@@ -6,13 +6,10 @@ html, body {
 }
 
 .ui-editor ul.drag-over,
-.ui-editor ul.drag-over > .sort-placeholder {
-    background: rgba(47, 77, 80, 0.3);
-}
-
+.ui-editor ul.drag-over > .sort-placeholder,
 .ui-canvas .panel-heading ul li,
 .ui-editor .struktogram > .command-line .title {
-    background: rgba(47, 77, 80, 0.2);
+    background: rgba(47, 77, 80, 0.3);
 }
 
 .ui-editor .command-line:hover,

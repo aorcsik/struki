@@ -18,7 +18,6 @@
     padding: 10px;
     margin-right: 1px;
     cursor: pointer;
-    /*transition: background .3s; */
 }
 .ui-canvas .panel-heading ul li .document-title {
     margin-right: 5px;
@@ -43,8 +42,6 @@
     float: right;
     margin: 2px 0 0 5px;
     opacity: 0;
-
-    transition: opacity .3s;
 }
 .ui-canvas .panel-heading ul li.edit .tab-tools,
 .ui-canvas .panel-heading ul li:hover .tab-tools {
@@ -52,6 +49,7 @@
 }
 .ui-canvas .panel-heading ul li:hover .tab-tools:hover {
     opacity: 1;
+    transition: opacity .3s;
 }
 .ui-canvas .panel-heading ul li.edit,
 .ui-canvas .panel-heading ul li:hover {
