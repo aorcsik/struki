@@ -2,15 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'lib/localization',
     'views/editor/struktogram',
     'text!../../templates/ui-editor.html'
-], function($, _, Backbone, EditorStruktogramView, UIEditorTemplate){
+], function($, _, Backbone, Localization, EditorStruktogramView, UIEditorTemplate){
     var UIEditorView = Backbone.View.extend({
         className: "ui-editor",
-        events: {
-            "click .remove-helper": "removeHelper",
-            "click .close-struktogram": "closeDocument"
-        },
         template: _.template(UIEditorTemplate),
         stuktogram: null,
         helpers: null,
@@ -40,17 +37,6 @@ define([
 
         onClose: function() {},
 
-        removeHelper: function(e) {
-            var helper = $(e.target).closest(".struktogram").data("view").model;
-            this.model.get("active_document").removeHelper(helper);
-            return false;
-        },
-
-        closeDocument: function() {
-            this.model.closeDocument(this.model.get("active_document"));
-            return false;
-        },
-
         openDocument: function(doc) {
             var self = this;
             this.struktogram = new EditorStruktogramView({'model': doc.get("struktogram")});
@@ -63,7 +49,9 @@ define([
         },
 
         render: function() {
-            this.$el.html(this.template({}));
+            this.$el.html(this.template({
+                "L": Localization
+            }));
             var self = this,
                 $struktogram_container = this.$el.children(".struktogram-container");
             if (this.model.get("active_document")) {
@@ -73,6 +61,26 @@ define([
                 this.helpers.forEach(function(helper) {
                     $struktogram_container.append(helper.$el);
                     helper.render();
+                });
+
+                var self = this,
+                    dropdown_delay = null,
+                    $dropdown = this.$el.find(".command-dropdown");
+                $dropdown.on("mouseover", function() {
+                    window.clearTimeout(dropdown_delay);
+                }).on("mouseout", function() {
+                    dropdown_delay = window.setTimeout(function() {
+                        self.$el.find(".command-dropdown").hide();
+                    }, 100);
+                });
+                $dropdown.children("li").on("click", function() {
+                    var type = $(this).data("type"),
+                        model = $dropdown.data("model");
+                    if (type === "command") model.get("sequence").newCommand();
+                    else if (type === "loop") model.get("sequence").newLoop();
+                    else if (type === "conditional") model.get("sequence").newConditional();
+                    else if (type === "branch") model.get("parent").newBranch();
+                    else if (type === "helper") model.get('document').newHelper();
                 });
             }
             return this;

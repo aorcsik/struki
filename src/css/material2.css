@@ -11,7 +11,7 @@ html, body {
 }
 
 .ui-editor .command-line:hover,
-.ui-editor .editing,
+.ui-editor .editing > .command-line,
 .ui-editor .command-dropdown li:hover,
 .ui-canvas .panel-heading ul li.edit,
 .ui-canvas .panel-heading ul li:hover {

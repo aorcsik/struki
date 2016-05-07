@@ -47,6 +47,13 @@ define([
         "Loop": {'hu-HU': "Ciklus"},
         "Conditional": {'hu-HU': "Elágazás"},
         "Branch": {'hu-HU': "Ág"},
+
+        "Are you sure, you want to delete this loop?": {'hu-HU': "Biztos, hogy törölni akarod ezt a ciklust?"},
+        "Are you sure, you want to delete this branch?": {'hu-HU': "Biztos, hogy törölni akarod ezt az ágat?"},
+        "Are you sure, you want to delete this branch and the conditional?": {'hu-HU': "Biztos törölni akarod ezt az ágat és az elágazást?"},
+        "Are you sure, you want to delete this command?": {'hu-HU': "Biztos, hogy törölni akarod ezt a parancsot?"},
+        "Are you sure, you want to delete this struktogram?": {'hu-HU': "Biztos, hogy törölni akarod ezt a struktogramot?"},
+        "Are you sure, you want to close this document?": {'hu-HU': "Biztos, hogy be akarod zárni ezt a dokumentumot?"}
     };
 
     Localization.prototype.gettext = function(phrase, text_only, locale) {

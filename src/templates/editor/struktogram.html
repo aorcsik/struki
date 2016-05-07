@@ -1,11 +1,8 @@
-<div class="command-line <% if (edit) { %>editing<% } %>">
-    <% if (edit) { %>
-        <i class="material-icons command-tools save-command">&#xE5CA;</i>
-    <% } else { %>
-        <i class="material-icons command-tools add-command">&#xE145;</i>
-        <i class="material-icons command-tools edit-command">&#xE3C9;</i>
-        <i class="material-icons command-tools <% if (model.get('helper')) { %>remove-helper<% } else { %>close-struktogram<% } %>">&#xE14C;</i>
-    <% } %>
+<div class="command-line">
+    <i class="material-icons command-tools save-command">&#xE5CA;</i>
+    <i class="material-icons command-tools add-command">&#xE145;</i>
+    <i class="material-icons command-tools edit-command">&#xE3C9;</i>
+    <i class="material-icons command-tools <% if (model.get('helper')) { %>remove-helper<% } else { %>close-struktogram<% } %>">&#xE14C;</i>
     <div class="title">
         <%= model.get("name") %>(<%= model.get("parameters").map(function(parameter) {
             return parameter.get("name") + ": " + parameter.get("type");
@@ -15,7 +12,6 @@
         <%= vartemp({'L': L, 'variable': variable, 'edit': null}) %>
     <% }); %>
 </div>
-<% if (edit) { %>
 <form>
     <div class="row form-header">
         <div class="col-md-10"><%= L.gettext("Properties") %></div>
@@ -46,4 +42,3 @@
     <% }); %>
     </div>
 </form>
-<% } %>

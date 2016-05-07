@@ -72,7 +72,7 @@ define([
                     self.trigger('change', e);
                 });
                 json.branches.forEach(function(branch_json) {
-                    var branch = new Branch({'parent': this});
+                    var branch = new Branch({'parent': self});
                     branch.deserialize(branch_json);
                     self.addBranch(branch);
                 });

@@ -51,6 +51,7 @@ ul.empty-sequence {
     position: absolute;
     top: 5px;
 }
+
 .ui-editor .struktogram > .command-tools {
     /*top: 7px;*/
 }
@@ -78,10 +79,21 @@ ul.empty-sequence {
 .ui-editor .command-line:hover > .command-tools:hover {
     opacity: 1.0;
 }
+.ui-editor .command-line > .command-tools.save-command,
+.ui-editor .command-line:hover > .command-tools.save-command {
+    display: none;
+}
+.ui-editor .editing > .command-line > .command-tools,
+.ui-editor .editing > .command-line:hover > .command-tools {
+    display: none;
+}
+.ui-editor .editing > .command-line > .command-tools.save-command {
+    display: block;
+}
 
 .ui-editor .command-padding {
     float: left;
-    margin-left: 1em;
+    margin-left: 14px;
     height: 20px;
 }
 .ui-editor .command-padding:first-of-type {
@@ -105,7 +117,7 @@ ul.empty-sequence {
 }
 
 .ui-editor .command-line:hover,
-.ui-editor .editing {
+.ui-editor .editing > .command-line {
     background: rgb(51, 122, 183);
     color: #fff;
     border: 0;
@@ -122,18 +134,20 @@ ul.empty-sequence {
 }
 
 .ui-editor .command-line:hover .syntactic-sugar,
-.ui-editor .editing .syntactic-sugar,
+.ui-editor .editing > .command-line .syntactic-sugar,
 .ui-editor .evaluating .syntactic-sugar,
 .ui-editor .error .syntactic-sugar {
     color: rgba(255,255,255,0.7);
 }
-.ui-editor .editing .command-tools {
-    display: block;
-}
 .ui-editor form {
+    display: none;
     overflow: auto;
     border: 2px solid rgb(51, 122, 183);
     border-top: 0;
+}
+
+.ui-editor .editing > form {
+    display: block;
 }
 
 .ui-editor .form-header {
@@ -194,6 +208,7 @@ ul.empty-sequence {
     right: 46px;
     top: 8px;
     color: #000;
+    display: none;
 }
 .ui-editor .command-dropdown li {
     padding: 5px 10px;
@@ -206,6 +221,12 @@ ul.empty-sequence {
     background: rgb(51, 122, 183);
     color: #fff;
 }
+.ui-editor .struktogram > .command-line .command-dropdown .add-branch-item,
+.ui-editor .loop > .command-line .command-dropdown .add-branch-item { display: none; }
+
+.ui-editor .branch > .command-line .command-dropdown .add-helper-item,
+.ui-editor .loop > .command-line .command-dropdown .add-helper-item { display: none; }
+
 
 .struktogram-icon {
     display: inline-block;
@@ -225,7 +246,8 @@ ul.empty-sequence {
 .ui-editor .evaluating .struktogram-icon,
 .ui-editor .command-line:hover > .struktogram-icon,
 .ui-editor .command-line:hover > .command-line > .struktogram-icon,
-.ui-editor .command-line.editing > .struktogram-icon,
+.ui-editor .editing > .command-line > .struktogram-icon,
+.ui-editor .editing > .command-line > .command-line > .struktogram-icon,
 .ui-editor .command-dropdown li:hover .struktogram-icon {
     background-position: top right;
 }

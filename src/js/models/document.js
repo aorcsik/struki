@@ -58,7 +58,7 @@ define([
             json.struktogram.name = "main";
             struktogram.deserialize(json.struktogram);
             json.helpers.map(function(helper_json) {
-                var helper = new Struktogram({'document': this});
+                var helper = new Struktogram({'document': self});
                 helper.deserialize(helper_json);
                 helpers.push(helper);
                 self.listenTo(helper, 'change', function(e) {

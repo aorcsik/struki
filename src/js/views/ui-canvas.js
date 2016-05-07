@@ -72,7 +72,9 @@
             var self = this;
                 doc_cid = $(e.target).closest("li").data("cid");
             this.model.get("open_documents").forEach(function(doc) {
-                if (doc.cid === doc_cid) self.model.closeDocument(doc);
+                if (doc.cid === doc_cid && window.confirm(Localization.gettext("Are you sure, you want to close this document?", true))) {
+                    self.model.closeDocument(doc);
+                }
             });
             return false;
         },

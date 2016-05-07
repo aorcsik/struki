@@ -1,12 +1,9 @@
-<div class="command-line loop-condition <% if (edit) { %>editing<% } %>">
+<div class="command-line loop-condition">
     <i class="struktogram-icon loop-icon"></i>
-    <% if (edit) { %>
-        <i class="material-icons command-tools save-command">&#xE5CA;</i>
-    <% } else { %>
-        <i class="material-icons command-tools add-command">&#xE145;</i>
-        <i class="material-icons command-tools edit-command">&#xE3C9;</i>
-        <i class="material-icons command-tools remove-command">&#xE14C;</i>
-    <% } %>
+    <i class="material-icons command-tools save-command">&#xE5CA;</i>
+    <i class="material-icons command-tools add-command">&#xE145;</i>
+    <i class="material-icons command-tools edit-command">&#xE3C9;</i>
+    <i class="material-icons command-tools remove-command">&#xE14C;</i>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
     <span class="syntactic-sugar">
         <% if (model.get("range")) { %>
@@ -19,7 +16,6 @@
     </span>
     <%= model.get("condition").replace(/</, "&lt;").replace(/>/, "&gt;").replace(/\bin\b/, "<span class='syntactic-sugar'>in</span>") %>
 </div>
-<% if (edit) { %>
 <form>
     <div class="row form-header">
         <div class="col-md-10"><%= L.gettext("Properties") %></div>
@@ -42,4 +38,3 @@
         </div>
     </div>
 </form>
-<% } %>

@@ -69,13 +69,13 @@ define([
                 var commands = json.commands.map(function(command_json) {
                     var command;
                     if (command_json.type && command_json.type === "command") {
-                        command = new Command({'parent': this});
+                        command = new Command({'parent': self});
                     }
                     if (command_json.type && command_json.type === "conditional") {
-                        command = new Conditional({'parent': this});
+                        command = new Conditional({'parent': self});
                     }
                     if (command_json.type && command_json.type === "loop") {
-                        command = new Loop({'parent': this});
+                        command = new Loop({'parent': self});
                     }
                     command.deserialize(command_json);
                     self.listenTo(command, 'change', function(e) {

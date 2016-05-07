@@ -45,6 +45,7 @@ define([
             return this;
         },
         render: function() {
+            this.$el.data("cid", this.cid);
             this.$el.html(this.template({
                 "model": this.model
             }));

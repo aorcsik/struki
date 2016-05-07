@@ -9,6 +9,11 @@ define([
         tagName: "li",
         template: _.template(editorCommandTemplate),
         depth: 0,
+        events: {
+            "click .remove-command": "removeCommand",
+            "click .edit-command": "editCommand",
+            "click .save-command": "saveCommand"
+        },
 
         initialize: function() {
             var self = this;
@@ -30,24 +35,41 @@ define([
             this.depth = depth;
             return this;
         },
-        render: function(edit, only_command_line) {
-            if (only_command_line) {
-                this.$el.children("form").remove();
-                this.$el.children(".command-line").replaceWith(this.template({
-                    "edit": edit,
-                    "depth": this.depth,
-                    "model": this.model,
-                    "L": Localization
-                }));
-            } else {
-                this.$el.html(this.template({
-                    "edit": edit,
-                    "depth": this.depth,
-                    "model": this.model,
-                    "L": Localization
-                }));
-                this.$el.data("view", this);
+
+        removeCommand: function(e) {
+            var cid = $(e.target).closest(".remove-command").closest("li").data("cid");
+            if (cid == this.cid && window.confirm(Localization.gettext("Are you sure, you want to delete this command?", true))) {
+                this.model.get("parent").removeCommand(this.model);
             }
+        },
+
+        editCommand: function(e) {
+            var cid = $(e.target).closest(".edit-command").closest("li").data("cid");
+            if (cid == this.cid) {
+                $(".editing").removeClass("editing");
+                this.$el.addClass("editing");
+            }
+        },
+
+        saveCommand: function (e) {
+            var cid = $(e.target).closest(".save-command").closest("li").data("cid");
+            if (cid == this.cid) {
+                this.model.set({
+                    "code": this.$el.find("#" + this.model.cid + "_code").val(),
+                    "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
+                    "_updated_at": (new Date()).getTime()
+                });
+            }
+        },
+
+        render: function() {
+            this.$el.data("cid", this.cid);
+            this.$el.html(this.template({
+                "depth": this.depth,
+                "model": this.model,
+                "L": Localization
+            }));
+            this.$el.data("view", this);
             return this;
         }
     });
