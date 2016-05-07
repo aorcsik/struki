@@ -30,16 +30,13 @@ define([
         settings_save_timer: null,
         settings_key: "struki.settings",
         saveUISettings: function() {
-            var self = this;
-            if (window.localStorage && JSON.stringify) {
-                var key = self.settings_key,
-                    value = self.model.getSettings();
-                try {
-                    window.localStorage.setItem(key, JSON.stringify(value));
-                    self.render("Application settings were saved");
-                } catch(e) {
-                    this.render("Application settings save is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
-                }
+            try {
+                var key = this.settings_key,
+                    value = this.model.getSettings();
+                window.localStorage.setItem(key, JSON.stringify(value));
+                this.render("Application settings were saved");
+            } catch(e) {
+                this.render("Application settings save is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
             }
         },
         restoreUISettings: function() {
@@ -57,16 +54,13 @@ define([
 
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
-            var self = this;
-            if (window.localStorage && JSON.stringify) {
-                var key = self.document_prefix + doc.get("uuid");
+            try {
+                var key = this.document_prefix + doc.get("uuid");
                 var value = doc.serialize();
-                try {
                     window.localStorage.setItem(key, JSON.stringify(value));
-                    self.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
-                } catch(e) {
-                    this.render("Document autosave is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
-                }
+                    this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
+            } catch(e) {
+                this.render("Document autosave is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
             }
         },
         removeDocument: function(doc) {
