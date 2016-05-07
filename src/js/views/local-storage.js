@@ -1,9 +1,12 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone){
+    'backbone',
+    'lib/localization'
+], function($, _, Backbone, Localization){
     var LocalStorage = Backbone.View.extend({
+        className: "background-notification",
+
         initialize: function() {
             var self = this;
             this.listenTo(this.model, "change", function(e) {
@@ -30,6 +33,7 @@ define([
                 var key = this.settings_key,
                     value = this.model.getSettings();
                 window.localStorage.setItem(key, JSON.stringify(value));
+                this.render("Application settings were saved");
             }
         },
         restoreUISettings: function() {
@@ -38,6 +42,7 @@ define([
             if (value) {
                 try {
                     this.model.setSettings(JSON.parse(value));
+                    this.render("Application settings were restored");
                 } catch (e) {
                     console.error(e);
                 }
@@ -50,12 +55,14 @@ define([
                 var key = this.document_prefix + doc.get("uuid"),
                     value = doc.serialize();
                 window.localStorage.setItem(key, JSON.stringify(value));
+                this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
             }
         },
         removeDocument: function(doc) {
             if (window.localStorage) {
                 var key = this.document_prefix + doc.get("uuid");
                 window.localStorage.removeItem(key);
+                this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.get("name") + "</strong>"});
             }
         },
         restoreDocuments: function() {
@@ -66,13 +73,31 @@ define([
                     if (key.substring(0, this.document_prefix.length) === this.document_prefix) {
                         window.localStorage.removeItem(key);
                         try {
-                            this.model.openDocumentFromJSON(JSON.parse(value));
+                            var json = JSON.parse(value);
+                            this.model.openDocumentFromJSON(json);
+                            this.render("Document <%= name %> loaded", {'name': "<strong>" + json.name + "</strong>"});
                         } catch (e) {
                             console.error(e);
                         }
                     }
                 }
             }
+        },
+
+        disappear_timer: null,
+        render: function(message, params, delay) {
+            var self = this;
+            params = $.extend({}, params);
+            delay = (delay || 2000) + 300;
+            var $message = $("<div>").html(_.template(Localization.gettext(message))(params));
+            this.$el.append($message).addClass("visible");
+            window.setTimeout(function() {
+                $message.fadeOut(function() { $message.remove(); });
+            }, delay);
+            window.clearTimeout(this.disappear_timer);
+            this.disappear_timer = window.setTimeout(function() {
+                self.$el.removeClass("visible");
+            }, delay);
         }
     });
     return LocalStorage;
