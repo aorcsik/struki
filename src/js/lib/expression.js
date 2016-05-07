@@ -134,14 +134,14 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             if (this.params.length == 1) {
                 return context.applyFunction(expressions[this.params[0]].params[0]);
             } else {
-                value = this.evaluateList(expressions[this.params[1]], context, expressions, constants);
+                value = this.evaluateList(expressions[this.params[1]], context, expressions, constants).list;
                 return context.applyFunction(expressions[this.params[0]].params[0], value);
             }
         }
         throw "Syntax Error: left operand is not a valid function name";
     }
     else if (this.operator == "array") {
-        return this.evaluateList(expressions[this.params[0]], context, expressions, constants);
+        return this.evaluateList(expressions[this.params[0]], context, expressions, constants).list;
     }
     else if (this.operator == "empty_array") {
         return [];
@@ -175,22 +175,64 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             keys = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             return context.setArrayValue(keys, value);
         }
-        throw "Syntax Error: left operand is not a valid variable or array syntax";
+        else if (expressions[this.params[0]].operator == "list") {
+            var list1 = expressions[this.params[0]], list2;
+            if (expressions[this.params[1]].operator == "list") {
+                list2 = this.evaluateList(expressions[this.params[1]], context, expressions, constants).list;
+            } else {
+                list2 = expressions[this.params[1]].evaluate(context, expressions, constants).list;
+                if (list2 === undefined) {
+                    throw "Syntax Error: right operand is not a valid list";
+                }
+            }
+            return this.evaluateListSet(list1, list2, context, expressions, constants);
+        }
+        throw "Syntax Error: left operand is not a valid variable, list or array syntax";
     }
     throw "Syntax Error: cannot use " + this.operator + " operator here";
+};
+
+Expression.prototype.evaluateListSet = function(list1, list2, context, expressions, constants) {
+    var value, keys, variable;
+    if (expressions[list1.params[0]].operator == "list") {
+        this.evaluateListSet(expressions[list1.params[0]], list2.slice(0, -1), context, expressions, constants);
+    } else if (list2.length > 2) {
+        throw "Syntax Error: invalid list set expression, operand count does not match";
+    } else if (expressions[list1.params[0]].operator == "var") {
+        variable = expressions[list1.params[0]].params[0];
+        value = list2[0];
+        context.setVariable(variable, value);
+    } else if (expressions[list1.params[0]].operator == "array_index") {
+        keys = this.evaluateArrayIndex(expressions[list1.params[0]], context, expressions, constants);
+        value = list2[0];
+        context.setArrayValue(keys, value);
+    } else {
+        throw "Syntax Error: invalid list set expression, only variables or list indexes are allowed on the left side";
+    }
+    if (expressions[list1.params[1]].operator == "var") {
+        variable = expressions[list1.params[1]].params[0];
+        value = list2[list2.length - 1];
+        context.setVariable(variable, value);
+    } else if (expressions[list1.params[1]].operator == "array_index") {
+        keys = this.evaluateArrayIndex(expressions[list1.params[1]], context, expressions, constants);
+        value = list2[list2.length - 1];
+        context.setArrayValue(keys, value);
+    } else {
+        throw "Syntax Error: invalid list set expression, only variables or list indexes are allowed on the left side";
+    }
 };
 
 Expression.prototype.evaluateList = function(list, context, expressions, constants) {
     var sublist, flatlist = [];
     if (list.operator == "list") {
         sublist = this.evaluateList(expressions[list.params[0]], context, expressions, constants);
-        sublist.forEach(function(item) { flatlist.push(item); });
+        sublist.list.forEach(function(item) { flatlist.push(item); });
         sublist = this.evaluateList(expressions[list.params[1]], context, expressions, constants);
-        sublist.forEach(function(item) { flatlist.push(item); });
+        sublist.list.forEach(function(item) { flatlist.push(item); });
     } else {
         flatlist.push(list.evaluate(context, expressions, constants));
     }
-    return flatlist;
+    return {'list': flatlist};
 };
 
 Expression.prototype.evaluateArrayIndex = function(expression, context, expressions, constants) {

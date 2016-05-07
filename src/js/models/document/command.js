@@ -33,7 +33,7 @@ define([
                 // if (time > 3) console.log(time, this.get("code"));
                 return result;
             } catch (e) {
-                if (e.match && e.match(/^Compile/)) this.trigger("errorstop", this);
+                if (e.match && e.match(/^(Compile|Syntax)/)) this.trigger("errorstop", this);
                 if (e == "DEBUG STOP") this.trigger("debugstop", this);
                 throw e;
             }

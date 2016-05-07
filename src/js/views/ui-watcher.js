@@ -179,7 +179,7 @@ define([
                     try {
                         this.run(this.debug_step);
                     } catch (e) {
-                        if (e.match && e.match(/^Compile/)) {
+                        if (e.match && e.match(/^(Compile|Syntax)/)) {
                             this.updateDebugStep(this.debug_step - dir);
                             this.updateButtonStates({
                                 'back': this.debug_step > 1,

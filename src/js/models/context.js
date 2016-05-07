@@ -40,7 +40,12 @@ define([
                 if (value.constructor === Array) {
                     return "[" + value.map(function(item) {
                         return self.toString(item);
-                    }).join(",") + "]";
+                    }).join(", ") + "]";
+                }
+                if (value.list !== undefined) {
+                    return value.list.map(function(item) {
+                        return self.toString(item);
+                    }).join(", ");
                 }
             }
             return "";
@@ -60,12 +65,18 @@ define([
             });
         },
         getVariable: function(name) {
+            if (name == "_") {
+                throw "Compile Error: _ has no value";
+            }
             if (this.get("variables")[name] === undefined) {
                 throw "Compile Error: undefined variable '" + name + "'";
             }
             return this.get("variables")[name];
         },
         setVariable: function(name, value) {
+            if (name == "_") {
+                return;  // sink
+            }
             var variables = $.extend({}, this.get("variables"));
             if (variables[name] === undefined) {
                 throw "Compile Error: undefined variable '" + name + "'";

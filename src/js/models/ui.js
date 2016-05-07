@@ -170,9 +170,10 @@ define([
             context.set({"_state": 0, "_debug": debug_step});
             this.trigger("started_run");
             try {
-                return this.get("active_document").evaluate(context);
+                result = this.get("active_document").evaluate(context);
+                return result;
             } catch(e) {
-                if (e.match && e.match(/^Compile/)) $(".ui-output").data("view").error(e);
+                if (e.match && e.match(/^(Compile|Syntax)/)) $(".ui-output").data("view").error(e);
                 throw e;
             }
         },

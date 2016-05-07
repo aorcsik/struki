@@ -116,6 +116,24 @@ define([
             assert.equal(context.getVariable("a"), -1);
         });
 
+        QUnit.test("Set double varibales", function(assert) {
+            context.defineVariable("a", "Int", 0);
+            context.defineVariable("b", "Int", 0);
+            context.defineVariable("c", "Int*", []);
+            (new Parser("a, b := 1, 2")).evaluate(context);
+            assert.deepEqual([context.getVariable("a"), context.getVariable("b")], [1, 2], "a, b := 1, 2");
+            (new Parser("a, c[0] := 1, 2")).evaluate(context);
+            assert.deepEqual([context.getVariable("a"), context.getVariable("c")], [1, [2]], "a, c[0] := 1, 2");
+        });
+
+        QUnit.test("Set tuple varibales", function(assert) {
+            context.defineVariable("a", "Int", 0);
+            context.defineVariable("b", "Int", 0);
+            context.defineVariable("c", "Int*", []);
+            (new Parser("a, b, c[0] := 1, 2, 3")).evaluate(context);
+            assert.deepEqual([context.getVariable("a"), context.getVariable("b"), context.getVariable("c")], [1, 2, [3]], "a, b, c[0] := 1, 2, 3");
+        });
+
         QUnit.test("Increment number variable", function(assert) {
             context.defineVariable("a", "Int", 0);
             (new Parser("a := a + 1")).evaluate(context);
