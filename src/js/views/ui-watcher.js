@@ -179,7 +179,7 @@ define([
                     try {
                         this.run(this.debug_step);
                     } catch (e) {
-                        if (e.match && e.match(/^(Compile|Syntax)/)) {
+                        if (context.isError(e)) {
                             this.updateDebugStep(this.debug_step - dir);
                             this.updateButtonStates({
                                 'back': this.debug_step > 1,
@@ -188,9 +188,8 @@ define([
                             });
                             return false;
                         }
-                        else if (e === "DEBUG STOP") debugstop = true;
+                        else if (context.isStop(e)) debugstop = true;
                         else throw e;
-
                     }
                     this.updateButtonStates({
                         'back': this.debug_step > 1,

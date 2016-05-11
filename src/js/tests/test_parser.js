@@ -1,8 +1,9 @@
 define([
     "qunit",
     "lib/parser",
+    "lib/parse_error",
     "models/context"
-], function(QUnit, Parser, Context) {
+], function(QUnit, Parser, ParseError, Context) {
     QUnit.module("Parser", function(hooks) {
         var context;
 
@@ -15,12 +16,31 @@ define([
             context = null;
         });
 
+        QUnit.test("Parse errors", function(assert) {
+            assert.throws(function() {
+                (new Parser("")).evaluate(context);
+            }, new ParseError("no code to parse"), "\"\" -> no code to parse");
+
+            assert.throws(function() {
+                (new Parser("2 3")).evaluate(context);
+            }, new ParseError("missing operator"), "\"2 3\" -> missing operator");
+
+            assert.throws(function() {
+                (new Parser(",,")).evaluate(context);
+            }, new ParseError("unresolved tokens 'OPERATOR_LSTOPERATOR_LST'"),
+                "\",,\" -> unresolved tokens 'OPERATOR_LSTOPERATOR_LST'");
+        });
+
         QUnit.test("Numeric values", function(assert) {
             assert.equal((new Parser("0")).evaluate(context), 0, "0");
             assert.equal((new Parser("100")).evaluate(context), 100, "100");
             assert.equal((new Parser("-10")).evaluate(context), -10, "-10");
             assert.equal((new Parser("2.34")).evaluate(context), 2.34, "2.34");
             assert.equal((new Parser("-12.3")).evaluate(context), -12.3, "-12.3");
+
+            assert.throws(function() {
+                (new Parser("01")).evaluate(context);
+            }, new ParseError("missing operator"), "01 is not a valid number");
         });
         QUnit.test("Numeric operators", function(assert) {
             assert.equal((new Parser("-1")).evaluate(context), -1, "negative");

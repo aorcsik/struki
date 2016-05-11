@@ -1,4 +1,7 @@
-define(['lib/expression'], function(Expression) {
+define([
+    'lib/expression',
+    'lib/parse_error'
+], function(Expression, ParseError) {
 
 function Parser(code) {
     if (this.parser_cache[code]) {
@@ -191,11 +194,14 @@ Parser.prototype.parse = function(code) {
     var match = code.match(/^EXPRESSION\[(\d+)\]$/);
     if (!match) {
         if (code === "") {
-            throw "Compile Error: no code to parse";
+            throw new ParseError("no code to parse");
         } else {
             var unresolved_tokens = code.replace(/EXPRESSION\[\d+\]/g, ";").replace(/(^;|;$)/g, "").split(";");
-            if (unresolved_tokens[0] === '') throw "Compile Error: missing operator";
-            else throw "Compile Error: unresolved tokens '" + unresolved_tokens + "'";
+            if (unresolved_tokens[0] === '') {
+                throw new ParseError("missing operator");
+            } else {
+                throw new ParseError("unresolved tokens '" + unresolved_tokens + "'");
+            }
         }
     } else {
         return this.expressions[match[1]];

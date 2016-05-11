@@ -3,8 +3,17 @@ define([
     'underscore',
     'backbone',
     'lib/parser',
+    'lib/parse_error',
+    'lib/compile_error',
     'models/function_wrapper'
-], function($, _, Backbone, Parser, FunctionWrapper) {
+], function($, _, Backbone, Parser, ParseError, CompileError, FunctionWrapper) {
+    function DebugStopException() {}
+
+    function UnsafeException() {}
+    UnsafeException.prototype.toString = function() {
+        return "Too many iterations, possible infinite loop.";
+    };
+
     var Context = Backbone.Model.extend({
         defaults: {
             'name': "global"
@@ -21,11 +30,20 @@ define([
             var global_context = this.getGlobalContext();
             global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
             if (global_context.get("_state") >= global_context.get("parent").get("max_iterations")) {
-                throw "Too many iterations, possible infinite loop.";
+                throw new UnsafeException();
             }
             if (global_context.get('_debug') && global_context.get('_state') === global_context.get('_debug')) {
-                throw "DEBUG STOP";
+                throw new DebugStopException();
             }
+        },
+
+        isError: function(exc) {
+            return exc.constructor === ParseError ||
+                   exc.constructor === CompileError;
+        },
+
+        isStop: function(exc) {
+            return exc.constructor === DebugStopException;
         },
 
         toString: function(value) {
@@ -55,21 +73,24 @@ define([
             var types = $.extend({}, this.get("types")),
                 variables = $.extend({}, this.get("variables"));
             if (variables[name] !== undefined) {
-                throw "Compile Error: variable '" + name + "' is already defined";
+                throw new CompileError("variable '" + name + "' is already defined");
             }
             types[name] = type;
-            variables[name] = initial_value;
+            variables[name] = null;
             this.set({
                 "types": types,
                 "variables": variables
             });
+            if (initial_value !== undefined) {
+                this.setVariable(name, initial_value);
+            }
         },
         getVariable: function(name) {
             if (name == "_") {
-                throw "Compile Error: _ has no value";
+                throw new CompileError("_ has no value");
             }
             if (this.get("variables")[name] === undefined) {
-                throw "Compile Error: undefined variable '" + name + "'";
+                throw new CompileError("undefined variable '" + name + "'");
             }
             return this.get("variables")[name];
         },
@@ -79,25 +100,28 @@ define([
             }
             var variables = $.extend({}, this.get("variables"));
             if (variables[name] === undefined) {
-                throw "Compile Error: undefined variable '" + name + "'";
+                throw new CompileError("undefined variable '" + name + "'");
             }
             var type = this.get("types")[name];
-            if (type === "Int") variables[name] = parseInt(value, 10);
-            else if (type === "Float") variables[name] = parseFloat(value, 10);
+
+            if (type === "Int" || type === "Float") {
+                if (type === "Int") variables[name] = parseInt(value, 10);
+                if (type === "Float") variables[name] = parseFloat(value, 10);
+                if (isNaN(variables[name])) {
+                    throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
+                }
+            }
             else if (type === "Bool") variables[name] = Boolean(value);
             else if (type === "String") variables[name] = "" + value;
             else if (type.match(/\*$/) && value.constructor !== Array) {
-                throw "Compile Error: type mismatch";
+                throw new CompileError("type mismatch, " + value.constructor.name + " is not Array");
             } else variables[name] = value;
-            if (isNaN(variables[name])) {
-                throw "Compile Error: type mismatch";
-            }
             this.set({"variables": variables});
         },
         unsetVariable: function(name) {
             var variables = $.extend({}, this.get("variables"));
             if (variables[name] === undefined) {
-                throw "Compile Error: undefined variable '" + name + "'";
+                throw new CompileError("undefined variable '" + name + "'");
             }
             delete variables[name];
             this.set({"variables": variables});
@@ -110,13 +134,13 @@ define([
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
                 if (array.constructor !== Array) {
-                    throw "Compile Error: " + name + " is not Array, but " + array.constructor.name;
+                    throw new CompileError("type mismatch, " + name + " is not Array, but " + array.constructor.name);
                 }
                 array = array[keys[i]];
                 name += "[" + keys[i] + "]";
             }
             if (array.constructor !== Array && array.constructor !== String) {
-                throw "Compile Error: " + name + " is not Array or String, but " + array.constructor.name;
+                throw new CompileError("type mismatch, " + name + " is not Array or String, but " + array.constructor.name);
             }
             return array[keys[i]];
         },
@@ -125,13 +149,13 @@ define([
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
                 if (array.constructor !== Array) {
-                    throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+                    throw new CompileError("type mismatch, " + name + " is not an Array, but " + array.constructor.name);
                 }
                 array = array[keys[i]];
                 name += "[" + keys[i] + "]";
             }
             if (array.constructor !== Array) {
-                throw "Compile Error: " + name + " is not an Array, but " + array.constructor.name;
+                throw new CompileError("type mismatch, " + name + " is not an Array, but " + array.constructor.name);
             }
             array[keys[i]] = value;
         },
@@ -143,7 +167,7 @@ define([
         },
         applyFunction: function(name, params) {
             if (this.get("functions")[name] === undefined) {
-                throw "Compile Error: undefined function '" + name + "'";
+                throw new CompileError("undefined function '" + name + "'");
             }
             return this.get("functions")[name].evaluate(params, this);
         },
@@ -168,7 +192,7 @@ define([
         evaluateRange: function(range_condition) {
             var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
             if (match === null) {
-                throw "Compile Error: bad range expression";
+                throw new CompileError("invalid range expression");
             }
             return {
                 'var': match[1],

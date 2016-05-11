@@ -172,7 +172,7 @@ define([
                 result = this.get("active_document").evaluate(context);
                 return result;
             } catch(e) {
-                if (e.match && e.match(/^(Compile|Syntax)/)) $(".ui-output").data("view").error(e);
+                if (context.isError(e)) $(".ui-output").data("view").error(e);
                 throw e;
             }
         },

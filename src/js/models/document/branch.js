@@ -51,8 +51,8 @@ define([
             try {
                 result.condition = context.evaluateCondition(this.get("condition") ? this.get("condition") : "I");
             } catch (e) {
-                if (e.match && e.match(/^(Compile|Syntax)/)) this.trigger("errorstop", this);
-                if (e == "DEBUG STOP") this.trigger("debugstop", this);
+                if (context.isError(e)) this.trigger("errorstop", this);
+                if (context.isStop(e)) this.trigger("debugstop", this);
                 throw e;
             }
             if (result.condition) {

@@ -35,7 +35,6 @@ define([
                     }
                     self.struktogram = null;
                     self.helpers = [];
-                    console.log("X");
                     self.render();
                 }
             });
