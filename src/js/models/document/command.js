@@ -5,6 +5,7 @@ define([
 ], function($, _, Backbone) {
     var Command = Backbone.Model.extend({
         _type: "command",
+        _new: false,
         defaults: {
             'code': ""
         },

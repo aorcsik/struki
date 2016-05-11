@@ -6,6 +6,7 @@ define([
 ], function(require, $, _, Backbone) {
     var Branch = Backbone.Model.extend({
         _type: "branch",
+        _new: false,
         defaults: {
             "condition": "I"
         },

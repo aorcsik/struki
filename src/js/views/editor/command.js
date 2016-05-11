@@ -44,10 +44,10 @@ define([
         },
 
         editCommand: function(e) {
-            var cid = $(e.target).closest(".edit-command").closest("li").data("cid");
-            if (cid == this.cid) {
+            if (e == this.cid || $(e.target).closest(".edit-command").closest("li").data("cid") == this.cid) {
                 $(".editing").removeClass("editing");
                 this.$el.addClass("editing");
+                this.$el.find("#" + this.model.cid + "_code").select();
             }
         },
 
@@ -70,6 +70,12 @@ define([
                 "L": Localization
             }));
             this.$el.data("view", this);
+
+            this.$el.removeClass("editing");
+            if (this.model._new) {
+                this.editCommand(this.cid);
+                this.model._new = false;
+            }
             return this;
         }
     });

@@ -29,13 +29,6 @@ define([
             var self = this,
                 render_timeout = null;
             this.main_sequence = new EditorSequenceView({'model': this.model.get("sequence")});
-            this.listenTo(this.model, "change", function(e) {
-                // TODO: better handling of callback timing
-                window.clearTimeout(render_timeout);
-                render_timeout = window.setTimeout(function() {
-                    self.render();
-                }, 10);
-            });
         },
 
         onClose: function() {
@@ -44,10 +37,10 @@ define([
         },
 
         editCommand: function(e) {
-            var cid = $(e.target).closest(".edit-command").closest("li, .struktogram").data("cid");
-            if (cid == this.cid) {
+            if (e == this.cid || $(e.target).closest(".edit-command").closest("li, .struktogram").data("cid") == this.cid) {
                 $(".editing").removeClass("editing");
                 this.$el.addClass("editing");
+                this.$el.find("#" + this.model.cid + "_name").focus();
             }
         },
 
@@ -163,6 +156,11 @@ define([
                 }
             }).disableSelection();
             this.$el.data('view', this);
+            this.$el.removeClass("editing");
+            if (this.model._new) {
+                this.editCommand(this.cid);
+                this.model._new = false;
+            }
             return this;
         }
     });

@@ -14,16 +14,19 @@ define([
         },
         newCommand: function(data) {
             var command = new Command($.extend({'parent': this}, data));
+            command._new = true;
             this.addCommand(command);
             return command;
         },
         newLoop: function(data) {
             var loop = new Loop($.extend({'parent': this}, data));
+            loop._new = true;
             this.addCommand(loop);
             return loop;
         },
         newConditional: function(data) {
             var conditional = new Conditional($.extend({'parent': this}, data));
+            conditional.get("branches")[0]._new = true;
             this.addCommand(conditional);
             return conditional;
         },

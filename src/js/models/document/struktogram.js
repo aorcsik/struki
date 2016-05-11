@@ -7,6 +7,7 @@ define([
 ], function($, _, Backbone, Variable, Sequence) {
     var Struktogram = Backbone.Model.extend({
         _type: "struktogram",
+        _new: false,
         defaults: {
             'helper': false
         },

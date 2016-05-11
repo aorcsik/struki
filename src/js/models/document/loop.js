@@ -6,6 +6,7 @@ define([
 ], function(require, $, _, Backbone) {
     var Loop = Backbone.Model.extend({
         _type: "loop",
+        _new: false,
         defaults: {
             "condition": "I",
             "test_after": false,
