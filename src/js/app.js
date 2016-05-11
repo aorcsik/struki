@@ -26,12 +26,15 @@ define([
             $.material.init();
 
             var ui = new UI(),
-                ui_view = new UIView({'model': ui}),
-                local_storage = new LocalStorage({'model': ui});
+                ui_view = new UIView({'model': ui});
             ui_view.$el.appendTo($("body"));
-            local_storage.$el.appendTo($("body"));
             $("#loading").remove();
             ui_view.render();
+
+            var local_storage = new LocalStorage({'model': ui});
+            local_storage.$el.appendTo($("body"));
+            local_storage.restoreUISettings();
+            local_storage.restoreDocuments();
             local_storage.render("Application loaded");
         }
     });

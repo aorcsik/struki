@@ -23,18 +23,20 @@ define([
             this.listenTo(this.model, "document_closed", function(doc) {
                 self.removeDocument(doc);
             });
-            this.restoreUISettings();
-            this.restoreDocuments();
         },
 
         settings_save_timer: null,
         settings_key: "struki.settings",
         saveUISettings: function() {
             try {
-                var key = this.settings_key,
+                var self = this,
+                    key = this.settings_key,
                     value = this.model.getSettings();
-                window.localStorage.setItem(key, JSON.stringify(value));
-                this.render("Application settings were saved");
+                window.clearTimeout(this.settings_save_timer);
+                this.settings_save_timer = window.setTimeout(function() {
+                    window.localStorage.setItem(key, JSON.stringify(value));
+                    self.render("Application settings were saved");
+                }, 100);
             } catch(e) {
                 this.render("Application settings save is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning");
             }
@@ -115,7 +117,7 @@ define([
                 self.disappear_timer = window.setTimeout(function() {
                     self.$el.removeClass("visible");
                 }, delay);
-            }, 10);
+            }, 50);
         }
     });
     return LocalStorage;
