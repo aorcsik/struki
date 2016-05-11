@@ -19,19 +19,25 @@ define([
             if (this.model.get("active_document")) {
                 this.openDocument(this.model.get("active_document"));
             }
+            this.listenTo(this.model, "change:context", function(model, value) {
+                this.$el.find(".evaluating").removeClass("evaluating");
+                this.$el.find(".error").removeClass("error");
+            });
             this.listenTo(this.model, "change", function(e) {
-                if (e.changed.active_document === undefined &&
-                    e.changed.context === undefined &&
-                    e.changed.helpers === undefined) return;
-                if (self.struktogram) {
-                    self.struktogram.close();
-                    this.helpers.forEach(function(helper) {
-                        helper.close();
-                    });
+                if (e.changed.active_document !== undefined ||
+                    e.changed.helpers !== undefined ||
+                    e._type !== undefined) {  // structogram element changed
+                    if (self.struktogram) {
+                        self.struktogram.close();
+                        this.helpers.forEach(function(helper) {
+                            helper.close();
+                        });
+                    }
+                    self.struktogram = null;
+                    self.helpers = [];
+                    console.log("X");
+                    self.render();
                 }
-                self.struktogram = null;
-                self.helpers = [];
-                self.render();
             });
 
             $(window).on("keyup", function(e) {

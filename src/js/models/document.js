@@ -20,23 +20,33 @@ define([
             });
             this.set("helpers", []);
         },
-        newHelper: function() {
-            var self = this,
-                helpers = this.get("helpers").map(function(helper) { return helper; }),
-                name = this.get("struktogram").get("name") + "_helper" + (helpers.length + 1),
-                struktogram = new Struktogram({'name': name, 'helper': true, 'document': this});
+        newHelper: function(data) {
+            var name = this.get("struktogram").get("name") + "_helper" + (this.get("helpers").length + 1),
+                struktogram = new Struktogram($.extend({'name': name, 'helper': true, 'document': this}, data));
             struktogram.get("sequence").newCommand({'code': "return 0"});
-            helpers.push(struktogram);
-            this.set({'helpers': helpers});
-            this.listenTo(struktogram, 'change', function(e) {
-                self.trigger('change', e);
-            });
+            struktogram._new = true;
+            this.addHelper(struktogram, data);
             return struktogram;
         },
-        removeHelper: function(struktogram) {
+        addHelper: function(struktogram, idx) {
             var self = this,
-                helpers = this.get("helpers").map(function(helper) { return helper; }),
-                idx = helpers.indexOf(struktogram);
+                helpers = this.get("helpers").map(function(helper) { return helper; });
+            if (idx === undefined || idx > helpers.length) {
+                helpers.push(struktogram);
+            } else {
+                helpers.splice(idx, 0, struktogram);
+            }
+            this.set({'helpers': helpers});
+            this.listenTo(struktogram, 'change', function(e) {
+                // console.log("struktogram -> document", e);
+                self.trigger('change', e);
+            });
+        },
+        removeHelper: function(struktogram) {
+            this.removeHelperByIndex(this.get("helpers").indexOf(struktogram));
+        },
+        removeHelperByIndex: function(idx) {
+            var helpers = this.get("helpers").map(function(helper) { return helper; });
             if (idx > -1 && idx < helpers.length) {
                 var removed = helpers.splice(idx, 1);
                 this.stopListening(removed[0]);

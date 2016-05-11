@@ -27,6 +27,7 @@
             this.listenTo(this.model, "change", function(e) {
                 if (e.changed.active_document !== undefined ||
                     e.changed.open_documents !== undefined ||
+                    e.changed.context !== undefined ||
                     e.changed.helpers !== undefined) {
                     if (self.struktogram) {
                         self.struktogram.close();

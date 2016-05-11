@@ -66,7 +66,6 @@ define([
                     this.get("open_documents").push(doc);
                 }
                 this.listenTo(doc, "change", function(e) {
-                    // console.log("document -> ui", e);
                     self.trigger("change", e);
                     self.resetContext();
                     this.trigger("document_changed", doc);

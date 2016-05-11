@@ -30,10 +30,16 @@ define([
             this.canvas = new UICanvasView({'model': this.model});
 
             Localization.setLocale(this.model.get("locale"));
-            this.listenTo(this.model, 'change', function(e) {
-                self.updateLayout();
-                if (e.changed.locale !== undefined) {
-                    Localization.setLocale(self.model.get("locale"));
+            this.listenTo(this.model, 'change:locale', function(model, value) {
+                Localization.setLocale(value);
+            });
+            this.listenTo(this.model, 'change', function(model) {
+                if (model.changed.output_width !== undefined ||
+                    model.changed.output_height !== undefined ||
+                    model.changed.editor_width !== undefined ||
+                    model.changed.window_width !== undefined ||
+                    model.changed.window_height !== undefined) {
+                    self.updateLayout();
                 }
             });
         },
