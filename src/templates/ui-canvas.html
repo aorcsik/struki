@@ -9,7 +9,7 @@
             <% _.each(model.get("open_documents"), function(doc) { %>
             <% if (edit == doc.cid) { %>
             <li class="edit" data-cid="<%= doc.cid %>">
-                <i class="material-icons">&#xE2C8;</i>
+                <i class="material-icons">&#xE2C7;</i>
             <% } else { if (model.get("active_document") === doc) { %>
             <li class="active" data-cid="<%= doc.cid %>">
                 <i class="material-icons">&#xE2C7;</i>

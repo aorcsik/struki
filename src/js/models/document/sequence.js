@@ -12,21 +12,21 @@ define([
         initialize: function() {
             this.set("commands", []);
         },
-        newCommand: function(data) {
+        newCommand: function(data, _new) {
             var command = new Command($.extend({'parent': this}, data));
-            command._new = true;
+            command._new = _new === undefined ? true : _new;
             this.addCommand(command);
             return command;
         },
-        newLoop: function(data) {
+        newLoop: function(data, _new) {
             var loop = new Loop($.extend({'parent': this}, data));
-            loop._new = true;
+            loop._new = _new === undefined ? true : _new;;
             this.addCommand(loop);
             return loop;
         },
-        newConditional: function(data) {
+        newConditional: function(data, _new) {
             var conditional = new Conditional($.extend({'parent': this}, data));
-            conditional.get("branches")[0]._new = true;
+            conditional.get("branches")[0]._new = _new === undefined ? true : _new;;
             this.addCommand(conditional);
             return conditional;
         },

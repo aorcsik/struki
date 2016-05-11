@@ -14,7 +14,7 @@ define([
                 "name": this.get("name") || "new",
                 "struktogram": struktogram
             });
-            this.get("struktogram").get("sequence").newCommand({'code': "return 0"});
+            this.get("struktogram").get("sequence").newCommand({'code': "return 0"}, false);
             this.listenTo(this.get("struktogram"), 'change', function(e) {
                 self.trigger('change', e);
             });
@@ -23,7 +23,7 @@ define([
         newHelper: function(data) {
             var name = this.get("struktogram").get("name") + "_helper" + (this.get("helpers").length + 1),
                 struktogram = new Struktogram($.extend({'name': name, 'helper': true, 'document': this}, data));
-            struktogram.get("sequence").newCommand({'code': "return 0"});
+            struktogram.get("sequence").newCommand({'code': "return 0"}, false);
             struktogram._new = true;
             this.addHelper(struktogram, data);
             return struktogram;
