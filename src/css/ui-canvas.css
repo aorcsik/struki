@@ -32,6 +32,7 @@
 }
 .ui-canvas .panel {
     height: 100%;
+    overflow: hidden;
 }
 .ui-canvas .panel-heading ul li .material-icons {
     float: left;
