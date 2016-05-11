@@ -16,7 +16,7 @@ define([
 
     var Context = Backbone.Model.extend({
         defaults: {
-            'name': "global"
+            'name': "main"
         },
 
         initialize: function() {
@@ -105,6 +105,9 @@ define([
             var type = this.get("types")[name];
 
             if (type === "Int" || type === "Float") {
+                if (typeof value !== "number") {
+                    throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
+                }
                 if (type === "Int") variables[name] = parseInt(value, 10);
                 if (type === "Float") variables[name] = parseFloat(value, 10);
                 if (isNaN(variables[name])) {
@@ -113,9 +116,14 @@ define([
             }
             else if (type === "Bool") variables[name] = Boolean(value);
             else if (type === "String") variables[name] = "" + value;
-            else if (type.match(/\*$/) && value.constructor !== Array) {
-                throw new CompileError("type mismatch, " + value.constructor.name + " is not Array");
-            } else variables[name] = value;
+            else if (type === "Array" || type.match(/\*$/)) {
+                if (value.constructor !== Array) {
+                    throw new CompileError("type mismatch, " + value.constructor.name + " is not Array");
+                }
+                variables[name] = value.map(function(item) { return item; });
+            } else {
+                throw new CompileError("invalid type: " + type);
+            }
             this.set({"variables": variables});
         },
         unsetVariable: function(name) {
@@ -206,7 +214,7 @@ define([
                 "parent": this,
                 "name": this.get("name") + ":" + name,
                 "types": $.extend({}, this.get("types")),
-                "variables": $.extend({}, this.get("variables")),
+                // "variables": $.extend({}, this.get("variables")),  // no global variable scope
                 "functions": $.extend({}, this.get("functions"))
             }));
             this.listenTo(this.get("context"), "change", function(e) {
@@ -218,7 +226,7 @@ define([
             this.set("context", null);
         },
         getGlobalContext: function() {
-            return this.get("name") === "global" ? this : this.get("parent").getGlobalContext();
+            return this.get("name") === "main" ? this : this.get("parent").getGlobalContext();
         }
     });
     return Context;

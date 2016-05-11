@@ -81,21 +81,12 @@ define([
             }, update));
         },
         evaluate: function(parameters, parent_context) {
-            var context = parent_context.newContext(this.get("name")),
-                types = $.extend({}, context.get("types")),
-                variables = $.extend({}, context.get("variables"));
+            var context = parent_context.newContext(this.get("name"));
             this.get("parameters").forEach(function(parameter, idx) {
-                variables[parameter.get("name")] = parameters[idx];
+                context.defineVariable(parameter.get("name"), parameter.get("type"), parameters[idx]);
             });
             this.get("variables").forEach(function(variable, idx) {
-                variables[variable.get("name")] = null;
-                types[variable.get("name")] = variable.get("type");
-            });
-            context.set({
-                "types": types,
-                "variables": variables,
-                "_counter": context.get("_counter") ? context.get("_counter") + 1 : 1,
-                "_updated_at": (new Date()).getTime()
+                context.defineVariable(variable.get("name"), variable.get("type"));
             });
             var result = this.get("sequence").evaluate(context);
             parent_context.removeSubContext();

@@ -2,8 +2,9 @@ define([
     "qunit",
     "lib/parser",
     "lib/parse_error",
+    "lib/compile_error",
     "models/context"
-], function(QUnit, Parser, ParseError, Context) {
+], function(QUnit, Parser, ParseError, CompileError, Context) {
     QUnit.module("Parser", function(hooks) {
         var context;
 
@@ -50,6 +51,10 @@ define([
             assert.equal((new Parser("6 / 2")).evaluate(context), 3, "division");
             assert.equal((new Parser("7 % 2")).evaluate(context), 1, "modulo division");
             assert.equal((new Parser("-1 + 2 * 6 - 4 / (-4 * -1 - (2 + 4) / (3))")).evaluate(context), 9, "precedence");
+
+            assert.throws(function() {
+                (new Parser("1 / 0")).evaluate(context);
+            }, new CompileError("division by zero"), "division by zero");
         });
 
         QUnit.test("Boolean values", function(assert) {

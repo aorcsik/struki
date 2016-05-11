@@ -40,19 +40,16 @@ define([
         max_steps: null,
         saved_variables: null,
         run: function(debug_step) {
-            var variables,
-                context = this.model.get("context");
+            var context = this.model.get("context");
             debug_step = debug_step || 0;
             if (debug_step === 0) {
-                variables = context.get("variables");
                 this.$el.find(".form-control").each(function() {
-                    variables[$(this).attr("name")] = (new Parser($(this).val())).evaluate(context);
+                    (new Parser($(this).attr("name") + " := " + $(this).val())).evaluate(context);
                 });
-                this.saved_variables = $.extend(true, {}, variables);
+                this.saved_variables = $.extend(true, {}, context.get("variables"));
             } else {
-                variables = $.extend(true, {}, this.saved_variables);
+                context.set("variables", $.extend(true, {}, this.saved_variables));
             }
-            context.set("variables", variables);
             // if unsafe, don't do a full run, just set the state to -1
             if (this.model.get("unsafe") && debug_step === 0) {
                 context.set({"_state": -1});
