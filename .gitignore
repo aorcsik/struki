@@ -1,0 +1,8 @@
+# Mac OS X hidden files
+.DS_Store
+
+build/*
+src/components/*
+node_modules/*
+
+npm-debug.log
