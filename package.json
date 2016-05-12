@@ -1,0 +1,15 @@
+{
+  "name": "STRUKI",
+  "version": "1.0.0",
+  "description": "Struktogram Szerkesztő és Futtató Környezet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Antal Orcsik <aorcsik@gmail.com>",
+  "license": "MIT",
+  "dependencies" : {
+      "requirejs": "latest",
+      "bower": "latest"
+  }
+}

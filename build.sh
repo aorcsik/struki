@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # build project
-r.js -o src/js/build.js
+node_modules/requirejs/bin/r.js -o src/js/build.js
 
 # remove not needed files
 echo "Removing not needed files..."
