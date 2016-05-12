@@ -15,6 +15,8 @@
             "click .panel-heading li .save-name": "handleSaveName",
             "click .panel-heading li input[name='name']": "handleInputClick",
             "keyup .panel-heading li input[name='name']": "handleInputKeyup",
+            "click .panel-heading li .zoom-up": "handleZoomUp",
+            "click .panel-heading li .zoom-down": "handleZoomDown"
         },
         template: _.template(UICanvasTemplate),
         struktogram: null,
@@ -43,6 +45,18 @@
                     this.$el.find(".active .document-title").text(e.changed.name);
                 }
             });
+        },
+
+        handleZoomUp: function() {
+            var canvas_zoom = this.model.get("canvas_zoom");
+            this.model.set("canvas_zoom", Math.max(50, canvas_zoom - 5));
+            this.render();
+        },
+
+        handleZoomDown: function() {
+            var canvas_zoom = this.model.get("canvas_zoom");
+            this.model.set("canvas_zoom", Math.min(150, canvas_zoom + 5));
+            this.render();
         },
 
         handleInputClick: function(e) {
@@ -119,10 +133,19 @@
                 var $canvas_container = this.$el.find(".canvas-container");
                 $canvas_container.append(this.struktogram.$el);
                 this.struktogram.render();
+                this.struktogram.$el.css({
+                    'width': this.struktogram.$el.attr("width") * self.model.get("canvas_zoom") / 100,
+                    'height': this.struktogram.$el.attr("height") * self.model.get("canvas_zoom") / 100
+                });
                 this.helpers.forEach(function(helper) {
                     $canvas_container.append(helper.$el);
                     helper.render();
+                    helper.$el.css({
+                        'width': helper.$el.attr("width") * self.model.get("canvas_zoom") / 100,
+                        'height': helper.$el.attr("height") * self.model.get("canvas_zoom") / 100
+                    });
                 });
+                this.updateLayout();
             } else {
                 this.$el.html(this.template({
                     "empty": true,
@@ -130,6 +153,21 @@
                 }));
             }
             return this;
+        },
+
+        updateLayout: function() {
+            var toolbar_height = $(".ui-toolbar").outerHeight();
+            var output_height = this.model.getOutputHeight();
+            var editor_width = this.model.getEditorWidth(null, 100);
+            this.$el.css({
+                'right': 0,
+                'top': toolbar_height,
+                'left': editor_width,
+                'bottom': output_height
+            });
+            this.$el.find(".canvas-scroll-container").css({
+                'height': this.$el.height() - this.$el.find(".panel-heading").outerHeight()
+            });
         }
     });
     return UICanvasView;

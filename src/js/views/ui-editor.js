@@ -63,6 +63,7 @@ define([
         },
 
         render: function() {
+            var sct = this.$el.find(".struktogram-container").scrollTop() || 0;
             this.$el.html(this.template({
                 "L": Localization
             }));
@@ -96,7 +97,22 @@ define([
                     else if (type === "helper") model.get('document').newHelper();
                 });
             }
+            this.updateLayout();
+            this.$el.find(".struktogram-container").scrollTop(sct);
             return this;
+        },
+        updateLayout: function() {
+            var toolbar_height = $(".ui-toolbar").outerHeight();
+            var editor_width = this.model.getEditorWidth(null, 100);
+            this.$el.css({
+                'left': 0,
+                'bottom': 0,
+                'top': toolbar_height,
+                'width': editor_width
+            });
+            this.$el.find(".struktogram-container").css({
+                'height': this.$el.height()
+            });
         }
     });
     return UIEditorView;

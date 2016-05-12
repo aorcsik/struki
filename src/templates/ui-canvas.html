@@ -6,6 +6,11 @@
 <div class="panel panel-default unselectable">
     <div class="panel-heading">
         <ul>
+            <li class="zoom">
+                <i class="material-icons zoom-tools zoom-up">&#xE900;</i>
+                <span class="zoom-perc"><%= model.get("canvas_zoom") %>%</span>
+                <i class="material-icons zoom-tools zoom-down">&#xE8FF;</i>
+            </li>
             <% _.each(model.get("open_documents"), function(doc) { %>
             <% if (edit == doc.cid) { %>
             <li class="edit" data-cid="<%= doc.cid %>">
@@ -29,8 +34,10 @@
             <% }); %>
         </ul>
     </div>
-    <div class="panel-body canvas-container">
+    <div class="panel-body canvas-scroll-container">
+        <div class="canvas-container">
 
+        </div>
     </div>
 </div>
 <% } %>

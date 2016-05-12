@@ -61,8 +61,26 @@ define([
                 "L": Localization
             }));
             this.$el.data('view', this);
+            this.updateLayout();
             return this;
-        }
+        },
+
+        updateLayout: function() {
+            var output_height = this.model.getOutputHeight();
+            var window_width = this.model.getWindowWidth();
+            var editor_width = this.model.getEditorWidth(null, 100);
+            var output_width = this.model.getOutputWidth(window_width - editor_width, 100);
+            this.$el.css({
+                'bottom': 0,
+                'left': editor_width,
+                'width': output_width,
+                'height': output_height
+            });
+            this.$el.find(".panel-body").css({
+                'height': this.$el.height() - this.$el.find(".panel-heading").outerHeight()
+            });
+        },
+
     });
     return UIOutputView;
 });

@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'models/context',
-    'models/document',
-    'models/function_wrapper'
-], function($, _, Backbone, Context, Document, FunctionWrapper) {
+    'models/document'
+], function($, _, Backbone, Context, Document) {
     var UI = Backbone.Model.extend({
         defaults: {
             'locale': "en-US",
@@ -13,6 +12,7 @@ define([
             'editor_width':  [25, "%"],
             'output_width':  [50, "%" ],
             'output_height': [25, "%"],
+            'canvas_zoom': 100,
 
             'unsafe': false,
             'step_delay': 500,
@@ -24,7 +24,9 @@ define([
             this.set("output_buffer", []);
         },
 
-        settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations', 'editor_width', 'output_width', 'output_height'],
+        settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations',
+                        'editor_width', 'output_width', 'output_height',
+                        'canvas_zoom'],
         getSettings: function() {
             var self = this, settings = {};
             this.settings_keys.forEach(function(key) {
@@ -130,37 +132,29 @@ define([
 
         resetContext: function() {
             var self = this,
-                functions = {
-                    "print": new FunctionWrapper({
-                        'func': function() {
-                            self.get("output_buffer").push(arguments);
-                        }
-                    }),
-                    "size": new FunctionWrapper({
-                        'func': function(arg) {
-                            return arg.length;
-                        }
-                    })
-                },
-                types = {},
-                variables = {};
+                context = new Context({'parent': this});
+
+            context.defineFunction("print", function() {
+                self.get("output_buffer").push(arguments);
+            });
+            context.defineFunction("size", function(arg) { return arg.length; });
+            context.defineFunction("sqrt", function(arg) { return Math.sqrt(arg); });
+            context.defineFunction("sin", function(arg) { return Math.sin(arg); });
+            context.defineFunction("cos", function(arg) { return Math.cos(arg); });
+            context.defineFunction("tan", function(arg) { return Math.tan(arg); });
+            context.defineFunction("rand", function() { return Math.random(); });
+
             if (this.get("active_document")) {
                 var struktogram = this.get("active_document").get("struktogram");
-                functions[struktogram.get("name")] = struktogram;
+                context.defineFunction(struktogram.get("name"), struktogram);
                 struktogram.get("parameters").forEach(function(parameter) {
-                    variables[parameter.get("name")] = null;
-                    types[parameter.get("name")] = parameter.get("type");
+                    context.defineVariable(parameter.get("name"), parameter.get("type"));
                 });
                 this.get("active_document").get("helpers").forEach(function(helper) {
-                    functions[helper.get("name")] = helper;
+                    context.defineFunction(helper.get("name"), helper);
                 });
             }
-            var context = new Context({
-                'parent': this,
-                'functions': functions,
-                'types': types,
-                'variables': variables
-            });
+
             this.set("context", context);
         },
 

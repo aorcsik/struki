@@ -38,10 +38,13 @@ define([
                     model.changed.output_height !== undefined ||
                     model.changed.editor_width !== undefined ||
                     model.changed.window_width !== undefined ||
-                    model.changed.window_height !== undefined) {
+                    model.changed.window_height !== undefined ||
+                    model.changed.canvas_zoom !== undefined ||
+                    model.changed.unsafe !== undefined) {
                     self.updateLayout();
                 }
             });
+            this.updateLayout();
         },
 
         onClose: function() {},
@@ -86,51 +89,15 @@ define([
         },
 
         updateLayout: function() {
-            var toolbar_height = this.toolbar.$el.outerHeight();
-            var output_height = this.model.getOutputHeight();
-            var window_width = this.model.getWindowWidth();
-            var editor_width = this.model.getEditorWidth(null, 100);
-            var output_width = this.model.getOutputWidth(window_width - editor_width, 100);
             this.$el.css({
                 'width': this.model.get('window_width'),
                 'height': this.model.get('window_height')
             });
-            this.editor.$el.css({
-                'left': 0,
-                'bottom': 0,
-                'top': toolbar_height,
-                'width': editor_width
-            });
-            this.output.$el.css({
-                'bottom': 0,
-                'left': editor_width,
-                'width': output_width,
-                'height': output_height
-            });
-            this.watcher.$el.css({
-                'right': 0,
-                'bottom': 0,
-                'width': window_width - editor_width - output_width,
-                'height': output_height
-            });
-            this.canvas.$el.css({
-                'right': 0,
-                'top': toolbar_height,
-                'left': editor_width,
-                'bottom': output_height
-            });
-            this.canvas.$el.find(".canvas-container").css({
-                'height': this.canvas.$el.height() - this.canvas.$el.find(".panel-heading").outerHeight()
-            });
-            this.editor.$el.find(".struktogram-container").css({
-                'height': this.editor.$el.height()
-            });
-            this.output.$el.find(".panel-body").css({
-                'height': this.output.$el.height() - this.output.$el.find(".panel-heading").outerHeight()
-            });
-            this.watcher.$el.find(".panel-body").css({
-                'height': this.watcher.$el.height() - this.watcher.$el.find(".panel-heading").outerHeight()
-            });
+
+            this.editor.updateLayout();
+            this.output.updateLayout();
+            this.watcher.updateLayout();
+            this.canvas.updateLayout();
 
             if (this.model.get("unsafe")) {
                 this.$el.addClass("unsafe");

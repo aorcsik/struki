@@ -13,6 +13,7 @@
 }
 .ui-editor .struktogram-container {
     overflow: auto;
+    height: 100%;
 }
 .ui-editor .command-line {
     clear: both;

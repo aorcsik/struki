@@ -84,13 +84,32 @@
     top: 5px;
     font-size: 1.0em;
 }
-.ui-canvas .canvas-container {
-    text-align: center;
-    overflow: auto;
+.ui-canvas .canvas-scroll-container {
+    overflow: scroll;
 }
 
 .ui-canvas .canvas-container canvas {
-    float: left;
+    display: inline;
+    vertical-align: top;
     margin-left: 20px;
     margin-bottom: 20px;
+}
+
+.ui-canvas .panel-heading ul li.zoom {
+    float: right;
+    margin-right: 0;
+}
+.ui-canvas .panel-heading ul li.zoom .zoom-tools {
+    opacity: .3;
+    font-size: 1.4em;
+    margin-top: 0px;
+}
+.ui-canvas .panel-heading ul li.zoom .zoom-tools:hover {
+    opacity: 1;
+    transition: opacity .3s;
+}
+.ui-canvas .panel-heading ul li.zoom .zoom-down {
+    float: right;
+    margin-left: 5px;
+    margin-right: 0;
 }

@@ -13,6 +13,9 @@
         <% if (branch < 0) { %>else<% }%>
     </span>
     <%= model.get("condition").replace(/</, "&lt;").replace(/>/, "&gt;") %>
+    <span class="syntactic-sugar">
+        <% if (branch >= 0) { %>then<% }%>
+    </span>
 </div>
 <form>
     <div class="row form-header">

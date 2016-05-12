@@ -102,9 +102,16 @@ define([
         });
 
         QUnit.test("Array index", function(assert) {
-            context.defineVariable("a", "Int**", [1, [1, 2]]);
+            context.defineVariable("a", "Int**", [1, [1, 2], 2]);
             assert.deepEqual((new Parser("a[0]")).evaluate(context), 1, "a[0] = 1");
             assert.deepEqual((new Parser("a[1][1]")).evaluate(context), 2, "a[1][1] = 2");
+
+            (new Parser("a[0] := a[2]")).evaluate(context);
+            assert.deepEqual(context.getVariable("a")[0], 2, "a[0] := a[2]; a[0] = 2");
+
+            assert.throws(function() {
+                (new Parser("a[3]")).evaluate(context);
+            }, new CompileError("array out of bounds"), "a[3] -> array out of bounds");
         });
 
         QUnit.test("Array push", function(assert) {

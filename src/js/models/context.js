@@ -150,9 +150,14 @@ define([
             if (array.constructor !== Array && array.constructor !== String) {
                 throw new CompileError("type mismatch, " + name + " is not Array or String, but " + array.constructor.name);
             }
+            if (array[keys[i]] === undefined) {
+                throw new CompileError("array out of bounds");
+            }
+            console.log("array_get", keys, array[keys[i]]);
             return array[keys[i]];
         },
         setArrayValue: function(keys, value) {
+            console.log("array_set", keys, value);
             var array = this.getVariable(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
@@ -170,7 +175,10 @@ define([
 
         defineFunction: function(name, func) {
             var functions = $.extend({}, this.get("functions"));
-            functions[name] = new FunctionWrapper({'func': func});
+            if (func.constructor === Function) {
+                func = new FunctionWrapper({'func': func});
+            }
+            functions[name] = func;
             this.set({"functions": functions});
         },
         applyFunction: function(name, params) {
