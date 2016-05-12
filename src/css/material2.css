@@ -6,7 +6,9 @@ html, body {
 }
 
 .ui-editor ul.drag-over,
-.ui-editor ul.drag-over > .sort-placeholder,
+.ui-editor ul.drag-over > .sort-placeholder {
+    background: rgba(252, 63, 29, 0.3);
+}
 .ui-canvas .panel-heading ul li,
 .ui-editor .struktogram > .command-line .title {
     background: rgba(47, 77, 80, 0.3);
@@ -20,8 +22,11 @@ html, body {
     background: rgb(47, 77, 80);
 }
 
-
 .ui-editor form,
 .ui-canvas .panel-heading ul .active {
     border-color: rgb(47, 77, 80);
+}
+
+.unsafe .ui-toolbar.navbar.navbar-inverse {
+    background: rgb(252, 63, 29);
 }

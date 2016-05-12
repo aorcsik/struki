@@ -153,11 +153,9 @@ define([
             if (array[keys[i]] === undefined) {
                 throw new CompileError("array out of bounds");
             }
-            console.log("array_get", keys, array[keys[i]]);
             return array[keys[i]];
         },
         setArrayValue: function(keys, value) {
-            console.log("array_set", keys, value);
             var array = this.getVariable(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {

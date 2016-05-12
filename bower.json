@@ -23,8 +23,6 @@
     "backbone": "latest",
     "bootstrap": "latest",
     "bootstrap-material-design": "latest",
-    "roboto-and-material-icons-fonts": "latest",
-    "dropzone": "latest",
     "fontawesome": "latest",
     "jquery-ui": "latest",
     "qunit": "latest"

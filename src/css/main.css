@@ -121,3 +121,6 @@ html, body {
     margin: 5px 5px 0 0;
     float: left;
 }
+/*#content.drag-over {
+    opacity: 0.2;
+}*/
