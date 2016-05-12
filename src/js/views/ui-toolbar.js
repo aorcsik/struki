@@ -42,7 +42,15 @@ define([
             var self = this,
                 reader = new FileReader();
             reader.onload = function(read_event) {
-                self.model.openDocumentFromJSON(JSON.parse(read_event.target.result));
+                try {
+                    self.model.openDocumentFromJSON(JSON.parse(read_event.target.result));
+                } catch (e) {
+                    self.trigger("background_notification", {
+                        'message': "Failed to open document (<%= error %>)",
+                        'type': "error",
+                        'params': {'error': "<em>" + e + "</em>"}
+                    });
+                }
             };
             reader.readAsText(files[0]);
         },

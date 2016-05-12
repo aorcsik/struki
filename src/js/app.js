@@ -36,6 +36,10 @@ define([
             local_storage.restoreUISettings();
             local_storage.restoreDocuments();
             local_storage.render("Application loaded");
+
+            local_storage.listenTo(ui_view, 'background_notification', function(msg) {
+                local_storage.render(msg.message, msg.params, msg.type);
+            });
         }
     });
 

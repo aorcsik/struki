@@ -96,7 +96,7 @@ define([
             delay = (delay || 2000) + 300;
             params = $.extend({}, params);
             var html_message = _.template(Localization.gettext(template_message))(params),
-                text_message = _.template(Localization.gettext(template_message, true))(params).replace(/<.*?>/g, "");
+                text_message = _.template(Localization.gettext(template_message, true))(params).replace(/<[^<>]+?>/g, "");
             window.clearTimeout(this.message_repeat_timer[text_message]);
             this.message_repeat_timer[text_message] = window.setTimeout(function() {
                 var $message;

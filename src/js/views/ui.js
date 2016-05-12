@@ -44,6 +44,10 @@ define([
                     self.updateLayout();
                 }
             });
+
+            this.listenTo(this.toolbar, 'background_notification', function(msg) {
+                self.trigger('background_notification', msg);
+            });
             this.updateLayout();
         },
 
