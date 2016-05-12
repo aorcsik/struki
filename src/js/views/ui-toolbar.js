@@ -14,7 +14,7 @@ define([
             "click #save_dropdown": "updateSaveLinks",
             "click #run_struktogram": "run",
             "click #nav_settings": "openSettings",
-            "change #open_docuemnt_input": "openDocument"
+            "change #open_docuemnt_input": "handleOpenDocument"
         },
         template: _.template(UIToolbarTemplate),
 
@@ -34,10 +34,13 @@ define([
             $(e.target).closest("li").find("input").click();
         },
 
-        openDocument: function(e) {
-            var self = this;
-            var files = e.target.files;
-            var reader = new FileReader();
+        handleOpenDocument: function(e) {
+            this.openDocument(e.target.files);
+        },
+
+        openDocument: function(files) {
+            var self = this,
+                reader = new FileReader();
             reader.onload = function(read_event) {
                 self.model.openDocumentFromJSON(JSON.parse(read_event.target.result));
             };

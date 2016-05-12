@@ -126,6 +126,26 @@ define([
                 self.model.updateWindowSize($(window).width(), $(window).height());
             });
 
+            this.$el.on("dragover", function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                e.originalEvent.dataTransfer.dropEffect = 'copy';
+                self.$el.addClass("drag-over");
+                return false;
+            }).on("dragenter", function(e) {
+                self.$el.addClass("drag-over");
+                return false;
+            }).on("dragleave", function(e) {
+                self.$el.removeClass("drag-over");
+                return false;
+            }).on("drop", function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                self.toolbar.openDocument(e.originalEvent.dataTransfer.files);
+                self.$el.removeClass("drag-over");
+                return false;
+            });
+
             return this;
         }
     });
