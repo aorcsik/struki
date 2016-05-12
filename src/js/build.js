@@ -4,6 +4,8 @@
     dir: "../../build",
     modules: [{
         name: "main"
+    }, {
+        name: "test"
     }],
     skipDirOptimize: true,
     optimizeAllPluginResources: true,
@@ -15,7 +17,7 @@
         backbone: "../components/backbone/backbone",
         bootstrap: "../components/bootstrap/dist/js/bootstrap",
         bootstrap_material_design: "../components/bootstrap-material-design/dist/js/material",
-        dropzone: "../components/dropzone/dist/dropzone-amd-module"
+        qunit: "../components/qunit/qunit/qunit"
     },
     exclude: []
 })

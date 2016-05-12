@@ -1,126 +1,14 @@
-* {
-    box-sizing: border-box;
-}
+@import url("../components/bootstrap/dist/css/bootstrap.min.css");
+@import url("../components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css");
 
-.unselectable {
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-   -ms-user-select: none;
-   user-select: none;
-}
+@import url("ubuntu-font.css");
+@import url("material-icons.css");
 
-html, body {
-    padding: 0;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-    background-size: cover;
-}
+@import url("ui.css");
+@import url("ui-toolbar.css");
+@import url("ui-editor.css");
+@import url("ui-canvas.css");
+@import url("ui-output.css");
+@import url("ui-watcher.css");
 
-.__localization {
-    display: inline !important;
-    position: static !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-#content {
-    position: relative;
-    height: 100%;
-    background: rgba(255,255,255,0.5);
-}
-
-.ui-editor .vertical-divider,
-.ui-output .vertical-divider {
-    position: absolute;
-    top: 50%;
-    right: -8px;
-    margin-top: -10px;
-    color: rgba(255,255,255,0.5);
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    cursor: ew-resize;
-    z-index: 1000;
-}
-.ui-editor .vertical-divider {
-    right: -15px;
-}
-.ui-output .horizontal-divider {
-    position: absolute;
-    top: 0;
-    right: -8px;
-    margin-top: -12px;
-    color: rgba(255,255,255,0.5);
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    cursor: ns-resize;
-    z-index: 1000;
-}
-
-.ui-panel .panel-heading {
-    padding: 0;
-    height: 35px;
-}
-.ui-panel .panel-title,
-.ui-watcher .debug-counter {
-    padding: 7px 10px;
-    color: #999;
-    height: 35px;
-}
-
-.ui-panel .control-reset {
-    float: right;
-}
-.ui-panel .btn {
-    height: 35px;
-    padding: 5px 10px;
-    margin: 0;
-}
-.ui-panel .panel-body {
-    overflow: auto;
-    padding: 0;
-}
-
-.ui-settings .form-group label.control-label {
-    margin-top: 4px;
-}
-
-.ui-settings .modal-header {
-    padding-left: 45px;
-    position: relative;
-}
-.ui-settings .modal-header .material-icons {
-    position: absolute;
-    left: 15px;
-    margin-top: 1px;
-}
-
-.background-notification {
-    position: fixed;
-    left: 10px;
-    bottom: -100px;
-    opacity: 0;
-    padding: 10px 15px;
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    z-index: 10000;
-    line-height: 2.0em;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-
-    transition: height .5s, bottom .5s, opacity .5s;
-}
-.background-notification.visible {
-    bottom: 10px;
-    opacity: 1;
-}
-.background-notification .material-icons {
-    font-size: 1.2em;
-    margin: 5px 5px 0 0;
-    float: left;
-}
-/*#content.drag-over {
-    opacity: 0.2;
-}*/
+@import url("material2.css");

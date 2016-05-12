@@ -15,36 +15,11 @@ require.config({
         '../components/requirejs-text/text'],
     jquery: [
         '../components/jquery/dist/jquery'],
-    jquery_ui: [
-        '../components/jquery-ui/jquery-ui'],
-    underscore: [
-        '../components/underscore/underscore'],
-    backbone: [
-        '../components/backbone/backbone'],
-    bootstrap: [
-        '../components/bootstrap/dist/js/bootstrap'],
-    bootstrap_material_design: [
-        '../components/bootstrap-material-design/dist/js/material'],
     qunit: [
         '../components/qunit/qunit/qunit'],
     templates: '../' + 'templates'
   },
   shim: {
-    underscore: {
-      exports: '_'
-    },
-    backbone: {
-      deps: ["underscore", "jquery"],
-      exports: "Backbone"
-    },
-    bootstrap: {
-      deps: ["jquery"],
-      exports: "jQuery"
-    },
-    bootstrap_material_design: {
-      deps: ["jquery", 'bootstrap'],
-      exports: "jQuery"
-    },
     qunit: {
       exports: "QUnit"
     }
