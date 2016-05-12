@@ -2,14 +2,32 @@
   "name": "STRUKI",
   "version": "1.0.0",
   "description": "Struktogram Szerkesztő és Futtató Környezet",
-  "main": "index.js",
+  "bugs": {
+    "url": "https://github.com/aorcsik/struki/issues"
+  },
+  "license": "MIT",
+  "private": true,
+  "author": {
+    "name": "Antal Orcsik",
+    "email": "aorcsik@gmail.com",
+    "url": "http://aorcsik.com"
+  },
+  "main": "main",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aorcsik/struki"
+  },
   "scripts": {
+    "start": "./node_modules/node-static/bin/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Antal Orcsik <aorcsik@gmail.com>",
-  "license": "MIT",
-  "dependencies" : {
-      "requirejs": "latest",
-      "bower": "latest"
+  "config": {
+    "port": "8080"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "node-static": "^0.7.7",
+    "requirejs": "^2.2.0"
   }
 }
