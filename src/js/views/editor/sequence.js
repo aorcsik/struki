@@ -47,6 +47,8 @@ define([
         render: function() {
             this.$el.data("cid", this.cid);
             this.$el.html(this.template({
+                "empty": this.commands.length === 0,
+                "depth": this.depth + 1,
                 "model": this.model
             }));
             for (var i = 0; i < this.commands.length; i++) {

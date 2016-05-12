@@ -41,7 +41,10 @@
 }
 
 ul.empty-sequence {
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;*/
+}
+ul.empty-sequence.drag-over .skip {
+    display: none;
 }
 
 .ui-editor .struktogram-container .material-icons {
@@ -257,3 +260,4 @@ ul.empty-sequence {
 .struktogram-icon.loop-icon { background-image: url("../images/loop.png"); }
 .struktogram-icon.branch-icon { background-image: url("../images/branch.png"); }
 .struktogram-icon.variable-icon { background-image: url("../images/variable.png"); }
+.struktogram-icon.skip-icon { background-image: url("../images/skip.png"); }
