@@ -15,6 +15,10 @@ require.config({
         '../components/requirejs-text/text'],
     jquery: [
         '../components/jquery/dist/jquery'],
+    underscore: [
+        '../components/underscore/underscore'],
+    backbone: [
+        '../components/backbone/backbone'],
     qunit: [
         '../components/qunit/qunit/qunit'],
     templates: '../' + 'templates'

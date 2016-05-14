@@ -20,16 +20,26 @@ define([
         QUnit.test("Parse errors", function(assert) {
             assert.throws(function() {
                 (new Parser("")).evaluate(context);
-            }, new ParseError("no code to parse"), "\"\" -> no code to parse");
+            }, new ParseError("no code to parse"), "\"\" -> Parse Error: no code to parse");
 
             assert.throws(function() {
                 (new Parser("2 3")).evaluate(context);
-            }, new ParseError("missing operator"), "\"2 3\" -> missing operator");
+            }, new ParseError("missing operator"), "\"2 3\" -> Parse Error: missing operator");
 
             assert.throws(function() {
                 (new Parser(",,")).evaluate(context);
             }, new ParseError("unresolved tokens 'OPERATOR_LSTOPERATOR_LST'"),
-                "\",,\" -> unresolved tokens 'OPERATOR_LSTOPERATOR_LST'");
+                "\",,\" -> Parse Error: unresolved tokens 'OPERATOR_LSTOPERATOR_LST'");
+
+            assert.throws(function() {
+                (new Parser("((())")).evaluate(context);
+            }, new ParseError("unmatched parenthesis"),
+                "\"((())\" -> Parse Error: unmatched parenthesis");
+
+            assert.throws(function() {
+                (new Parser("a[0][")).evaluate(context);
+            }, new ParseError("unmatched brackets"),
+                "\"a[0][\" -> Parse Error: unmatched brackets");
         });
 
         QUnit.test("Numeric values", function(assert) {

@@ -20,6 +20,14 @@ function Parser(code) {
     this.string_parser = false;
 
     this.tokenize(this.raw_code, "START");
+
+    if (this.parens_counter !== 0) {
+        throw new ParseError("unmatched parenthesis");
+    }
+    if (this.bracket_counter !== 0) {
+        throw new ParseError("unmatched brackets");
+    }
+
     this.parse(this.tokenized_code);
 
     this.parser_cache[code] = this;
