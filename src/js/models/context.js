@@ -90,6 +90,9 @@ define([
                 throw new CompileError("_ has no value");
             }
             if (this.get("variables")[name] === undefined) {
+                if (Math[name] !== undefined && Math[name].constructor !== Function) {
+                    return Math[name];
+                }
                 throw new CompileError("undefined variable '" + name + "'");
             }
             return this.get("variables")[name];
@@ -181,6 +184,10 @@ define([
         },
         applyFunction: function(name, params) {
             if (this.get("functions")[name] === undefined) {
+                if (Math[name] !== undefined && Math[name].constructor === Function) {
+                    this.defineFunction(name, Math[name]);
+                    return this.get("functions")[name].evaluate(params, this);
+                }
                 throw new CompileError("undefined function '" + name + "'");
             }
             return this.get("functions")[name].evaluate(params, this);

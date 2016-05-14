@@ -138,12 +138,6 @@ define([
                 self.get("output_buffer").push(arguments);
             });
             context.defineFunction("size", function(arg) { return arg.length; });
-            context.defineFunction("sqrt", function(arg) { return Math.sqrt(arg); });
-            context.defineFunction("sin", function(arg) { return Math.sin(arg); });
-            context.defineFunction("cos", function(arg) { return Math.cos(arg); });
-            context.defineFunction("tan", function(arg) { return Math.tan(arg); });
-            context.defineFunction("rand", function() { return Math.random(); });
-
             if (this.get("active_document")) {
                 var struktogram = this.get("active_document").get("struktogram");
                 context.defineFunction(struktogram.get("name"), struktogram);
