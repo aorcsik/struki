@@ -47,45 +47,37 @@ define([
         },
 
         removeCommand: function(e) {
-            var cid = $(e.target).closest(".remove-command").closest("li").data("cid");
-            if (cid == this.cid) {
-                var conditional = this.model.get("parent");
-                if (conditional.get("branches").length > 1 && window.confirm(Localization.gettext("Are you sure, you want to delete this branch?", true))) {
-                    conditional.removeBranch(this.model);
-                } else if (window.confirm(Localization.gettext("Are you sure, you want to delete this branch and the conditional?", true))) {
-                    conditional.get("parent").removeCommand(conditional);
-                }
+            var conditional = this.model.get("parent");
+            if (conditional.get("branches").length > 1 && window.confirm(Localization.gettext("Are you sure, you want to delete this branch?", true))) {
+                conditional.removeBranch(this.model);
+            } else if (window.confirm(Localization.gettext("Are you sure, you want to delete this branch and the conditional?", true))) {
+                conditional.get("parent").removeCommand(conditional);
             }
+            return false;
         },
 
         editCommand: function(e) {
-            if (e == this.cid || $(e.target).closest(".edit-command").closest("li").data("cid") == this.cid) {
-                $(".editing").removeClass("editing");
-                this.$el.addClass("editing");
-                this.$el.find("#" + this.model.cid + "_condition").select();
-            }
+            $(".editing").removeClass("editing");
+            this.$el.addClass("editing");
+            this.$el.find("#" + this.model.cid + "_condition").select();
+            return false;
         },
 
         saveCommand: function (e) {
-            var cid = $(e.target).closest(".save-command").closest("li").data("cid");
-            if (cid == this.cid) {
-                this.model.set({
-                    "condition": this.$el.find("#" + this.model.cid + "_condition").val(),
-                    "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
-                    "_updated_at": (new Date()).getTime()
-                });
-            }
+            this.model.set({
+                "condition": this.$el.find("#" + this.model.cid + "_condition").val(),
+                "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
+            });
+            return false;
         },
 
         addCommand: function(e) {
-            var cid = $(e.target).closest(".add-command").closest("li").data("cid");
-            if (cid == this.cid) {
-                $(".command-dropdown").data("model", this.model).appendTo(this.$el.children(".command-line")).show();
-            }
+            $(".command-dropdown").data("model", this.model).appendTo(this.$el.children(".command-line")).show();
+            return false;
         },
 
-        render: function(edit) {
-            this.$el.data("cid", this.cid);
+        render: function() {
             this.$el.html(this.template({
                 "depth": this.depth,
                 "branch": this.branch_type,

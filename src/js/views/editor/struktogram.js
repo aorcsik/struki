@@ -33,56 +33,50 @@ define([
 
         onClose: function() {
             this.main_sequence.close();
-            $(window).off("click.closedropdown");
         },
 
         editCommand: function(e) {
-            if (e == this.cid || $(e.target).closest(".edit-command").closest("li, .struktogram").data("cid") == this.cid) {
-                $(".editing").removeClass("editing");
-                this.$el.addClass("editing");
-                this.$el.find("#" + this.model.cid + "_name").focus();
-            }
+            $(".editing").removeClass("editing");
+            this.$el.addClass("editing");
+            this.$el.find("#" + this.model.cid + "_name").focus();
+            return false;
         },
 
         saveCommand: function(e) {
-            var cid = $(e.target).closest(".save-command").closest("li, .struktogram").data("cid");
-            if (cid == this.cid) {
-                var name = this.$el.find("#" + this.model.cid + "_name").val().replace(/^\s+|\s+$/g, '');
-                this.model.updateStruktogram({
-                    "name": name || this.model.get("name"),
-                    "parameters": this.$el.find(".parameters .form-group").map(function() {
-                        var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
-                            type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');
-                        if (name !== "" && type !== "")
-                            return {
-                                'name': name,
-                                'type': type
-                            };
-                        return null;
-                    }).get().filter(function(item) {
-                        return item !== null;
-                    }),
-                    "variables": this.$el.find(".variables .form-group").map(function() {
-                        var name = $(this).find("input[name=variable_name]").val().replace(/^\s+|\s+$/g, ''),
-                            type = $(this).find("input[name=variable_type]").val().replace(/^\s+|\s+$/g, '');
-                        if (name !== "" && type !== "")
-                            return {
-                                'name': name,
-                                'type': type
-                            };
-                        return null;
-                    }).get().filter(function(item) {
-                        return item !== null;
-                    })
-                });
-            }
+            var name = this.$el.find("#" + this.model.cid + "_name").val().replace(/^\s+|\s+$/g, '');
+            this.model.updateStruktogram({
+                "name": name || this.model.get("name"),
+                "parameters": this.$el.find(".parameters .form-group").map(function() {
+                    var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
+                        type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');
+                    if (name !== "" && type !== "")
+                        return {
+                            'name': name,
+                            'type': type
+                        };
+                    return null;
+                }).get().filter(function(item) {
+                    return item !== null;
+                }),
+                "variables": this.$el.find(".variables .form-group").map(function() {
+                    var name = $(this).find("input[name=variable_name]").val().replace(/^\s+|\s+$/g, ''),
+                        type = $(this).find("input[name=variable_type]").val().replace(/^\s+|\s+$/g, '');
+                    if (name !== "" && type !== "")
+                        return {
+                            'name': name,
+                            'type': type
+                        };
+                    return null;
+                }).get().filter(function(item) {
+                    return item !== null;
+                })
+            });
+            return false;
         },
 
         addCommand: function(e) {
-            var cid = $(e.target).closest(".add-command").closest("li, .struktogram").data("cid");
-            if (cid == this.cid) {
-                $(".command-dropdown").data("model", this.model).appendTo(this.$el.children(".command-line")).show();
-            }
+            $(".command-dropdown").data("model", this.model).appendTo(this.$el.children(".command-line")).show();
+            return false;
         },
 
         removeHelper: function(e) {
@@ -119,7 +113,6 @@ define([
 
         render: function() {
             var self = this;
-            this.$el.data("cid", this.cid);
             this.$el.html(this.template({
                 "L": Localization,
                 "model": this.model,

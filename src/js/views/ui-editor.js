@@ -53,6 +53,10 @@ define([
 
         openDocument: function(doc) {
             var self = this;
+
+            if (this.struktogram) this.struktogram.close();
+            this.helpers.forEach(function(helper) { helper.close(); });
+
             this.struktogram = new EditorStruktogramView({'model': doc.get("struktogram")});
             this.helpers = doc.get("helpers").map(function(helper) {
                 return new EditorStruktogramView({'model': helper});
@@ -70,7 +74,9 @@ define([
             var self = this,
                 $struktogram_container = this.$el.children(".struktogram-container");
             if (this.model.get("active_document")) {
-                this.openDocument(this.model.get("active_document"));
+                if (!this.struktogram || this.struktogram.model.cid !== this.model.get("active_document").get("struktogram").cid) {
+                    this.openDocument(this.model.get("active_document"));
+                }
                 $struktogram_container.append(this.struktogram.$el);
                 this.struktogram.render();
                 this.helpers.forEach(function(helper) {

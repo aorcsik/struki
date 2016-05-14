@@ -17,12 +17,6 @@ define([
         initialize: function() {
             var self = this;
             this.updateCommands();
-            this.listenTo(this.model, "change:add", function(command, idx) {
-                self.commands.splice(idx, 0, self.createEditorCommandView(command));
-            });
-            this.listenTo(this.model, "change:remove", function(command, idx) {
-                self.commands.splice(idx, 1);
-            });
         },
         onClose: function() {
             this.commands.forEach(function(command) {
@@ -45,7 +39,6 @@ define([
             return this;
         },
         render: function() {
-            this.$el.data("cid", this.cid);
             this.$el.html(this.template({
                 "empty": this.commands.length === 0,
                 "depth": this.depth + 1,

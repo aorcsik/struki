@@ -261,3 +261,12 @@ ul.empty-sequence.drag-over .skip {
 .struktogram-icon.branch-icon { background-image: url("../images/branch.png"); }
 .struktogram-icon.variable-icon { background-image: url("../images/variable.png"); }
 .struktogram-icon.skip-icon { background-image: url("../images/skip.png"); }
+
+.debug {
+    font-size: 0.7em;
+    background: #ffcc00;
+    border-radius: 3px;
+    padding: 1px 3px;
+    color: #000 !important;
+    display: none;
+}

@@ -37,33 +37,29 @@ define([
         },
 
         removeCommand: function(e) {
-            var cid = $(e.target).closest(".remove-command").closest("li").data("cid");
-            if (cid == this.cid && window.confirm(Localization.gettext("Are you sure, you want to delete this command?", true))) {
+            if (window.confirm(Localization.gettext("Are you sure, you want to delete this command?", true))) {
                 this.model.get("parent").removeCommand(this.model);
             }
+            return false;
         },
 
         editCommand: function(e) {
-            if (e == this.cid || $(e.target).closest(".edit-command").closest("li").data("cid") == this.cid) {
-                $(".editing").removeClass("editing");
-                this.$el.addClass("editing");
-                this.$el.find("#" + this.model.cid + "_code").select();
-            }
+            $(".editing").removeClass("editing");
+            this.$el.addClass("editing");
+            this.$el.find("#" + this.model.cid + "_code").select();
+            return false;
         },
 
         saveCommand: function (e) {
-            var cid = $(e.target).closest(".save-command").closest("li").data("cid");
-            if (cid == this.cid) {
-                this.model.set({
-                    "code": this.$el.find("#" + this.model.cid + "_code").val(),
-                    "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
-                    "_updated_at": (new Date()).getTime()
-                });
-            }
+            this.model.set({
+                "code": this.$el.find("#" + this.model.cid + "_code").val(),
+                "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
+                "_updated_at": (new Date()).getTime()
+            });
+            return false;
         },
 
         render: function() {
-            this.$el.data("cid", this.cid);
             this.$el.html(this.template({
                 "depth": this.depth,
                 "model": this.model,

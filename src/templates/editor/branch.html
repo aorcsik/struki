@@ -7,6 +7,7 @@
         <i class="material-icons command-tools remove-command">&#xE14C;</i>
     <% } %>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
+    <span class="debug"><%= this.cid %></span>
     <span class="syntactic-sugar">
         <% if (branch == 0) { %>if<% }%>
         <% if (branch > 0) { %>else if<% }%>

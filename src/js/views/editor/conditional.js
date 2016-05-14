@@ -18,12 +18,6 @@ define([
             this.branches = this.model.get("branches").map(function(branch) {
                 return new EditorBranchView({'model': branch});
             });
-            this.listenTo(this.model, "change:add", function(branch, idx) {
-                self.branches.splice(idx, 0, new EditorBranchView({'model': branch}));
-            });
-            this.listenTo(this.model, "change:remove", function(branch, idx) {
-                self.branches.splice(idx, 1);
-            });
             this.else_branch = new EditorBranchView({'model': this.model.get("else_branch")});
         },
         onClose: function() {
@@ -37,7 +31,6 @@ define([
             return this;
         },
         render: function() {
-            this.$el.data("cid", this.cid);
             this.$el.html(this.template({
                 "model": this.model
             }));

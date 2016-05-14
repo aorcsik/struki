@@ -62,7 +62,6 @@ define([
         },
 
         render: function() {
-
             var ctx = this.el.getContext('2d');
             ctx.clearRect(0, 0, this.el.width, this.el.height);
             this.struktogram.render(ctx, this.design, 0, 0, 0);

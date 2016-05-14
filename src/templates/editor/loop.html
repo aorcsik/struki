@@ -5,6 +5,7 @@
     <i class="material-icons command-tools edit-command">&#xE3C9;</i>
     <i class="material-icons command-tools remove-command">&#xE14C;</i>
     <% for (var i = 0; i < depth; i++) { %><span class="command-padding"></span><% } %>
+    <span class="debug"><%= this.cid %></span>
     <span class="syntactic-sugar">
         <% if (model.get("range")) { %>
             for
