@@ -70,10 +70,16 @@ define([
         },
 
         defineVariable: function(name, type, initial_value) {
+            for (var x in Parser.prototype.reserved_words) {
+                if (Parser.prototype.reserved_words[x] === name) {
+                    throw new CompileError("\"" + name + "\" is a reserved word");
+                }
+            }
+
             var types = $.extend({}, this.get("types")),
                 variables = $.extend({}, this.get("variables"));
             if (variables[name] !== undefined) {
-                throw new CompileError("variable '" + name + "' is already defined");
+                throw new CompileError("variable \"" + name + "\" is already defined");
             }
             types[name] = type;
             variables[name] = null;
@@ -108,11 +114,11 @@ define([
             var type = this.get("types")[name];
 
             if (type === "Int" || type === "Float") {
-                if (typeof value !== "number") {
+                if (typeof value !== "number" && typeof value !== "string") {
                     throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
                 }
                 if (type === "Int") variables[name] = parseInt(value, 10);
-                if (type === "Float") variables[name] = parseFloat(value, 10);
+                if (type === "Float") variables[name] = parseFloat(value);
                 if (isNaN(variables[name])) {
                     throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
                 }
@@ -120,9 +126,7 @@ define([
             else if (type === "Bool") variables[name] = Boolean(value);
             else if (type === "String") variables[name] = "" + value;
             else if (type === "Array" || type.match(/\*$/)) {
-                if (value.constructor !== Array) {
-                    throw new CompileError("type mismatch, " + value.constructor.name + " is not Array");
-                }
+                this.checkIfArray(value, "value", true);
                 variables[name] = value.map(function(item) { return item; });
             } else {
                 throw new CompileError("invalid type: " + type);
@@ -140,19 +144,35 @@ define([
         getVariableAsString: function(name) {
             return this.toString(this.getVariable(name));
         },
+        checkIfArray: function(array, name, throw_error) {
+            if (typeof array !== "object") {
+                if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array, but a " + (typeof array));
+                else return false;
+            } else if (array.constructor !== Array) {
+                if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array, but a " + array.constructor.name);
+                else return false;
+            }
+            return true;
+        },
+        checkIfArrayOrString: function(array, name, throw_error) {
+            if (typeof array !== "object" && typeof array !== "string") {
+                if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array or a String, but a " + (typeof array));
+                return false;
+            } else if (array.constructor !== Array && array.constructor !== String) {
+                if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array or a String, but a " + array.constructor.name);
+                return false;
+            }
+            return true;
+        },
         getArrayValue: function(keys) {
             var array = this.getVariable(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
-                if (array.constructor !== Array) {
-                    throw new CompileError("type mismatch, " + name + " is not Array, but " + array.constructor.name);
-                }
+                this.checkIfArray(array, name, true);
                 array = array[keys[i]];
                 name += "[" + keys[i] + "]";
             }
-            if (array.constructor !== Array && array.constructor !== String) {
-                throw new CompileError("type mismatch, " + name + " is not Array or String, but " + array.constructor.name);
-            }
+            this.checkIfArrayOrString(array, name, true);
             if (array[keys[i]] === undefined) {
                 throw new CompileError("array out of bounds");
             }
@@ -162,22 +182,26 @@ define([
             var array = this.getVariable(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
-                if (array.constructor !== Array) {
-                    throw new CompileError("type mismatch, " + name + " is not an Array, but " + array.constructor.name);
-                }
+                this.checkIfArray(array, name, true);
                 array = array[keys[i]];
                 name += "[" + keys[i] + "]";
             }
-            if (array.constructor !== Array) {
-                throw new CompileError("type mismatch, " + name + " is not an Array, but " + array.constructor.name);
-            }
+            this.checkIfArray(array, name, true);
             array[keys[i]] = value;
         },
 
         defineFunction: function(name, func) {
+            for (var x in Parser.prototype.reserved_words) {
+                if (Parser.prototype.reserved_words[x] === name) {
+                    throw new CompileError("\"" + name + "\" is a reserved word");
+                }
+            }
+
             var functions = $.extend({}, this.get("functions"));
             if (func.constructor === Function) {
                 func = new FunctionWrapper({'func': func});
+            } else if (func._type !== "struktogram" && func._type !== "function_wrapper") {
+                throw new CompileError("this is not a function");
             }
             functions[name] = func;
             this.set({"functions": functions});

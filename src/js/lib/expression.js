@@ -161,8 +161,35 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         keys = this.evaluateArrayIndex(this, context, expressions, constants);
         return context.getArrayValue(keys);
     }
+    else if (this.operator == "in_array") {
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
+        if (b.constructor === Array) {
+            return b.filter(function(item) {
+                if (a.constructor === Array && item.constructor === Array) {
+                    return JSON.stringify(a) === JSON.stringify(item);
+                } else if (typeof a === typeof item) {
+                    return a === item;
+                }
+                return false;
+            }).length > 0;
+        }
+        throw new CompileError("right operand must be an array");
+    }
     else if (this.operator == "set") {
-        if (expressions[this.params[0]].operator == "var") {
+        if (expressions[this.params[0]].operator == "list" || expressions[this.params[1]].operator == "list") {
+            var list1 = expressions[this.params[0]], list2;
+            if (expressions[this.params[1]].operator == "list") {
+                list2 = this.evaluateList(expressions[this.params[1]], context, expressions, constants).list;
+            } else {
+                list2 = expressions[this.params[1]].evaluate(context, expressions, constants).list;
+                if (list2 === undefined) {
+                    throw new CompileError("right operand is not a valid list");
+                }
+            }
+            return this.evaluateListSet(list1, list2, context, expressions, constants);
+        }
+        else if (expressions[this.params[0]].operator == "var") {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
             return context.setVariable(a, b);
@@ -182,18 +209,6 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             value = expressions[this.params[1]].evaluate(context, expressions, constants);
             keys = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             return context.setArrayValue(keys, value);
-        }
-        else if (expressions[this.params[0]].operator == "list") {
-            var list1 = expressions[this.params[0]], list2;
-            if (expressions[this.params[1]].operator == "list") {
-                list2 = this.evaluateList(expressions[this.params[1]], context, expressions, constants).list;
-            } else {
-                list2 = expressions[this.params[1]].evaluate(context, expressions, constants).list;
-                if (list2 === undefined) {
-                    throw new CompileError("right operand is not a valid list");
-                }
-            }
-            return this.evaluateListSet(list1, list2, context, expressions, constants);
         }
         throw new CompileError("left operand is not a valid variable, list or array syntax");
     }

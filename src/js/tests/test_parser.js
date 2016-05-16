@@ -3,8 +3,10 @@ define([
     "lib/parser",
     "lib/parse_error",
     "lib/compile_error",
-    "models/context"
-], function(QUnit, Parser, ParseError, CompileError, Context) {
+    "models/context",
+    "models/function_wrapper",
+    "models/document/struktogram"
+], function(QUnit, Parser, ParseError, CompileError, Context, FunctionWrapper, Struktogram) {
     QUnit.module("Parser", function(hooks) {
         var context;
 
@@ -40,6 +42,18 @@ define([
                 (new Parser("a[0][")).evaluate(context);
             }, new ParseError("unmatched brackets"),
                 "\"a[0][\" -> Parse Error: unmatched brackets");
+        });
+
+        QUnit.test("Reserved words", function(assert) {
+            ["if", "else", "for", "until", "while", "return", "def"].forEach(function(word) {
+                assert.throws(function() {
+                    (new Parser(word)).evaluate(context);
+                }, new ParseError("\"" + word + "\" is a reserved word"),
+                    "\"" + word + "\" -> Parse Error: \"" + word + "\" is a reserved word");
+
+                context.defineVariable("_" + word, "String", "OK");
+                assert.equal((new Parser("_" + word)).evaluate(context), "OK", "\"" + "_" + word + "\" is not reserved");
+            });
         });
 
         QUnit.test("Numeric values", function(assert) {
@@ -118,6 +132,9 @@ define([
             assert.deepEqual((new Parser("[2,3] + [4,5]")).evaluate(context), [2,3,4,5], "[ 2, 3 ] + [ 4, 5 ] = [ 2, 3, 4, 5 ]");
             assert.deepEqual((new Parser("[2,3] = [2,3]")).evaluate(context), true, "[ 2, 3 ] = [ 2, 3 ]");
             assert.deepEqual((new Parser("[2,3] <> [3,2]")).evaluate(context), true, "[ 2, 3 ] <> [ 3, 2 ]");
+            assert.deepEqual((new Parser("3 in [3,2]")).evaluate(context), true, "3 in [ 3, 2 ]");
+            assert.deepEqual((new Parser("4 in [3,2]")).evaluate(context), false, "4 in [ 3, 2 ]");
+            assert.deepEqual((new Parser("[2, 3] in [[2,3],[4,5]]")).evaluate(context), true, "[ 2, 3 ] in [ [ 2, 3 ], [ 4, 5 ] ]");
         });
 
         QUnit.test("Array index", function(assert) {
@@ -196,7 +213,145 @@ define([
             (new Parser("a := a - 1")).evaluate(context);
             assert.equal(context.getVariable("a"), -1);
         });
+    });
 
+    QUnit.module("Context", function(hooks) {
+        var context;
 
+        hooks.beforeEach(function(assert) {
+            context = new Context();
+            // assert.equal(context.get("name"), "global", "create global context");
+        });
+
+        hooks.afterEach(function(assert) {
+            context = null;
+        });
+
+        QUnit.test("Define variable", function(assert) {
+            Parser.prototype.reserved_words.forEach(function(word) {
+                assert.throws(function() {
+                    context.defineVariable(word, "Int", 0);
+                }, new CompileError("\"" + word + "\" is a reserved word"),
+                    "Compile Error: \"" + word + "\" is a reserved word");
+            });
+
+            context.defineVariable("a", "Int", 0);
+            assert.throws(function() {
+                context.defineVariable("a", "Int", 0);
+            }, new CompileError("variable \"a\" is already defined"),
+                "Compile Error: variable \"a\" is already defined");
+        });
+
+        QUnit.test("Define function", function(assert) {
+            Parser.prototype.reserved_words.forEach(function(word) {
+                assert.throws(function() {
+                    context.defineFunction(word, function() {});
+                }, new CompileError("\"" + word + "\" is a reserved word"),
+                    "Compile Error: \"" + word + "\" is a reserved word");
+            });
+
+            context.defineFunction("a", function() {});
+            context.defineFunction("b", new FunctionWrapper(function() {}));
+            context.defineFunction("c", new Struktogram());
+
+            assert.throws(function() {
+                context.defineFunction("d", "d");
+            }, new CompileError("this is not a function"),
+                "Compile Error: this is not a function");
+        });
+
+        QUnit.test("Set and get number variable", function(assert) {
+            context.defineVariable("a", "Int", 0);
+            context.setVariable("a", 1);
+            assert.equal(context.getVariable("a"), 1, "set integer variable");
+
+            context.setVariable("a", "123abc");
+            assert.equal(context.getVariable("a"), 123, "string to integer autocast");
+
+            context.defineVariable("b", "Float", 0);
+            context.setVariable("b", "123.45");
+            assert.equal(context.getVariable("b"), 123.45, "string to float autocast");
+
+            assert.throws(function() {
+                context.setVariable("a", "abc123");
+            }, new CompileError("type mismatch, &quot;abc123&quot; is not a number"),
+                "Compile Error: type mismatch, &quot;abc123&quot; is not a number");
+
+            assert.throws(function() {
+                context.setVariable("a", [123]);
+            }, new CompileError("type mismatch, [123] is not a number"),
+                "Compile Error: type mismatch, [123] is not a number");
+        });
+
+        QUnit.test("Set and get boolean variable", function(assert) {
+            context.defineVariable("b", "Bool", true);
+            context.setVariable("b", true); assert.equal(context.getVariable("b"), true, "true is true");
+            context.setVariable("b", false); assert.equal(context.getVariable("b"), false, "false is false");
+            context.setVariable("b", 1); assert.equal(context.getVariable("b"), true, "1 is true");
+            context.setVariable("b", 0); assert.equal(context.getVariable("b"), false, "0 is false");
+            context.setVariable("b", []); assert.equal(context.getVariable("b"), true, "[] is true");
+            context.setVariable("b", ""); assert.equal(context.getVariable("b"), false, "\"\" is false");
+            context.setVariable("b", "a"); assert.equal(context.getVariable("b"), true, "\"a\" is true");
+        });
+
+        QUnit.test("Set and get string variable", function(assert) {
+            context.defineVariable("b", "String", true);
+            context.setVariable("b", true); assert.equal(context.getVariable("b"), "true", "true is \"true\"");
+            context.setVariable("b", false); assert.equal(context.getVariable("b"), "false", "false is \"false\"");
+            context.setVariable("b", 123); assert.equal(context.getVariable("b"), "123", "123 is \"123\"");
+            context.setVariable("b", [1, 2, [3, 4]]); assert.equal(context.getVariable("b"), "1,2,3,4", "[ 1, 2, [ 3, 4 ] ] is \"1,2,3,4\"");
+            context.setVariable("b", "abc"); assert.equal(context.getVariable("b"), "abc", "\"abc\" is \"abc\"");
+        });
+
+        QUnit.test("Set and get array variable", function(assert) {
+            context.defineVariable("b", "Array", []);
+
+            assert.throws(function() {
+                context.setVariable("b", true);
+            }, new CompileError("type mismatch, value is not an Array, but a boolean"),
+                "Compile Error: type mismatch, value is not an Array, but a boolean");
+
+            assert.throws(function() {
+                context.setVariable("b", 1);
+            }, new CompileError("type mismatch, value is not an Array, but a number"),
+                "Compile Error: type mismatch, value is not an Array, but a number");
+
+            assert.throws(function() {
+                context.setVariable("b", "abc");
+            }, new CompileError("type mismatch, value is not an Array, but a string"),
+                "Compile Error: type mismatch, value is not an Array, but a string");
+
+            context.setVariable("b", []); assert.deepEqual(context.getVariable("b"), [], "[] is []");
+            context.setVariable("b", [1, 2]); assert.deepEqual(context.getVariable("b"), [1, 2], "[ 1, 2 ] is [ 1, 2 ]");
+        });
+
+        QUnit.test("Set and get array value", function(assert) {
+            context.defineVariable("b", "Array", []);
+            context.setArrayValue(["b", 0], 1);
+            assert.deepEqual(context.getArrayValue(["b", 0]), 1, "b[0] := 1");
+
+            context.defineVariable("c", "Array", []);
+            assert.throws(function() {
+                context.getArrayValue(["c", 0]);
+            }, new CompileError("array out of bounds"),
+                "Compile Error: array out of bounds");
+
+            context.setArrayValue(["c", 0], 1);
+            assert.throws(function() {
+                context.setArrayValue(["c", 0, 0], 1);
+            }, new CompileError("type mismatch, c[0] is not an Array, but a number"),
+                "Compile Error: type mismatch, c[0] is not an Array, but a number");
+
+            assert.throws(function() {
+                context.getArrayValue(["c", 0, 0]);
+            }, new CompileError("type mismatch, c[0] is not an Array or a String, but a number"),
+                "Compile Error: type mismatch, c[0] is not an Array or a String, but a number");
+
+            context.defineVariable("d", "Array", [[1]]);
+            assert.throws(function() {
+                context.getArrayValue(["d", 0, 0, 0]);
+            }, new CompileError("type mismatch, d[0][0] is not an Array or a String, but a number"),
+                "Compile Error: type mismatch, d[0][0] is not an Array or a String, but a number");
+        });
     });
 });

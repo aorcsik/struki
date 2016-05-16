@@ -33,6 +33,8 @@ function Parser(code) {
     this.parser_cache[code] = this;
 }
 
+Parser.prototype.reserved_words = ["if", "else", "for", "until", "while", "return", "def", "in", "_"];
+
 Parser.prototype.parser_cache = {};
 
 Parser.prototype.token_patterns = [
@@ -41,7 +43,6 @@ Parser.prototype.token_patterns = [
     {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
     {type: "STRING[%]",    pattern: /"/},
     {type: "INTEGER[%]",   pattern: /(0|[1-9][0-9]*)/},
-    {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/},
 
     {type: "OPERATOR_BRO[%]", pattern: /\[/},
     {type: "OPERATOR_BRC[%]", pattern: /\]/},
@@ -61,9 +62,7 @@ Parser.prototype.token_patterns = [
     {type: "OPERATOR_MUL", pattern: /\*/},
     {type: "OPERATOR_MOD", pattern: /%/},
     {type: "OPERATOR_RNG", pattern: /\.\./},
-
     {type: "OPERATOR_SET", pattern: /:=/},
-
     {type: "OPERATOR_LTE", pattern: /<=/},
     {type: "OPERATOR_GTE", pattern: />=/},
     {type: "OPERATOR_NE",  pattern: /<>/},
@@ -73,8 +72,12 @@ Parser.prototype.token_patterns = [
     {type: "OPERATOR_AND", pattern: /&/},
     {type: "OPERATOR_OR",  pattern: /\|/},
     {type: "OPERATOR_NOT", pattern: /!/},
+    {type: "OPERATOR_LST", pattern: /,/},
+    {type: "OPERATOR_IN",  pattern: /\bin\b/},
 
-    {type: "OPERATOR_LST", pattern: /,/}
+    {type: "RESERVED_WORD", pattern: /\b(if|else|for|return|while|until|def)\b/},
+
+    {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/}
 ];
 
 Parser.prototype.expression_patterns = [
@@ -100,6 +103,8 @@ Parser.prototype.expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MODEXPRESSION\[(\d+)\]/, operator: "mod", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUMEXPRESSION\[(\d+)\]/, operator: "sum", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SUBEXPRESSION\[(\d+)\]/, operator: "sub", parameters: [1, 2]},
+
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_INEXPRESSION\[(\d+)\]/, operator: "in_array", parameters: [1, 2]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEXPRESSION\[(\d+)\]/,  operator: "gt",  parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_GTEEXPRESSION\[(\d+)\]/, operator: "gte", parameters: [1, 2]},
@@ -135,7 +140,9 @@ Parser.prototype.tokenize = function(code, last_token_type) {
         // There is a match, its the next character, no after requirement, or last token in after
         if (result && result.index === 0 && (!token_pattern.after || token_pattern.after.indexOf(last_token_type) != -1)) {
             var token, value;
-            if (token_pattern.type == "STRING[%]") {
+            if (token_pattern.type == "RESERVED_WORD") {
+                throw new ParseError("\"" + result[0] + "\" is a reserved word");
+            } else if (token_pattern.type == "STRING[%]") {
                 var string_parser_result = this.stringParser(code.replace(token_pattern.pattern, ""));
                 result[0] = "\"" + string_parser_result + "\"";
                 this.constants[this.constants_counter] = string_parser_result.replace(/\\("|\\)/g, "$1");
