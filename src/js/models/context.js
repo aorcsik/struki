@@ -172,7 +172,8 @@ define([
                 array = array[keys[i]];
                 name += "[" + keys[i] + "]";
             }
-            this.checkIfArrayOrString(array, name, true);
+            if (keys.length == 2) this.checkIfArrayOrString(array, name, true);
+            else this.checkIfArray(array, name, true);
             if (array[keys[i]] === undefined) {
                 throw new CompileError("array out of bounds");
             }

@@ -344,14 +344,14 @@ define([
 
             assert.throws(function() {
                 context.getArrayValue(["c", 0, 0]);
-            }, new CompileError("type mismatch, c[0] is not an Array or a String, but a number"),
-                "Compile Error: type mismatch, c[0] is not an Array or a String, but a number");
+            }, new CompileError("type mismatch, c[0] is not an Array, but a number"),
+                "Compile Error: type mismatch, c[0] is not an Array, but a number");
 
             context.defineVariable("d", "Array", [[1]]);
             assert.throws(function() {
                 context.getArrayValue(["d", 0, 0, 0]);
-            }, new CompileError("type mismatch, d[0][0] is not an Array or a String, but a number"),
-                "Compile Error: type mismatch, d[0][0] is not an Array or a String, but a number");
+            }, new CompileError("type mismatch, d[0][0] is not an Array, but a number"),
+                "Compile Error: type mismatch, d[0][0] is not an Array, but a number");
         });
     });
 });
