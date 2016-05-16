@@ -16,7 +16,7 @@ define([
 
     var Context = Backbone.Model.extend({
         defaults: {
-            'name': "main"
+            'name': "global"
         },
 
         initialize: function() {
