@@ -95,13 +95,21 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "eq") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === typeof b) return a == b;
+        if (a.constructor === Array && b.constructor === Array) {
+            return JSON.stringify(a) === JSON.stringify(b);
+        } else if (typeof a === typeof b) {
+            return a === b;
+        }
         else throw new CompileError("= operator requires operands of the same type");
     }
     else if (this.operator == "ne") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === typeof b) return a != b;
+        if (a.constructor === Array && b.constructor === Array) {
+            return JSON.stringify(a) !== JSON.stringify(b);
+        } else if (typeof a === typeof b) {
+            return a !== b;
+        }
         else throw new CompileError("<> operator requires operands of the same type");
     }
     else if (this.operator == "and") {

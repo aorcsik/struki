@@ -61,10 +61,13 @@ define([
             assert.equal((new Parser("6 / 2")).evaluate(context), 3, "division");
             assert.equal((new Parser("7 % 2")).evaluate(context), 1, "modulo division");
             assert.equal((new Parser("-1 + 2 * 6 - 4 / (-4 * -1 - (2 + 4) / (3))")).evaluate(context), 9, "precedence");
+            assert.equal((new Parser("1 = 1")).evaluate(context), true, "1 = 1");
+            assert.equal((new Parser("1 = 1.0")).evaluate(context), true, "1 = 1.0");
+            assert.equal((new Parser("1 <> 1.1")).evaluate(context), true, "1 <> 1.1");
 
             assert.throws(function() {
                 (new Parser("1 / 0")).evaluate(context);
-            }, new CompileError("division by zero"), "division by zero");
+            }, new CompileError("division by zero"), "division by zero error");
         });
 
         QUnit.test("Boolean values", function(assert) {
@@ -76,6 +79,8 @@ define([
             assert.equal((new Parser("I & H")).evaluate(context), false, "and");
             assert.equal((new Parser("I | H")).evaluate(context), true, "or");
             assert.equal((new Parser("I & H | !(H | !H)")).evaluate(context), false, "precedence");
+            assert.equal((new Parser("I = !H")).evaluate(context), true, "I = !H");
+            assert.equal((new Parser("I <> H")).evaluate(context), true, "I <> H");
         });
 
         QUnit.test("String values", function(assert) {
@@ -89,6 +94,8 @@ define([
         QUnit.test("String operators", function(assert) {
             assert.deepEqual((new Parser("\"\" + \"a\"")).evaluate(context), "a", "\"\" + \"a\" = \"a\"");
             assert.deepEqual((new Parser("\"abcd\" + \"\"")).evaluate(context), "abcd", "\"abcd\" + \"\" = \"abcd\"");
+            assert.deepEqual((new Parser("\"abc\" = \"abc\"")).evaluate(context), true, "\"abc\" = \"abc\"");
+            assert.deepEqual((new Parser("\"abc\" <> \"cba\"")).evaluate(context), true, "\"abc\" <> \"cba\"");
         });
 
         QUnit.test("String index", function(assert) {
@@ -109,6 +116,8 @@ define([
             assert.deepEqual((new Parser("[] + []")).evaluate(context), [], "[ ] + [ ] = [ ]");
             assert.deepEqual((new Parser("[2] + []")).evaluate(context), [2], "[ 2 ] + [ ] = [ 2 ]");
             assert.deepEqual((new Parser("[2,3] + [4,5]")).evaluate(context), [2,3,4,5], "[ 2, 3 ] + [ 4, 5 ] = [ 2, 3, 4, 5 ]");
+            assert.deepEqual((new Parser("[2,3] = [2,3]")).evaluate(context), true, "[ 2, 3 ] = [ 2, 3 ]");
+            assert.deepEqual((new Parser("[2,3] <> [3,2]")).evaluate(context), true, "[ 2, 3 ] <> [ 3, 2 ]");
         });
 
         QUnit.test("Array index", function(assert) {
