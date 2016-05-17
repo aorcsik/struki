@@ -264,7 +264,7 @@ define([
             this.set("context", null);
         },
         getGlobalContext: function() {
-            return this.get("name") === "main" ? this : this.get("parent").getGlobalContext();
+            return this.get("name") === "global" ? this : this.get("parent").getGlobalContext();
         }
     });
     return Context;
