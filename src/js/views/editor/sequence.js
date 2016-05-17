@@ -30,9 +30,14 @@ define([
             });
         },
         createEditorCommandView: function(command) {
-            if (command._type == "loop") return new EditorLoopView({'model': command});
-            if (command._type == "command") return new EditorCommandView({'model': command});
-            if (command._type == "conditional") return new EditorConditionalView({'model': command});
+            var self = this, cmd;
+            if (command._type == "loop") cmd = new EditorLoopView({'model': command});
+            if (command._type == "command") cmd = new EditorCommandView({'model': command});
+            if (command._type == "conditional") cmd = new EditorConditionalView({'model': command});
+            this.listenTo(cmd, "highlight", function(e) {
+                self.trigger("highlight", e);
+            });
+            return cmd;
         },
         setDepth: function(depth) {
             this.depth = depth;

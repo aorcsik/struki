@@ -24,6 +24,10 @@ define([
                 self.trigger("redraw", {'highlight': self});
                 self.highlight = "active_background";
             });
+            this.listenTo(this.model, "errorstop", function() {
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "error_background";
+            });
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
             this.listenTo(this.main_sequence, "redraw", function(e) {
                 // console.log("redraw -> redraw", e);

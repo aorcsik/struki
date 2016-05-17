@@ -16,7 +16,11 @@ define([
         initialize: function() {
             var self = this;
             this.branches = this.model.get("branches").map(function(branch) {
-                return new EditorBranchView({'model': branch});
+                var branch_view = new EditorBranchView({'model': branch});
+                self.listenTo(branch_view, "highlight", function(e) {
+                    self.trigger("highlight", e);
+                });
+                return branch_view;
             });
             this.else_branch = new EditorBranchView({'model': this.model.get("else_branch")});
         },

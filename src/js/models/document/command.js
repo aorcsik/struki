@@ -27,11 +27,7 @@ define([
         },
         evaluate: function(context) {
             try {
-                // this.trigger("evaluate", this);
-                // var x = (new Date()).getTime();
                 var result = context.evaluateCode(this.get("code"));
-                // var time = (new Date()).getTime() - x;
-                // if (time > 3) console.log(time, this.get("code"));
                 return result;
             } catch (e) {
                 if (context.isError(e)) this.trigger("errorstop", this);

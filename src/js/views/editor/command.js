@@ -18,14 +18,12 @@ define([
         initialize: function() {
             var self = this;
             this.listenTo(this.model, "debugstop", function() {
-                self.$el.closest(".struktogram").find(".error").removeClass("error");
-                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
-                self.$el.children(".command-line").addClass("evaluating");
+                self.$el.children(".command-line").addClass("highlight-evaluating");
+                self.trigger("highlight", self);
             });
             this.listenTo(this.model, "errorstop", function() {
-                self.$el.closest(".struktogram").find(".error").removeClass("error");
-                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
-                self.$el.children(".command-line").addClass("error");
+                self.$el.children(".command-line").addClass("highlight-error");
+                self.trigger("highlight", self);
             });
         },
         onClose: function() {

@@ -25,10 +25,33 @@ define([
             "click .remove-parameter": "removeVariable"
         },
 
+        highlights: [],
         initialize: function() {
-            var self = this,
-                render_timeout = null;
+            var self = this;
+            this.listenTo(this.model, "debugstop", function() {
+                self.$el.children(".command-line").addClass("highlight-evaluating");
+                self.highlightLines();
+            });
+            this.listenTo(this.model, "errorstop", function() {
+                self.$el.children(".command-line").addClass("highlight-error");
+                self.highlightLines();
+            });
             this.main_sequence = new EditorSequenceView({'model': this.model.get("sequence")});
+            this.listenTo(this.main_sequence, "highlight", function(e) {
+                self.highlightLines();
+            });
+        },
+
+        highlight_timeout: null,
+        highlightLines: function() {
+            var self = this;
+            window.clearTimeout(this.highlight_timeout);
+            this.highlight_timeout = window.setTimeout(function() {
+                self.$el.find(".command-line.evaluating").removeClass("evaluating");
+                self.$el.find(".command-line.error").removeClass("error");
+                self.$el.find(".command-line.highlight-evaluating").addClass("evaluating").removeClass("highlight-evaluating");
+                self.$el.find(".command-line.highlight-error").addClass("error").removeClass("highlight-error");
+            }, 10);
         },
 
         onClose: function() {

@@ -61,7 +61,8 @@ define([
 
             this.struktogram = new EditorStruktogramView({'model': doc.get("struktogram")});
             this.helpers = doc.get("helpers").map(function(helper) {
-                return new EditorStruktogramView({'model': helper});
+                var helper_view = new EditorStruktogramView({'model': helper});
+                return helper_view;
             });
             this.listenTo(doc, "change", function(e) {
                 $(".evaluating").removeClass("evaluating");

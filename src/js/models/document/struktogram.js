@@ -82,15 +82,16 @@ define([
         },
         evaluate: function(parameters, parent_context) {
             var context = parent_context.newContext(this.get("name"));
-            this.get("parameters").forEach(function(parameter, idx) {
-                context.defineVariable(parameter.get("name"), parameter.get("type"), parameters[idx]);
-            });
-            this.get("variables").forEach(function(variable, idx) {
-                context.defineVariable(variable.get("name"), variable.get("type"));
-            });
             try {
+                this.get("parameters").forEach(function(parameter, idx) {
+                    context.defineVariable(parameter.get("name"), parameter.get("type"), parameters[idx]);
+                });
+                this.get("variables").forEach(function(variable, idx) {
+                    context.defineVariable(variable.get("name"), variable.get("type"));
+                });
                 context.stepState();
             } catch (e) {
+                if (context.isError(e)) this.trigger("errorstop", this);
                 if (context.isStop(e)) this.trigger("debugstop", this);
                 throw e;
             }

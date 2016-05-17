@@ -12,6 +12,7 @@ define([
         branch_sequence: null,
         template: _.template(editorBranchTemplate),
         branch_type: 0,
+        depth: 0,
         events: {
             "click .remove-command": "removeCommand",
             "click .add-command": "addCommand",
@@ -23,15 +24,16 @@ define([
             var self = this;
             var EditorSequenceView = require('views/editor/sequence');
             this.branch_sequence = new EditorSequenceView({'model': this.model.get("sequence")});
+            this.listenTo(this.branch_sequence, "highlight", function(e) {
+                self.trigger("highlight", e);
+            });
             this.listenTo(this.model, "debugstop", function() {
-                self.$el.closest(".struktogram").find(".error").removeClass("error");
-                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
-                self.$el.children(".command-line").addClass("evaluating");
+                self.$el.children(".command-line").addClass("highlight-evaluating");
+                self.trigger("highlight", self);
             });
             this.listenTo(this.model, "errorstop", function() {
-                self.$el.closest(".struktogram").find(".error").removeClass("error");
-                self.$el.closest(".struktogram").find(".evaluating").removeClass("evaluating");
-                self.$el.children(".command-line").addClass("error");
+                self.$el.children(".command-line").addClass("highlight-error");
+                self.trigger("highlight", self);
             });
         },
         onClose: function() {
