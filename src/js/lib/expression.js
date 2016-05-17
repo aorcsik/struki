@@ -28,7 +28,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
         if (typeof a === "number" && typeof b === "number") return a + b;
         else if (a.constructor === Array && b.constructor === Array) return a.concat(b);
-        else if (a.constructor === String && b.constructor === String) return a + b;
+        else if (a.constructor === String) return a + ("" + b);
         else throw new CompileError("+ operator requires number, char, string or array operands");
     }
     else if (this.operator == "sub") {
