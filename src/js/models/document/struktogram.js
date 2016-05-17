@@ -88,6 +88,12 @@ define([
             this.get("variables").forEach(function(variable, idx) {
                 context.defineVariable(variable.get("name"), variable.get("type"));
             });
+            try {
+                context.stepState();
+            } catch (e) {
+                if (context.isStop(e)) this.trigger("debugstop", this);
+                throw e;
+            }
             var result = this.get("sequence").evaluate(context);
             parent_context.removeSubContext();
             this.trigger("return", result);

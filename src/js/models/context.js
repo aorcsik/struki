@@ -131,11 +131,10 @@ define([
             } else {
                 throw new CompileError("invalid type: " + type);
             }
+            var changed = $.extend({}, this.get("changed"));
+            changed[name] = this.getGlobalContext().get("_state");
             this.set({
-                "changed": {
-                    'state': this.getGlobalContext().get("_state"),
-                    'variable': name
-                },
+                "changed": changed,
                 "variables": variables
             });
         },
@@ -195,6 +194,11 @@ define([
             }
             this.checkIfArray(array, name, true);
             array[keys[i]] = value;
+            var changed = $.extend({}, this.get("changed"));
+            changed[keys[0]] = this.getGlobalContext().get("_state");
+            this.set({
+                "changed": changed
+            });
         },
 
         defineFunction: function(name, func) {

@@ -1,4 +1,6 @@
-<% if (context) { %>
+<% if (context && context.get("context")) { %>
+    <%= contexttemp({'context': context.get("context"), 'contexttemp': contexttemp, 'global': false, 'debug_step': debug_step}) %>
+<% } else { if (context) { %>
     <tr>
         <td colspan="2" class="context-header">
             <%= context.get("name") %>
@@ -18,7 +20,7 @@
             </td>
         </tr>
         <% } else { %>
-        <tr class="form-group <% if (context.get('changed') && context.get('changed').state == debug_step - 1 && context.get('changed').variable == name) { %> active<% } %>">
+        <tr class="form-group <% if (context.get('changed') && context.get('changed')[name] == debug_step - 1) { %> active<% } %>">
             <td>
                 <label class="control-label">
                     <i class="material-icons">&#xE154;</i>
@@ -31,5 +33,4 @@
         </tr>
         <% } %>
     <% } %>
-    <%= contexttemp({'context': context.get("context"), 'contexttemp': contexttemp, 'global': false, 'debug_step': debug_step}) %>
-<% } %>
+<% } } %>

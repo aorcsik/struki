@@ -20,6 +20,10 @@ define([
                 "x": 0,
                 "y": 0
             };
+            this.listenTo(this.model, "debugstop", function() {
+                self.trigger("redraw", {'highlight': self});
+                self.highlight = "active_background";
+            });
             this.main_sequence = new SequenceCanvasView({'model': this.model.get("sequence")});
             this.listenTo(this.main_sequence, "redraw", function(e) {
                 // console.log("redraw -> redraw", e);
@@ -76,6 +80,11 @@ define([
             ctx.stroke();
         },
 
+        fillRoundRect: function(ctx, x, y, width, height, radius) {
+            this.roundRectPath(ctx, x, y, width, height, radius);
+            ctx.fill();
+        },
+
         render: function(ctx, design, line, x, y, fix_width) {
             this.lines = {};
             this.position.x = x;
@@ -114,6 +123,17 @@ define([
 
             if (fix_width) {
 
+                if (this.highlight) {
+                    ctx.fillStyle = design[this.highlight];
+                    this.fillRoundRect(ctx,
+                        label_x,
+                        y,
+                        label_width,
+                        label_height,
+                        Math.ceil(label_height / 2));
+                    ctx.fillStyle = design.active_color;
+                }
+
                 // LABEL
                 this.strokeRoundRect(ctx,
                     label_x,
@@ -131,6 +151,11 @@ define([
                 ctx.lineTo(label_x + Math.floor(label_width / 2), y + label_height + 10);
                 ctx.stroke();
                 y += label_height + design.label_distance;
+
+                if (this.highlight) {
+                    ctx.fillStyle = design.default_color;
+                    this.highlight = false;
+                }
 
                 // MAIN SEQUENCE
                 this.main_sequence.render(ctx, design, line,

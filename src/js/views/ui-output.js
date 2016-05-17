@@ -31,6 +31,10 @@ define([
                 });
                 this.$el.find(".panel-body").append(concat);
             });
+            this.listenTo(this.model, "change", function(e) {
+                if (e.changed.context === undefined) return;
+                self.render();
+            });
         },
 
         onClose: function() {},

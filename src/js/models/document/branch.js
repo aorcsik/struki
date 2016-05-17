@@ -49,7 +49,11 @@ define([
         evaluate: function(context) {
             var result = {'condition': false, 'result': null};
             try {
-                result.condition = context.evaluateCondition(this.get("condition") ? this.get("condition") : "I");
+                if (this.get("condition")) {
+                    result.condition = context.evaluateCondition(this.get("condition"));
+                } else {
+                    result.condition = true;
+                }
             } catch (e) {
                 if (context.isError(e)) this.trigger("errorstop", this);
                 if (context.isStop(e)) this.trigger("debugstop", this);
