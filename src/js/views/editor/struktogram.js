@@ -137,6 +137,7 @@ define([
                     self.$el.removeClass("sorting");
                     $(".sortable-sequence").removeClass("drag-over");
                 },
+                handle: ".command-line",
                 update: function(event, ui) {
                     var new_index = $(event.target).children("li").index(ui.item);
                     if (ui.sender || new_index !== -1) {

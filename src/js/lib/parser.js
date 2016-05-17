@@ -33,7 +33,7 @@ function Parser(code) {
     this.parser_cache[code] = this;
 }
 
-Parser.prototype.reserved_words = ["if", "else", "for", "until", "while", "return", "def", "in", "_"];
+Parser.prototype.reserved_words = ["if", "else", "for", "until", "while", "return", "var", "then", "in", "_"];
 
 Parser.prototype.parser_cache = {};
 
@@ -75,7 +75,7 @@ Parser.prototype.token_patterns = [
     {type: "OPERATOR_LST", pattern: /,/},
     {type: "OPERATOR_IN",  pattern: /\bin\b/},
 
-    {type: "RESERVED_WORD", pattern: /\b(if|else|for|return|while|until|def)\b/},
+    {type: "RESERVED_WORD", pattern: /\b(if|else|for|return|while|until|var|then)\b/},
 
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/}
 ];

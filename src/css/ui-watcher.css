@@ -28,7 +28,26 @@
 .ui-watcher .form-group .context-data {
     font-family: "Ubuntu Mono", "Courier New", monospace;
     font-size: 1.0em;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    margin-bottom: 0;
 }
+.ui-watcher .form-group label .material-icons {
+    font-size: 1.2em;
+    float: left;
+    margin-right: 5px;
+    opacity: 0;
+}
+
+.ui-watcher .form-group.active input,
+.ui-watcher .form-group.active label,
+.ui-watcher .form-group.active .context-data {
+    color: rgb(0, 150, 136);
+}
+.ui-watcher .form-group.active label .material-icons {
+    opacity: 1;
+}
+
 .ui-watcher .form-control {
     height: 25px;
 }
@@ -51,6 +70,10 @@
     background: #ddd;
     padding: 3px 5px;
     margin: 0;
+}
+
+.ui-watcher table.contexts {
+    width: 100%;
 }
 
 #watcher_modal .text-danger {

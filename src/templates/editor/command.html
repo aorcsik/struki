@@ -9,12 +9,11 @@
 </div>
 <form>
     <div class="row form-header">
-        <div class="col-md-10"><%= L.gettext("Properties") %></div>
-        <div class="col-md-2">&nbsp;</div>
+        <div class="col-xs-12"><%= L.gettext("Properties") %></div>
     </div>
     <div class="form-group">
-        <label for="<%= model.cid %>_code" class="col-md-4 control-label"><%= L.gettext("code") %></label>
-        <div class="col-md-8">
+        <label for="<%= model.cid %>_code" class="col-xs-4 control-label"><%= L.gettext("code") %></label>
+        <div class="col-xs-8">
             <textarea id="<%= model.cid %>_code" class="form-control" rows="3" name="condition"><%= model.get('code') %></textarea>
         </div>
     </div>

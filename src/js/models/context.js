@@ -131,7 +131,13 @@ define([
             } else {
                 throw new CompileError("invalid type: " + type);
             }
-            this.set({"variables": variables});
+            this.set({
+                "changed": {
+                    'state': this.getGlobalContext().get("_state"),
+                    'variable': name
+                },
+                "variables": variables
+            });
         },
         unsetVariable: function(name) {
             var variables = $.extend({}, this.get("variables"));

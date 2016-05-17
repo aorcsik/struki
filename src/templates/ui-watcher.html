@@ -10,9 +10,9 @@
     </div>
     <div class="panel-body">
 <% } %>
-
-<%= contexttemp({'context': context, 'contexttemp': contexttemp, 'global': true}) %>
-
+<table class="contexts">
+<%= contexttemp({'context': context, 'contexttemp': contexttemp, 'global': true, 'debug_step': this.debug_step}) %>
+</table>
 <% if (!context_only) { %>
     </div>
 </div>

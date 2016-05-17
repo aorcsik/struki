@@ -1,19 +1,35 @@
 <% if (context) { %>
-    <div class="context-header"><%= context.get("name") %></div>
+    <tr>
+        <td colspan="2" class="context-header">
+            <%= context.get("name") %>
+        </td>
+    </tr>
     <% for (var name in context.get("variables")) { %>
         <% if (global) { %>
-        <div class="form-group">
-            <label for="variable_<%= name %>" class="col-md-4 control-label"><%= name %>:<%= context.get("types")[name] %></label>
-            <div class="col-md-8">
+        <tr class="form-group">
+            <td>
+                <label for="variable_<%= name %>" class="control-label">
+                    <i class="material-icons">&#xE154;</i>
+                    <%= name %><em>:<%= context.get("types")[name] %></em>
+                </label>
+            </td>
+            <td>
                 <input id="variable_<%= name %>" name="<%= name %>" placeholder="Undefined" type="text" class="form-control" value="<%= context.getVariableAsString(name) %>">
-            </div>
-        </div>
+            </td>
+        </tr>
         <% } else { %>
-        <div class="form-group">
-            <label class="col-md-4 control-label"><%= name %>:<%= context.get("types")[name] %></label>
-            <div class="col-md-8 context-data"><%= context.getVariableAsString(name) %></div>
-        </div>
+        <tr class="form-group <% if (context.get('changed') && context.get('changed').state == debug_step - 1 && context.get('changed').variable == name) { %> active<% } %>">
+            <td>
+                <label class="control-label">
+                    <i class="material-icons">&#xE154;</i>
+                    <%= name %><em>:<%= context.get("types")[name] %></em>
+                </label>
+            </td>
+            <td class="context-data">
+                <%= context.getVariableAsString(name) %>
+            </td>
+        </tr>
         <% } %>
     <% } %>
-    <%= contexttemp({'context': context.get("context"), 'contexttemp': contexttemp, 'global': false}) %>
+    <%= contexttemp({'context': context.get("context"), 'contexttemp': contexttemp, 'global': false, 'debug_step': debug_step}) %>
 <% } %>
