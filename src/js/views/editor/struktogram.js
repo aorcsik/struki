@@ -147,7 +147,7 @@ define([
                         target_sequence.addCommand(cmd, new_index);
                     }
                 }
-            }).disableSelection();
+            }); //.disableSelection();
             this.$el.data('view', this);
             this.$el.removeClass("editing");
             if (this.model._new) {
