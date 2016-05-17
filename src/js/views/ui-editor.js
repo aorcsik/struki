@@ -11,9 +11,11 @@ define([
         template: _.template(UIEditorTemplate),
         stuktogram: null,
         helpers: null,
+        scrolltop: null,
 
         initialize: function() {
             var self = this;
+            this.scrollto = 0;
             this.struktogram = null;
             this.helpers = [];
             if (this.model.get("active_document")) {
@@ -67,7 +69,6 @@ define([
         },
 
         render: function() {
-            var sct = this.$el.find(".struktogram-container").scrollTop() || 0;
             this.$el.html(this.template({
                 "L": Localization
             }));
@@ -104,7 +105,10 @@ define([
                 });
             }
             this.updateLayout();
-            this.$el.find(".struktogram-container").scrollTop(sct);
+            this.$el.children(".struktogram-container").scrollTop(this.scrolltop);
+            this.$el.children(".struktogram-container").on("scroll", function() {
+                self.scrolltop = $(this).scrollTop();
+            });
             return this;
         },
         updateLayout: function() {
