@@ -45,7 +45,9 @@ define([
         });
 
         QUnit.test("Reserved words", function(assert) {
-            ["if", "else", "for", "until", "while", "return", "def"].forEach(function(word) {
+            var reserved_words = Parser.prototype.reserved_words.filter(function(word) {
+                return word !== "_" && word !== "in";
+            }).forEach(function(word) {
                 assert.throws(function() {
                     (new Parser(word)).evaluate(context);
                 }, new ParseError("\"" + word + "\" is a reserved word"),
