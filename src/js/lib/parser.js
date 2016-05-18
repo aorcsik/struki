@@ -33,7 +33,7 @@ function Parser(code) {
     this.parser_cache[code] = this;
 }
 
-Parser.prototype.reserved_words = ["if", "else", "for", "until", "while", "return", "var", "then", "in", "_"];
+Parser.prototype.reserved_words = ["if", "else", "then", "while", "until", "for", "return", "var", "in", "_"];
 
 Parser.prototype.parser_cache = {};
 
