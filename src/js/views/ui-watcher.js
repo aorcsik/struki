@@ -4,10 +4,11 @@ define([
     'backbone',
     'lib/localization',
     'lib/parser',
+    'lib/watcher_error',
     'text!../../templates/ui-watcher.html',
     'text!../../templates/watcher/context.html',
     'text!../../templates/watcher/modal.html'
-], function($, _, Backbone, Localization, Parser, UIWatcherTemplate, watcherContextTemplate, watcherModalTemplate){
+], function($, _, Backbone, Localization, Parser, WatcherError, UIWatcherTemplate, watcherContextTemplate, watcherModalTemplate){
     var UIWatcherView = Backbone.View.extend({
         className: "ui-watcher ui-panel",
         events: {
@@ -44,7 +45,10 @@ define([
             debug_step = debug_step || 0;
             if (debug_step === 0) {
                 this.$el.find(".form-control").each(function() {
-                    (new Parser($(this).attr("name") + " := " + $(this).val())).evaluate(context);
+                    var param_code = $(this).val().replace(/(^\s+|\s+$)/g, "");
+                    if (!param_code) throw new WatcherError("empty start parameter");
+                    var param_result = (new Parser($(this).val())).evaluate(context);
+                    context.setVariable($(this).attr("name"), param_result);
                 });
                 this.saved_variables = $.extend(true, {}, context.get("variables"));
             } else {
@@ -105,6 +109,7 @@ define([
         },
 
         openModal: function(options) {
+            options = $.extend({'L': Localization}, options);
             var $modal = $(this.modaltemp(options)).appendTo($("body")).on("hidden.bs.modal", function() {
                 if (options.onHide) options.onHide();
                 $modal.remove();
