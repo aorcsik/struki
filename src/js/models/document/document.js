@@ -82,23 +82,10 @@ define([
         },
         evaluate: function(context) {
             var main = this.getStruktogram(),
-                parameters = [];
-            main.getParameters().forEach(function(parameter) {
-                var value = context.get("variables")[parameter.getName()];
-                if (parameter.getType() == "Int") {
-                    value = parseInt(value, 10);
-                } else if (parameter.getType() == "Bool") {
-                    if (value === "I") value = true;
-                    else if (value == "H") value = false;
-                    else value = Boolean(value);
-                } else if (parameter.getType() == "Float") {
-                    value = parseFloat(value);
-                } else if (parameter.getType() == "String") {
-                    value = "" + value;
-                }
-                parameters.push(value);
-            });
-            return main.call(context, parameters);
+                parameter_list = main.getParameters().map(function(parameter) {
+                    return parameter.getName();
+                }).join(",");
+            return context.evaluateCode("return main(" + parameter_list+ ")");
         }
     });
     return Document;

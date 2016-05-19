@@ -113,7 +113,7 @@ define([
 
             var result = this.evaluate(context);
 
-            parent_context.removeSubContext();
+            parent_context.removeSubcontext();
             this.trigger("return", result);
             return result;
         }
