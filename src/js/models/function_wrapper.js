@@ -1,14 +1,17 @@
 define([
-    'jquery',
-    'underscore',
-    'backbone'
-], function($, _, Backbone) {
-    var FunctionWrapper = Backbone.Model.extend({
+    'backbone',
+    'interfaces/callable'
+], function(Backbone, Callable) {
+    var FunctionWrapper = Backbone.Model.extend(Callable).extend({
         _type: "function_wrapper",
         defaults: {},
-        initialize: function() {},
-        evaluate: function(parameters, context) {
-            return this.get("func").apply(this, parameters);
+
+        getFunc: function() {
+            return this.get("func");
+        },
+
+        call: function(context, parameters) {
+            return this.getFunc().apply(context, parameters);
         }
     });
     return FunctionWrapper;

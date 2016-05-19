@@ -50,7 +50,7 @@ define([
 
         removeCommand: function(e) {
             var conditional = this.model.get("parent");
-            if (conditional.get("branches").length > 1 && window.confirm(Localization.gettext("Are you sure, you want to delete this branch?", true))) {
+            if (conditional.getBranches().length > 1 && window.confirm(Localization.gettext("Are you sure, you want to delete this branch?", true))) {
                 conditional.removeBranch(this.model);
             } else if (window.confirm(Localization.gettext("Are you sure, you want to delete this branch and the conditional?", true))) {
                 conditional.get("parent").removeCommand(conditional);

@@ -1,0 +1,105 @@
+define([
+    'models/document/abstract_list_element',
+    'models/document/struktogram'
+], function(AbstractListElement, Struktogram) {
+    var Document = AbstractListElement.extend({
+        _type: "document",
+        defaults: {},
+        initialize: function() {
+            var self = this,
+                struktogram = new Struktogram({'name': "main", 'document': this});
+            struktogram.getSequence().addCommand('command', {'code': "return 0"}, false);
+            this.listenTo(struktogram, 'change', function(e) {
+                self.trigger('change', e);
+            });
+            this.set({
+                "uuid": uuid(),
+                "name": this.getName() || "new",
+                "struktogram": struktogram,
+                "list": []
+            });
+        },
+
+        getUUID: function() {
+            return this.get("uuid");
+        },
+        getName: function() {
+            return this.get("name");
+        },
+        getStruktogram: function() {
+            return this.get("struktogram");
+        },
+        getHelpers: function() {
+            return this.getListItems();
+        },
+
+        addHelper: function(helper, _new) {
+            var struktogram;
+            if (helper && helper._type === "struktogram") {
+                struktogram = helper;
+                struktogram.set({'helper': true, 'document': this});
+            } else {
+                var name = this.getStruktogram().getName() + "_helper" + (this.getHelpers().length + 1);
+                struktogram = new Struktogram($.extend({'name': name, 'helper': true, 'document': this}, helper));
+                struktogram.getSequence().addCommand('command', {'code': "return 0"}, false);
+                struktogram._new = _new === undefined ? true : _new;
+            }
+            this.addListItem(struktogram);
+            return struktogram;
+        },
+        removeHelper: function(helper) {
+            return this.removeListItem(helper);
+        },
+
+        serialize: function() {
+            return {
+                'type': this._type,
+                'uuid': this.getUUID(),
+                'name': this.getName(),
+                'struktogram': this.getStruktogram().serialize(),
+                'helpers': this.getHelpers().map(function(helper) { return helper.serialize(); })
+            };
+        },
+        deserialize: function(json) {
+            var self = this,
+                struktogram = new Struktogram({'document': this});
+            json.struktogram.name = "main";
+            struktogram.deserialize(json.struktogram);
+            this.listenTo(struktogram, 'change', function(e) {
+                self.trigger('change', e);
+            });
+            this.set({
+                "uuid": json.uuid || uuid(),
+                "name": json.name || "noname",
+                "struktogram": struktogram,
+                "list": []
+            });
+            json.helpers.forEach(function(helper_json) {
+                var helper = new Struktogram({'document': self});
+                helper.deserialize(helper_json);
+                self.addHelper(helper);
+            });
+        },
+        evaluate: function(context) {
+            var main = this.getStruktogram(),
+                parameters = [];
+            main.getParameters().forEach(function(parameter) {
+                var value = context.get("variables")[parameter.getName()];
+                if (parameter.getType() == "Int") {
+                    value = parseInt(value, 10);
+                } else if (parameter.getType() == "Bool") {
+                    if (value === "I") value = true;
+                    else if (value == "H") value = false;
+                    else value = Boolean(value);
+                } else if (parameter.getType() == "Float") {
+                    value = parseFloat(value);
+                } else if (parameter.getType() == "String") {
+                    value = "" + value;
+                }
+                parameters.push(value);
+            });
+            return main.call(context, parameters);
+        }
+    });
+    return Document;
+});

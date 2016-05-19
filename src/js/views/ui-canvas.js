@@ -120,8 +120,8 @@
         render: function(edit) {
             var self = this;
             if (this.model.get("active_document")) {
-                this.struktogram = new CanvasView({'model': this.model.get("active_document").get("struktogram")});
-                this.helpers = this.model.get("active_document").get("helpers").map(function(helper) {
+                this.struktogram = new CanvasView({'model': this.model.get("active_document").getStruktogram()});
+                this.helpers = this.model.get("active_document").getHelpers().map(function(helper) {
                     return new CanvasView({'model': helper});
                 });
                 this.$el.html(this.template({

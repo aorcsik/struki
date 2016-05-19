@@ -20,7 +20,7 @@ define([
                 "x": 0,
                 "y": 0
             };
-            this.branches = this.model.get("branches").map(function(branch) {
+            this.branches = this.model.getBranches().map(function(branch) {
                 return self.createBranchView(branch);
             });
             this.listenTo(this.model, "change:add", function(branch, idx) {
@@ -29,7 +29,7 @@ define([
             this.listenTo(this.model, "change:remove", function(branch, idx) {
                 self.branches.splice(idx, 1);
             });
-            this.else_branch = this.createBranchView(this.model.get("else_branch"));
+            this.else_branch = this.createBranchView(this.model.getElseBranch());
         },
         onClose: function() {
             this.branches.forEach(function(branch) {

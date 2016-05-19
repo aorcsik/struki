@@ -1,102 +1,76 @@
 define([
-    'jquery',
-    'underscore',
-    'backbone',
+    'models/document/abstract_list_element',
     'models/document/command',
     'models/document/conditional',
     'models/document/loop'
-], function($, _, Backbone, Command, Conditional, Loop) {
-    var Sequence = Backbone.Model.extend({
+], function(AbstractListElement, Command, Conditional, Loop) {
+    var Sequence = AbstractListElement.extend({
         _type: "sequence",
         defaults: {},
         initialize: function() {
-            this.set("commands", []);
+            this.set("list", []);
         },
-        newCommand: function(data, _new) {
-            var command = new Command($.extend({'parent': this}, data));
-            command._new = _new === undefined ? true : _new;
-            this.addCommand(command);
+
+        getCommands: function() {
+            return this.getListItems();
+        },
+
+        addCommand: function(type, command, _new) {
+            if (command && command._type === type) {
+                command.set('parent', this);
+            } else if (type == "command") {
+                command = new Command($.extend({'parent': this}, command));
+                command._new = _new === undefined ? true : _new;
+            } else if (type == "loop") {
+                command = new Loop($.extend({'parent': this}, command));
+                command._new = _new === undefined ? true : _new;
+            } else if (type == "conditional") {
+                command = new Conditional($.extend({'parent': this}, command));
+                command.getBranches()[0]._new = _new === undefined ? true : _new;
+            }
+            this.addListItem(command);
             return command;
         },
-        newLoop: function(data, _new) {
-            var loop = new Loop($.extend({'parent': this}, data));
-            loop._new = _new === undefined ? true : _new;;
-            this.addCommand(loop);
-            return loop;
-        },
-        newConditional: function(data, _new) {
-            var conditional = new Conditional($.extend({'parent': this}, data));
-            conditional.get("branches")[0]._new = _new === undefined ? true : _new;;
-            this.addCommand(conditional);
-            return conditional;
-        },
-        addCommand: function(command, idx) {
-            var self = this,
-                commands = this.get("commands").map(function(command) { return command; });
-            if (idx === undefined || idx > commands.length) {
-                idx = commands.length;
-                commands.push(command);
-            } else {
-                commands.splice(idx, 0, command);
-            }
-            this.trigger('change:add', command, idx);
-            this.set({'commands': commands});
-            this.listenTo(command, 'change', function(e) {
-                // console.log(command._type + " -> sequence", e);
-                self.trigger('change', e);
-            });
-        },
         removeCommand: function(command) {
-            this.removeCommandByIndex(this.get("commands").indexOf(command));
+            return this.removeListItem(command);
         },
-        removeCommandByIndex: function(idx) {
-            var commands = this.get("commands").map(function(command) { return command; });
-            if (idx > -1 && idx < commands.length) {
-                var removed = commands.splice(idx, 1);
-                this.trigger('change:remove', removed[0], idx);
-                this.stopListening(removed[0]);
-                this.set({'commands': commands});
-            }
-        },
+
         serialize: function() {
             return {
                 'type': this._type,
-                'commands': this.get("commands").map(function(command) {
+                'commands': this.getCommands().map(function(command) {
                     return command.serialize();
                 })
             };
         },
         deserialize: function(json) {
-            var self = this;
             if (json.type && json.type === this._type) {
-                var commands = json.commands.map(function(command_json) {
-                    var command;
+                var self = this;
+                json.commands.map(function(command_json) {
                     if (command_json.type && command_json.type === "command") {
-                        command = new Command({'parent': self});
+                        var command = new Command({'parent': self});
+                        command.deserialize(command_json);
+                        self.addCommand('command', command);
                     }
                     if (command_json.type && command_json.type === "conditional") {
-                        command = new Conditional({'parent': self});
+                        var conditional = new Conditional({'parent': self});
+                        conditional.deserialize(command_json);
+                        self.addCommand('conditional', conditional);
                     }
                     if (command_json.type && command_json.type === "loop") {
-                        command = new Loop({'parent': self});
+                        var loop = new Loop({'parent': self});
+                        loop.deserialize(command_json);
+                        self.addCommand('loop', loop);
                     }
-                    command.deserialize(command_json);
-                    self.listenTo(command, 'change', function(e) {
-                        // console.log(command._type + " -> sequence", e);
-                        self.trigger('change', e);
-                    });
-                    return command;
                 });
-                this.set({"commands": commands});
             }
         },
-        getStruktogram: function() {
-            return this.get("parent").getStruktogram();
-        },
+
         evaluate: function(context) {
-            var return_value = null;
-            for (var i = 0; i < this.get("commands").length; i++) {
-                return_value = this.get("commands")[i].evaluate(context);
+            var return_value = null,
+                commands = this.getCommands();
+            for (var i = 0; i < commands.length; i++) {
+                return_value = commands[i].evaluate(context);
                 if (return_value !== null) return return_value;
             }
             return return_value;

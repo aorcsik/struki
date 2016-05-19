@@ -5,8 +5,8 @@
     <i class="material-icons command-tools <% if (model.get('helper')) { %>remove-helper<% } else { %>close-struktogram<% } %>">&#xE14C;</i>
     <div class="title">
         <span class="debug"><%= this.cid %></span>
-        <%= model.get("name") %>(<%= model.get("parameters").map(function(parameter) {
-            return parameter.get("name") + ": " + parameter.get("type");
+        <%= model.getName() %>(<%= model.get("parameters").map(function(parameter) {
+            return parameter.toString();
         }).join(",") %>)
     </div>
     <% _.each(model.get("variables"), function(variable) { %>

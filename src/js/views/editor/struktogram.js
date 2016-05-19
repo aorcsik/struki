@@ -68,7 +68,7 @@ define([
         saveCommand: function(e) {
             var name = this.$el.find("#" + this.model.cid + "_name").val().replace(/^\s+|\s+$/g, '');
             this.model.updateStruktogram({
-                "name": name || this.model.get("name"),
+                "name": name || this.model.getName(),
                 "parameters": this.$el.find(".parameters .form-group").map(function() {
                     var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
                         type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');

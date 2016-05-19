@@ -80,7 +80,7 @@ define([
 
         getJSONDownalodLink: function(text) {
             var json = this.model.get("active_document").serialize(),
-                filename = this.model.get("active_document").get("name") + ".json";
+                filename = this.model.get("active_document").getName() + ".json";
             if (navigator.msSaveBlob) {
                 var blob = this.JSONtoBlob(json);
                 return $("<a id='json_download' href='javascript:void(0);'>" + text + " " + filename + "</a>").on("click", function() {

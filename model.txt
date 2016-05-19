@@ -1,0 +1,37 @@
+                    Branch  Command Loop    Struktogram Conditional Sequence    Document    Variable    FunctionWrapper
+«Serializable»
+serialize           X       X       X       X           X           X           X           X           -
+deserialize         X       X       X       X           X           X           X           X           -
+
+«Evaluable»
+evaluate            X       X       X       X           X           X           X           -           -
+
+«Callable»
+call                -       -       -       X           -           -           -           -           X
+
+AbstractElement
+getDocument         X       X       X       X           X           X           X           -           -
+evaluateCode        X       X       X       -           -           -           -
+
+AbstractListElement
+addListItem                 -       -       -           X           X           X           -           -
+removeListItemByIndex       -       -       -           X           X           X           -           -
+
+Loop
+initRange           -       -       X       -           -           -           -           -           -
+evaluateRange       -       -       X       -           -           -           -           -           -
+
+Struktogram
+updateStruktogram   -       -       -       X           -           -           -           -           -
+
+Conditional
+addBranch           -       -       -       -           X           -           -           -           -
+removeBranch        -       -       -       -           X           -           -           -           -
+
+Sequence
+addCommand          -       -       -       -           -           X           -           -           -
+removeCommand       -       -       -       -           -           X           -           -           -
+
+Document
+addHelper           -       -       -       -           -           -           X           -           -
+removeHelper        -       -       -       -           -           -           X           -           -

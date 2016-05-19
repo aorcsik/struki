@@ -53,20 +53,20 @@ define([
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
             try {
-                var key = this.document_prefix + doc.get("uuid");
+                var key = this.document_prefix + doc.getUUID();
                 var value = doc.serialize();
                     window.localStorage.setItem(key, JSON.stringify(value));
-                    this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                    this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.getName() + "</strong>"});
             } catch(e) {
                 this.render("Document autosave is not possible (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning", 5000);
             }
         },
         removeDocument: function(doc) {
             if (window.localStorage) {
-                var key = this.document_prefix + doc.get("uuid");
+                var key = this.document_prefix + doc.getUUID();
                 if (window.localStorage.getItem(key)) {
                     window.localStorage.removeItem(key);
-                    this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.get("name") + "</strong>"});
+                    this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.getName() + "</strong>"});
                 }
             }
         },
@@ -105,7 +105,7 @@ define([
                     console.error(text_message);
                 } else if (type == "warning") {
                     $message = $("<div>").html("<i class='material-icons'>&#xE002;</i>" + html_message).addClass("text-warning");
-                    console.warning(text_message);
+                    console.warn(text_message);
                 } else {
                     $message = $("<div>").html("<i class='material-icons'>&#xE876;</i>" + html_message);
                     console.log(text_message);

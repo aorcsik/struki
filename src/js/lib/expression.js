@@ -140,10 +140,10 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "func") {
         if (expressions[this.params[0]].operator == "var") {
             if (this.params.length == 1) {
-                return context.applyFunction(expressions[this.params[0]].params[0]);
+                return context.callFunction(expressions[this.params[0]].params[0]);
             } else {
                 value = this.evaluateList(expressions[this.params[1]], context, expressions, constants).list;
-                return context.applyFunction(expressions[this.params[0]].params[0], value);
+                return context.callFunction(expressions[this.params[0]].params[0], value);
             }
         }
         throw new CompileError("left operand is not a valid function name");

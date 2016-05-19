@@ -20,10 +20,30 @@ define([
         },
 
         initialize: function() {
-            var self = this;
-            this.set("types", $.extend({}, this.get("types")));
-            this.set("variables", $.extend({}, this.get("variables")));
-            this.set("functions", $.extend({}, this.get("functions")));
+            this.set({
+                "types": $.extend({}, this.get("types")),
+                "variables": $.extend({}, this.get("variables")),
+                "functions": $.extend({}, this.get("functions"))
+            });
+        },
+
+        getName: function() {
+            return this.get("name");
+        },
+        getVariables: function() {
+            return this.get("variables");
+        },
+        getFunctions: function() {
+            return this.get("functions");
+        },
+
+        isError: function(exc) {
+            return exc.constructor === ParseError ||
+                   exc.constructor === CompileError;
+        },
+
+        isStop: function(exc) {
+            return exc.constructor === DebugStopException;
         },
 
         stepState: function() {
@@ -37,16 +57,7 @@ define([
             }
         },
 
-        isError: function(exc) {
-            return exc.constructor === ParseError ||
-                   exc.constructor === CompileError;
-        },
-
-        isStop: function(exc) {
-            return exc.constructor === DebugStopException;
-        },
-
-        toString: function(value) {
+        asString: function(value) {
             var self = this;
             if (value !== null && value !== undefined) {
                 if (typeof value === "number") {
@@ -57,12 +68,12 @@ define([
                 }
                 if (value.constructor === Array) {
                     return "[" + value.map(function(item) {
-                        return self.toString(item);
+                        return self.asString(item);
                     }).join(", ") + "]";
                 }
                 if (value.list !== undefined) {
                     return value.list.map(function(item) {
-                        return self.toString(item);
+                        return self.asString(item);
                     }).join(", ");
                 }
             }
@@ -115,12 +126,12 @@ define([
 
             if (type === "Int" || type === "Float") {
                 if (typeof value !== "number" && typeof value !== "string") {
-                    throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
+                    throw new CompileError("type mismatch, " + this.asString(value) + " is not a number");
                 }
                 if (type === "Int") variables[name] = parseInt(value, 10);
                 if (type === "Float") variables[name] = parseFloat(value);
                 if (isNaN(variables[name])) {
-                    throw new CompileError("type mismatch, " + this.toString(value) + " is not a number");
+                    throw new CompileError("type mismatch, " + this.asString(value) + " is not a number");
                 }
             }
             else if (type === "Bool") variables[name] = Boolean(value);
@@ -147,7 +158,7 @@ define([
             this.set({"variables": variables});
         },
         getVariableAsString: function(name) {
-            return this.toString(this.getVariable(name));
+            return this.asString(this.getVariable(name));
         },
         checkIfArray: function(array, name, throw_error) {
             if (typeof array !== "object") {
@@ -211,29 +222,22 @@ define([
             var functions = $.extend({}, this.get("functions"));
             if (func.constructor === Function) {
                 func = new FunctionWrapper({'func': func});
-            } else if (func._type !== "struktogram" && func._type !== "function_wrapper") {
-                throw new CompileError("this is not a function");
+            } else if (!func._callable) {  // from CallableInterface
+                throw new CompileError("this is not a callable");
             }
             functions[name] = func;
             this.set({"functions": functions});
         },
-        applyFunction: function(name, params) {
+        callFunction: function(name, params) {
             if (this.get("functions")[name] === undefined) {
-                if (Math[name] !== undefined && Math[name].constructor === Function) {
-                    this.defineFunction(name, Math[name]);
-                    return this.get("functions")[name].evaluate(params, this);
+                if (Math[name] === undefined || Math[name].constructor !== Function) {
+                    throw new CompileError("undefined function '" + name + "'");
                 }
-                throw new CompileError("undefined function '" + name + "'");
+                this.defineFunction(name, Math[name]);
             }
-            return this.get("functions")[name].evaluate(params, this);
+            return this.get("functions")[name].call(this, params);
         },
 
-        evaluateCondition: function(condition) {
-            var parser = new Parser(condition);
-            var result = parser.evaluate(this);
-            this.stepState();
-            return result;
-        },
         evaluateCode: function(code, ret) {
             ret = ret || false;
             if (code.match(/^\s*return\s*/, code)) {
@@ -256,11 +260,11 @@ define([
             };
         },
 
-        newContext: function(name) {
+        newSubcontext: function(name) {
             var self = this;
             this.set("context", new Context({
                 "parent": this,
-                "name": this.get("name") + ":" + name,
+                "name": this.getName() + ":" + name,
                 "types": $.extend({}, this.get("types")),
                 // "variables": $.extend({}, this.get("variables")),  // no global variable scope
                 "functions": $.extend({}, this.get("functions"))
@@ -270,11 +274,11 @@ define([
             });
             return this.get("context");
         },
-        removeSubContext: function() {
+        removeSubcontext: function() {
             this.set("context", null);
         },
         getGlobalContext: function() {
-            return this.get("name") === "global" ? this : this.get("parent").getGlobalContext();
+            return this.getName() === "global" ? this : this.get("parent").getGlobalContext();
         }
     });
     return Context;

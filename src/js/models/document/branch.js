@@ -1,66 +1,64 @@
 define([
     'require',
-    'jquery',
-    'underscore',
-    'backbone'
-], function(require, $, _, Backbone) {
-    var Branch = Backbone.Model.extend({
+    'models/document/abstract_element'
+], function(require, AbstractElement) {
+    var Branch = AbstractElement.extend({
         _type: "branch",
         _new: false,
         defaults: {
             "condition": "I"
         },
         initialize: function() {
-            var self = this;
-            var Sequence = require('models/document/sequence');
-            this.set("sequence", new Sequence({'parent': this}));
-            this.listenTo(this.get("sequence"), 'change', function(e) {
+            var self = this,
+                Sequence = require('models/document/sequence'),
+                sequence = new Sequence({'parent': this});
+            this.listenTo(sequence, 'change', function(e) {
                 self.trigger('change', e);
             });
+            this.set("sequence", sequence);
         },
+
+        getCondition: function() {
+            return this.get("condition");
+        },
+        getSequence: function() {
+            return this.get("sequence");
+        },
+
         serialize: function() {
             return {
                 "type": this._type,
-                "condition": this.get("condition"),
-                "sequence": this.get("sequence").serialize()
+                "condition": this.getCondition(),
+                "sequence": this.getSequence().serialize()
             };
         },
         deserialize: function(json) {
             var self = this;
             if (json.type && json.type === this._type) {
-                var Sequence = require('models/document/sequence');
-                var sequence = new Sequence({'parent': this});
+                var Sequence = require('models/document/sequence'),
+                    sequence = new Sequence({'parent': this});
                 sequence.deserialize(json.sequence);
+                this.listenTo(sequence, 'change', function(e) {
+                    self.trigger('change', e);
+                });
                 this.set({
                     "condition": json.condition,
                     "sequence": sequence
                 });
-                this.listenTo(this.get("sequence"), 'change', function(e) {
-                    self.trigger('change', e);
-                });
             }
         },
-        getStruktogram: function() {
-            return this.get("parent").getStruktogram();
-        },
-        evaluateCondition: function(context) {
 
-        },
         evaluate: function(context) {
-            var result = {'condition': false, 'result': null};
-            try {
-                if (this.get("condition")) {
-                    result.condition = context.evaluateCondition(this.get("condition"));
-                } else {
-                    result.condition = true;
-                }
-            } catch (e) {
-                if (context.isError(e)) this.trigger("errorstop", this);
-                if (context.isStop(e)) this.trigger("debugstop", this);
-                throw e;
+            var condition = this.getCondition(),
+                result = {
+                'condition': true,
+                'result': null
+            };
+            if (condition) {
+                result.condition = this.evaluateCode(context, "return " + condition);
             }
             if (result.condition) {
-                result.result = this.get("sequence").evaluate(context);
+                result.result = this.getSequence().evaluate(context);
             }
             return result;
         }

@@ -53,7 +53,7 @@ define([
 
         updateCommands: function() {
             var self = this;
-            this.commands = this.model.get("commands").map(function(command) {
+            this.commands = this.model.getCommands().map(function(command) {
                 return self.createCommandCanvasView(command);
             });
         },

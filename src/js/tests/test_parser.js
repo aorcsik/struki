@@ -12,7 +12,7 @@ define([
 
         hooks.beforeEach(function(assert) {
             context = new Context();
-            // assert.equal(context.get("name"), "global", "create global context");
+            // assert.equal(context.getName(), "global", "create global context");
         });
 
         hooks.afterEach(function(assert) {
@@ -222,7 +222,7 @@ define([
 
         hooks.beforeEach(function(assert) {
             context = new Context();
-            // assert.equal(context.get("name"), "global", "create global context");
+            // assert.equal(context.getName(), "global", "create global context");
         });
 
         hooks.afterEach(function(assert) {

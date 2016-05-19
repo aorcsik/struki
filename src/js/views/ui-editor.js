@@ -59,8 +59,8 @@ define([
             if (this.struktogram) this.struktogram.close();
             this.helpers.forEach(function(helper) { helper.close(); });
 
-            this.struktogram = new EditorStruktogramView({'model': doc.get("struktogram")});
-            this.helpers = doc.get("helpers").map(function(helper) {
+            this.struktogram = new EditorStruktogramView({'model': doc.getStruktogram()});
+            this.helpers = doc.getHelpers().map(function(helper) {
                 var helper_view = new EditorStruktogramView({'model': helper});
                 return helper_view;
             });
@@ -76,7 +76,7 @@ define([
             var self = this,
                 $struktogram_container = this.$el.children(".struktogram-container");
             if (this.model.get("active_document")) {
-                if (!this.struktogram || this.struktogram.model.cid !== this.model.get("active_document").get("struktogram").cid) {
+                if (!this.struktogram || this.struktogram.model.cid !== this.model.get("active_document").getStruktogram().cid) {
                     this.openDocument(this.model.get("active_document"));
                 }
                 $struktogram_container.append(this.struktogram.$el);
@@ -98,11 +98,11 @@ define([
                 $dropdown.children("li").on("click", function() {
                     var type = $(this).data("type"),
                         model = $dropdown.data("model");
-                    if (type === "command") model.get("sequence").newCommand();
-                    else if (type === "loop") model.get("sequence").newLoop();
-                    else if (type === "conditional") model.get("sequence").newConditional();
-                    else if (type === "branch") model.get("parent").newBranch();
-                    else if (type === "helper") model.get('document').newHelper();
+                    if (type === "command") model.get("sequence").addCommand('command');
+                    else if (type === "loop") model.get("sequence").addCommand('loop');
+                    else if (type === "conditional") model.get("sequence").addCommand('conditional');
+                    else if (type === "branch") model.get("parent").addBranch();
+                    else if (type === "helper") model.get('document').addHelper();
                 });
             }
             this.updateLayout();

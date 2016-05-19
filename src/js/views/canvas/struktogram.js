@@ -102,7 +102,7 @@ define([
             var vars_width = 0;
             var vars_height = 0;
             this.model.get("variables").forEach(function(variable) {
-                var variable_text = variable.get("name") + ": " + variable.get("type");
+                var variable_text = variable.toString();
                 var variable_m = ctx.measureText(variable_text);
                 vars_width = Math.max(vars_width, design.margin.left + variable_m.width + design.margin.right);
             });
@@ -111,8 +111,8 @@ define([
             this.size.height = Math.max(this.size.height, vars_height);
 
             ctx.font = design.font_size + "px " + design.font_family;
-            var text = this.model.get("name") + "(" + this.model.get("parameters").map(function(parameter) {
-                return parameter.get("name") + ": " + parameter.get("type");
+            var text = this.model.getName() + "(" + this.model.get("parameters").map(function(parameter) {
+                return parameter.toString();
             }) + ")";
             var m = ctx.measureText(text);
 
@@ -176,7 +176,7 @@ define([
                 var variables_x = sequence_x + this.main_sequence.getSize().width;
                 var variables_y = y + design.margin.top;
                 this.model.get("variables").forEach(function(variable, idx) {
-                    var variable_text = variable.get("name") + ": " + variable.get("type");
+                    var variable_text = variable.toString();
                     variables_y += design.font_size + (idx > 0 ? design.line_distance : 0);
                     ctx.fillText(
                         variable_text,

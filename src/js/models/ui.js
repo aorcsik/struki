@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'models/context',
-    'models/document'
+    'models/document/document'
 ], function($, _, Backbone, Context, Document) {
     var UI = Backbone.Model.extend({
         defaults: {
@@ -139,13 +139,13 @@ define([
             });
             context.defineFunction("size", function(arg) { return arg.length; });
             if (this.get("active_document")) {
-                var struktogram = this.get("active_document").get("struktogram");
-                context.defineFunction(struktogram.get("name"), struktogram);
+                var struktogram = this.get("active_document").getStruktogram();
+                context.defineFunction(struktogram.getName(), struktogram);
                 struktogram.get("parameters").forEach(function(parameter) {
-                    context.defineVariable(parameter.get("name"), parameter.get("type"));
+                    context.defineVariable(parameter.getName(), parameter.getType());
                 });
-                this.get("active_document").get("helpers").forEach(function(helper) {
-                    context.defineFunction(helper.get("name"), helper);
+                this.get("active_document").getHelpers().forEach(function(helper) {
+                    context.defineFunction(helper.getName(), helper);
                 });
             }
 
@@ -167,7 +167,7 @@ define([
         finishRun: function(result) {
             var doc = this.get("active_document");
             doc.set({'_last_run': (new Date()).getTime()});
-            this.trigger("finished_run", this.get("context").toString(result));
+            this.trigger("finished_run", this.get("context").asString(result));
         },
         clearOutputBuffer: function() {
             this.set("output_buffer", []);
