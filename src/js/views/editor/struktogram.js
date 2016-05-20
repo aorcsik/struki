@@ -168,7 +168,7 @@ define([
                             target_sequence = $(event.target).data("view").model;
                             source_sequence = ui.sender !== null ? ui.sender.data("view").model : target_sequence;
                         source_sequence.removeCommand(cmd);
-                        target_sequence.addCommand(cmd, new_index);
+                        target_sequence.addCommand(cmd._type, cmd, false, new_index);
                     }
                 }
             }); //.disableSelection();

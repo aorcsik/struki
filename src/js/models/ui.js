@@ -72,7 +72,7 @@ define([
                     // self.saveHistory(doc);  // TODO: future history function
                     self.trigger("change", e);
                     self.resetContext();
-                    this.trigger("document_changed", doc);
+                    self.trigger("document_changed", doc);
                 });
             }
             this.set("active_document", doc);

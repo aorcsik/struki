@@ -25,14 +25,14 @@ define([
             return this.getListItems();
         },
 
-        addBranch: function(branch, _new) {
+        addBranch: function(branch, _new, idx) {
             if (branch && branch._type === "branch") {
                 branch.set({'parent': this});
             } else {
                 branch = new Branch($.extend({'parent': this}, branch));
                 branch._new = _new === undefined ? true : _new;
             }
-            this.addListItem(branch);
+            this.addListItem(branch, idx);
             return branch;
         },
         removeBranch: function(branch) {

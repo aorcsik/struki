@@ -33,7 +33,7 @@ define([
             return this.getListItems();
         },
 
-        addHelper: function(helper, _new) {
+        addHelper: function(helper, _new, idx) {
             var struktogram;
             if (helper && helper._type === "struktogram") {
                 struktogram = helper;
@@ -44,7 +44,7 @@ define([
                 struktogram.getSequence().addCommand('command', {'code': "return 0"}, false);
                 struktogram._new = _new === undefined ? true : _new;
             }
-            this.addListItem(struktogram);
+            this.addListItem(struktogram, idx);
             return struktogram;
         },
         removeHelper: function(helper) {

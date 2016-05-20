@@ -15,7 +15,7 @@ define([
             return this.getListItems();
         },
 
-        addCommand: function(type, command, _new) {
+        addCommand: function(type, command, _new, idx) {
             if (command && command._type === type) {
                 command.set('parent', this);
             } else if (type == "command") {
@@ -28,7 +28,7 @@ define([
                 command = new Conditional($.extend({'parent': this}, command));
                 command.getBranches()[0]._new = _new === undefined ? true : _new;
             }
-            this.addListItem(command);
+            this.addListItem(command, idx);
             return command;
         },
         removeCommand: function(command) {
