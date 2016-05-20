@@ -42,7 +42,7 @@ define([
                 this.$el.children(".branches").append(this.branches[i].$el);
                 this.branches[i].setDepth(this.depth).setBranchType(i).render();
             }
-            this.$el.children(".branches").append(this.else_branch.$el);
+            this.$el.children(".else_branch").append(this.else_branch.$el);
             this.else_branch.setDepth(this.depth).setBranchType(-1).render();
             this.$el.data("view", this);
             return this;

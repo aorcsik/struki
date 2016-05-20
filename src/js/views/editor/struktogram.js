@@ -151,7 +151,10 @@ define([
                     $(".sortable-sequence").removeClass("drag-over");
                     $(event.target).addClass("drag-over");
                     var sequence_depth = $(event.target).data("depth");
-                    $(ui.placeholder).css("margin-left", 33 + (sequence_depth * 14));
+                    $(ui.placeholder).css({
+                        "margin-left": 33 + (sequence_depth * 14),
+                        "height": ui.helper.height()
+                    });
                 },
                 start: function() {
                     self.$el.addClass("sorting");
@@ -172,6 +175,7 @@ define([
                     }
                 }
             }); //.disableSelection();
+
             this.$el.data('view', this);
             this.$el.removeClass("editing");
             if (this.model._new) {
