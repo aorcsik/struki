@@ -53,7 +53,7 @@ define([
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
             try {
-                var key = this.document_prefix + doc.getUUID();
+                var key = this.document_prefix + doc.getUUID() + "-" + doc.cid;
                 var value = doc.serialize();
                     window.localStorage.setItem(key, JSON.stringify(value));
                     this.render("Document <%= name %> was autosaved", {'name': "<strong>" + doc.getName() + "</strong>"});
@@ -63,7 +63,7 @@ define([
         },
         removeDocument: function(doc) {
             if (window.localStorage) {
-                var key = this.document_prefix + doc.getUUID();
+                var key = this.document_prefix + doc.getUUID() + "-" + doc.cid;
                 if (window.localStorage.getItem(key)) {
                     window.localStorage.removeItem(key);
                     this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.getName() + "</strong>"});
