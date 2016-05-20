@@ -109,12 +109,12 @@ define([
                 height = design.margin.top;
                 for (i = 0; i < text_lines.length; i++) {
                     m = ctx.measureText(text_lines[i]);
-                    this.size.width = fix_width || Math.max(this.size.width, m.width + design.margin.right + design.margin.left);
+                    this.size.width = fix_width || Math.max(this.size.width, 10 + m.width + design.margin.right + design.margin.left);
                     height += design.font_size + (i > 0 ? design.line_distance : 0);
                     if (fix_width) {
                         ctx.fillText(
                             text_lines[i],
-                            x + design.margin.left,
+                            x + Math.floor((this.size.width - 10 - m.width) / 2),
                             y + this.size.height + height - 3);
                     }
                 }
@@ -181,7 +181,7 @@ define([
                     if (fix_width) {
                         ctx.fillText(
                             text_lines[i],
-                            x + 10 + design.margin.left,
+                            x + 10 + Math.floor((this.size.width - 10 - m.width) / 2),
                             y + this.size.height + height - 3);
                     }
                 }
