@@ -22,6 +22,7 @@ define([
             var self = this;
             this.set("open_documents", []);
             this.set("output_buffer", []);
+            this.set("history", {});
         },
 
         settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations',
@@ -68,6 +69,7 @@ define([
                     this.get("open_documents").push(doc);
                 }
                 this.listenTo(doc, "change", function(e) {
+                    // self.saveHistory(doc);  // TODO: future history function
                     self.trigger("change", e);
                     self.resetContext();
                     this.trigger("document_changed", doc);
@@ -95,6 +97,24 @@ define([
                     }
                 }
             }
+        },
+
+        // TODO: future history function
+        saveHistory: function(doc) {
+            var uuid = doc.getUUID(),
+                newsave = JSON.stringify(doc.serialize()),
+                history = $.extend({}, this.get("history"));
+            if (history[uuid] && history[uuid].length > 0) {
+                var lastsave = history[uuid][0];
+                if (lastsave === newsave) return;
+            } else {
+                history[uuid] = [];
+            }
+            history[uuid].unshift(newsave);
+            if (history[uuid].length > 10) {
+                history[uuid] = history[uuid].slice(0, 10);
+            }
+            this.set("history", history);
         },
 
         updateWindowSize: function(window_width, window_height) {
