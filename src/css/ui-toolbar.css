@@ -37,6 +37,13 @@
 .navbar .navbar-nav>li>a:hover {
     background: rgba(255,255,255,0.1);
 }
+.navbar-nav > li a.disabled {
+    opacity: 0.3;
+}
+.navbar .navbar-nav>li>a.disabled:hover {
+    background: none;
+    cursor: not-allowed;
+}
 
 #open_docuemnt_input {
     width: 0.1px;
