@@ -76,7 +76,6 @@ define([
             assert.equal((new Parser("3 * 2")).evaluate(context), 6, "multiplication");
             assert.equal((new Parser("6 / 2")).evaluate(context), 3, "division");
             assert.equal((new Parser("7 % 2")).evaluate(context), 1, "modulo division");
-            assert.equal((new Parser("-1 + 2 * 6 - 4 / (-4 * -1 - (2 + 4) / (3))")).evaluate(context), 9, "precedence");
             assert.equal((new Parser("1 = 1")).evaluate(context), true, "1 = 1");
             assert.equal((new Parser("1 = 1.0")).evaluate(context), true, "1 = 1.0");
             assert.equal((new Parser("1 <> 1.1")).evaluate(context), true, "1 <> 1.1");
@@ -84,6 +83,10 @@ define([
             assert.throws(function() {
                 (new Parser("1 / 0")).evaluate(context);
             }, new CompileError("division by zero"), "division by zero error");
+        });
+
+        QUnit.test("Operator precedence", function(assert) {
+            assert.equal((new Parser("-1 + 2 * 6 - 4 / (-4 * -1 - (2 + 4) / (3))")).evaluate(context), 9, "");
         });
 
         QUnit.test("Boolean values", function(assert) {
@@ -258,8 +261,8 @@ define([
 
             assert.throws(function() {
                 context.defineFunction("d", "d");
-            }, new CompileError("this is not a function"),
-                "Compile Error: this is not a function");
+            }, new CompileError("this is not a callable"),
+                "Compile Error: this is not a callable");
         });
 
         QUnit.test("Set and get number variable", function(assert) {

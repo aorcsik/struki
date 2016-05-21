@@ -87,9 +87,11 @@ Parser.prototype.expression_patterns = [
     {pattern: /INTEGER\[(\d+)\]/, operator: "int", parameters: [1]},
     {pattern: /VARIABLE\[(.*?)\]/, operator: "var", parameters: [1]},
 
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1, 3]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1, 3]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_PRO\[(\d+)\]OPERATOR_PRC\[\2\]/, operator: "func", parameters: [1]},
-    {pattern: /OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\1\]/, operator: "parens", parameters: [2]},
+    {pattern: /OPERATOR_PRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_PRC\[\1\]/, operator: "parens", parameters: [2]},
+
+    {pattern: /OPERATOR_PRO\[(\d+)\](.+?)OPERATOR_PRC\[\1\]/, operator: "precedence", parameters: [1, 2]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]EXPRESSION\[(\d+)\]OPERATOR_BRC\[\2\]/, operator: "array_index", parameters: [1, 3]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_BRO\[(\d+)\]OPERATOR_BRC\[\2\]/, operator: "array_push", parameters: [1]},
@@ -181,22 +183,14 @@ Parser.prototype.parseExpression = function (code, expression_pattern) {
         var params = expression_pattern.parameters.map(function(param_key) {
             return result[param_key];
         });
-        if (expression_pattern.operator == "func") {
-            if (params.length > 1) {
-                expression = this.parse(params[1]);
-                expression.id = this.expression_counter++;
-                this.expressions[expression.id] = expression;
-                params[1] = expression.id;
-            }
-            expression = new Expression(this.expression_counter++, expression_pattern.operator, params);
-        } else if (expression_pattern.operator == "parens") {
-            expression = this.parse(params[0]);
-            expression.id = this.expression_counter++;
+        if (expression_pattern.operator == "precedence") {
+            expression = this.parse(params[1]);
+            return code.replace(params[1], "EXPRESSION[" + expression.id + "]");
         } else {
             expression = new Expression(this.expression_counter++, expression_pattern.operator, params);
+            this.expressions[expression.id] = expression;
+            return code.replace(result[0], "EXPRESSION[" + expression.id + "]");
         }
-        this.expressions[expression.id] = expression;
-        return code.replace(result[0], "EXPRESSION[" + expression.id + "]");
     }
     return null;
 };

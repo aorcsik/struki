@@ -23,6 +23,9 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "string") {
         return constants[this.params[0]];
     }
+    else if (this.operator == "parens") {
+        return expressions[this.params[0]].evaluate(context, expressions, constants);
+    }
     else if (this.operator == "sum") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
