@@ -53,19 +53,22 @@ Parser.prototype.token_patterns = [
         after: ['START',        'OPERATOR_SUM',    'OPERATOR_DIV',    //    +  /
                 'OPERATOR_MUL', 'OPERATOR_MOD',    'OPERATOR_SET',    // *  %  :=
                 'OPERATOR_LST', 'OPERATOR_BRO[%]', 'OPERATOR_PRO[%]', // ,  (  [
-                'OPERATOR_LTE', 'OPERATOR_GTE',    'OPERATOR_NE',     // <= >= <>
+                'OPERATOR_LTE', 'OPERATOR_GTE',    'OPERATOR_NE',     // <= >= !=
                 'OPERATOR_LT',  'OPERATOR_GT',     'OPERATOR_EQ',     // <  >  =
-                'OPERATOR_RNG']},                                     // ..
+                'OPERATOR_RNG', 'OPERATOR_POW']},                     // .. ^
+    {type: "OPERATOR_INC", pattern: /\+=/},
+    {type: "OPERATOR_DEC", pattern: /-=/},
     {type: "OPERATOR_SUB", pattern: /-/},
     {type: "OPERATOR_SUM", pattern: /\+/},
     {type: "OPERATOR_DIV", pattern: /\//},
     {type: "OPERATOR_MUL", pattern: /\*/},
     {type: "OPERATOR_MOD", pattern: /%/},
+    {type: "OPERATOR_POW", pattern: /\^/},
     {type: "OPERATOR_RNG", pattern: /\.\./},
     {type: "OPERATOR_SET", pattern: /:=/},
     {type: "OPERATOR_LTE", pattern: /<=/},
     {type: "OPERATOR_GTE", pattern: />=/},
-    {type: "OPERATOR_NE",  pattern: /<>/},
+    {type: "OPERATOR_NE",  pattern: /!=/},
     {type: "OPERATOR_LT",  pattern: /</},
     {type: "OPERATOR_GT",  pattern: />/},
     {type: "OPERATOR_EQ",  pattern: /=/},
@@ -100,6 +103,7 @@ Parser.prototype.expression_patterns = [
 
     {pattern: /OPERATOR_NEGEXPRESSION\[(\d+)\]/,                    operator: "neg", parameters: [1]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_RNGEXPRESSION\[(\d+)\]/, operator: "rng", parameters: [1, 2]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_POWEXPRESSION\[(\d+)\]/, operator: "pow", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MULEXPRESSION\[(\d+)\]/, operator: "mul", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DIVEXPRESSION\[(\d+)\]/, operator: "div", parameters: [1, 2]},
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_MODEXPRESSION\[(\d+)\]/, operator: "mod", parameters: [1, 2]},
@@ -120,7 +124,9 @@ Parser.prototype.expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_OREXPRESSION\[(\d+)\]/,  operator: "or",  parameters: [1, 2]},
 
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_LSTEXPRESSION\[(\d+)\]/, operator: "list", parameters: [1, 2]},
-    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SETEXPRESSION\[(\d+)\]/, operator: "set", parameters: [1, 2]}
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_SETEXPRESSION\[(\d+)\]/, operator: "set", parameters: [1, 2]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_INCEXPRESSION\[(\d+)\]/, operator: "inc", parameters: [1, 2]},
+    {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DECEXPRESSION\[(\d+)\]/, operator: "dec", parameters: [1, 2]}
 ];
 
 Parser.prototype.stringParser = function(code, escaped) {

@@ -40,6 +40,12 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         if (typeof a === "number" && typeof b === "number") return a - b;
         else throw new CompileError("- operator requires number operands");
     }
+    else if (this.operator == "pow") {
+        a = expressions[this.params[0]].evaluate(context, expressions, constants);
+        b = expressions[this.params[1]].evaluate(context, expressions, constants);
+        if (typeof a === "number" && typeof b === "number") return Math.pow(a, b);
+        else throw new CompileError("* operator requires number operands");
+    }
     else if (this.operator == "mul") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
@@ -113,7 +119,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         } else if (typeof a === typeof b) {
             return a !== b;
         }
-        else throw new CompileError("<> operator requires operands of the same type");
+        else throw new CompileError("!= operator requires operands of the same type");
     }
     else if (this.operator == "and") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
@@ -179,6 +185,38 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         }
         throw new CompileError("right operand must be an array");
     }
+    else if (this.operator == "inc") {
+        if (expressions[this.params[0]].operator == "var") {
+            a = expressions[this.params[0]].params[0];
+            b = expressions[this.params[1]].evaluate(context, expressions, constants);
+            c = context.getVariable(a);
+            if (typeof c === "number" && typeof b === "number") return context.setVariable(a, c + b);
+            else throw new CompileError("+= operator requires number operands");
+        }
+        else if (expressions[this.params[0]].operator == "array_index") {
+            a = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
+            b = expressions[this.params[1]].evaluate(context, expressions, constants);
+            c = context.getArrayValue(a);
+            if (typeof c === "number" && typeof b === "number") return context.setArrayValue(a, c + b);
+        }
+        throw new CompileError("left operand is not a valid variable, or array index");
+    }
+    else if (this.operator == "dec") {
+        if (expressions[this.params[0]].operator == "var") {
+            a = expressions[this.params[0]].params[0];
+            b = expressions[this.params[1]].evaluate(context, expressions, constants);
+            c = context.getVariable(a);
+            if (typeof c === "number" && typeof b === "number") return context.setVariable(a, c - b);
+            else throw new CompileError("+= operator requires number operands");
+        }
+        else if (expressions[this.params[0]].operator == "array_index") {
+            a = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
+            b = expressions[this.params[1]].evaluate(context, expressions, constants);
+            c = context.getArrayValue(a);
+            if (typeof c === "number" && typeof b === "number") return context.setArrayValue(a, c - b);
+        }
+        throw new CompileError("left operand is not a valid variable, or array index");
+    }
     else if (this.operator == "set") {
         if (expressions[this.params[0]].operator == "list" || expressions[this.params[1]].operator == "list") {
             var list1 = expressions[this.params[0]], list2;
@@ -213,7 +251,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             keys = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             return context.setArrayValue(keys, value);
         }
-        throw new CompileError("left operand is not a valid variable, list or array syntax");
+        throw new CompileError("left operand is not a valid variable, list or array index");
     }
     throw new CompileError("cannot use " + this.operator + " operator here");
 };

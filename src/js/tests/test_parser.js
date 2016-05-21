@@ -76,9 +76,10 @@ define([
             assert.equal((new Parser("3 * 2")).evaluate(context), 6, "multiplication");
             assert.equal((new Parser("6 / 2")).evaluate(context), 3, "division");
             assert.equal((new Parser("7 % 2")).evaluate(context), 1, "modulo division");
+            assert.equal((new Parser("2 ^ 10")).evaluate(context), 1024, "power");
             assert.equal((new Parser("1 = 1")).evaluate(context), true, "1 = 1");
             assert.equal((new Parser("1 = 1.0")).evaluate(context), true, "1 = 1.0");
-            assert.equal((new Parser("1 <> 1.1")).evaluate(context), true, "1 <> 1.1");
+            assert.equal((new Parser("1 != 1.1")).evaluate(context), true, "1 != 1.1");
 
             assert.throws(function() {
                 (new Parser("1 / 0")).evaluate(context);
@@ -99,7 +100,7 @@ define([
             assert.equal((new Parser("I | H")).evaluate(context), true, "or");
             assert.equal((new Parser("I & H | !(H | !H)")).evaluate(context), false, "precedence");
             assert.equal((new Parser("I = !H")).evaluate(context), true, "I = !H");
-            assert.equal((new Parser("I <> H")).evaluate(context), true, "I <> H");
+            assert.equal((new Parser("I != H")).evaluate(context), true, "I != H");
         });
 
         QUnit.test("String values", function(assert) {
@@ -114,7 +115,7 @@ define([
             assert.deepEqual((new Parser("\"\" + \"a\"")).evaluate(context), "a", "\"\" + \"a\" = \"a\"");
             assert.deepEqual((new Parser("\"abcd\" + \"\"")).evaluate(context), "abcd", "\"abcd\" + \"\" = \"abcd\"");
             assert.deepEqual((new Parser("\"abc\" = \"abc\"")).evaluate(context), true, "\"abc\" = \"abc\"");
-            assert.deepEqual((new Parser("\"abc\" <> \"cba\"")).evaluate(context), true, "\"abc\" <> \"cba\"");
+            assert.deepEqual((new Parser("\"abc\" != \"cba\"")).evaluate(context), true, "\"abc\" != \"cba\"");
         });
 
         QUnit.test("String index", function(assert) {
@@ -136,7 +137,7 @@ define([
             assert.deepEqual((new Parser("[2] + []")).evaluate(context), [2], "[ 2 ] + [ ] = [ 2 ]");
             assert.deepEqual((new Parser("[2,3] + [4,5]")).evaluate(context), [2,3,4,5], "[ 2, 3 ] + [ 4, 5 ] = [ 2, 3, 4, 5 ]");
             assert.deepEqual((new Parser("[2,3] = [2,3]")).evaluate(context), true, "[ 2, 3 ] = [ 2, 3 ]");
-            assert.deepEqual((new Parser("[2,3] <> [3,2]")).evaluate(context), true, "[ 2, 3 ] <> [ 3, 2 ]");
+            assert.deepEqual((new Parser("[2,3] != [3,2]")).evaluate(context), true, "[ 2, 3 ] != [ 3, 2 ]");
             assert.deepEqual((new Parser("3 in [3,2]")).evaluate(context), true, "3 in [ 3, 2 ]");
             assert.deepEqual((new Parser("4 in [3,2]")).evaluate(context), false, "4 in [ 3, 2 ]");
             assert.deepEqual((new Parser("[2, 3] in [[2,3],[4,5]]")).evaluate(context), true, "[ 2, 3 ] in [ [ 2, 3 ], [ 4, 5 ] ]");
@@ -207,16 +208,32 @@ define([
             assert.deepEqual([context.getVariable("a"), context.getVariable("b"), context.getVariable("c")], [1, 2, [3]], "a, b, c[0] := 1, 2, 3");
         });
 
-        QUnit.test("Increment number variable", function(assert) {
+        QUnit.test("Increment number", function(assert) {
             context.defineVariable("a", "Int", 0);
             (new Parser("a := a + 1")).evaluate(context);
-            assert.equal(context.getVariable("a"), 1);
+            assert.equal(context.getVariable("a"), 1, "a := a + 1");
+            (new Parser("a += 1")).evaluate(context);
+            assert.equal(context.getVariable("a"), 2, "a += 1");
+
+            context.defineVariable("b", "Int*", [0]);
+            (new Parser("b[0] := b[0] + 1")).evaluate(context);
+            assert.deepEqual(context.getVariable("b"), [1], "b[0] := b[0] + 1");
+            (new Parser("b[0] += 1")).evaluate(context);
+            assert.deepEqual(context.getVariable("b"), [2], "b[0] += 1");
         });
 
-        QUnit.test("Decrement number variable", function(assert) {
+        QUnit.test("Decrement number", function(assert) {
             context.defineVariable("a", "Int", 0);
             (new Parser("a := a - 1")).evaluate(context);
-            assert.equal(context.getVariable("a"), -1);
+            assert.equal(context.getVariable("a"), -1, "a := a - 1");
+            (new Parser("a -= 1")).evaluate(context);
+            assert.equal(context.getVariable("a"), -2, "a -= 1");
+
+            context.defineVariable("b", "Int*", [0]);
+            (new Parser("b[0] := b[0] - 1")).evaluate(context);
+            assert.deepEqual(context.getVariable("b"), [-1], "b[0] := b[0] - 1");
+            (new Parser("b[0] -= 1")).evaluate(context);
+            assert.deepEqual(context.getVariable("b"), [-2], "b[0] -= 1");
         });
     });
 
