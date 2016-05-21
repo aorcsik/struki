@@ -84,8 +84,9 @@ define([
             var main = this.getStruktogram(),
                 parameter_list = main.getParameters().map(function(parameter) {
                     return parameter.getName();
-                }).join(",");
-            return context.evaluateCode("return main(" + parameter_list+ ")");
+                }).join(","),
+                code = "return " + main.getName() + "(" + parameter_list + ")";
+            return context.evaluateCode(code);
         }
     });
     return Document;
