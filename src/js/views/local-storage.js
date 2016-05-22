@@ -5,28 +5,34 @@ define([
     'lib/localization'
 ], function($, _, Backbone, Localization){
     var LocalStorage = Backbone.View.extend({
+        disabled: true,
         className: "background-notification",
 
         initialize: function() {
             var self = this;
-            this.listenTo(this.model, "change", function(e) {
-                for (var i = 0; i < self.model.settings_keys.length; i++) {
-                    if (e.changed[self.model.settings_keys[i]] !== undefined) {
-                        self.saveUISettings();
-                        return;
+            if (window.localStorage && JSON && JSON.stringify && JSON.parse) {
+                this.disabled = false;
+
+                this.listenTo(this.model, "change", function(e) {
+                    for (var i = 0; i < self.model.settings_keys.length; i++) {
+                        if (e.changed[self.model.settings_keys[i]] !== undefined) {
+                            self.saveUISettings();
+                            return;
+                        }
                     }
-                }
-            });
-            this.listenTo(this.model, "document_changed", function(doc) {
-                self.saveDocument(doc);
-            });
-            this.listenTo(this.model, "document_closed", function(doc) {
-                self.removeDocument(doc);
-            });
+                });
+                this.listenTo(this.model, "document_changed", function(doc) {
+                    self.saveDocument(doc);
+                });
+                this.listenTo(this.model, "document_closed", function(doc) {
+                    self.removeDocument(doc);
+                });
+            }
         },
 
         settings_key: "struki.settings",
         saveUISettings: function() {
+            if (this.disabled) return;
             try {
                 var self = this,
                     key = this.settings_key,
@@ -38,6 +44,7 @@ define([
             }
         },
         restoreUISettings: function() {
+            if (this.disabled) return;
             var key = this.settings_key,
                 value = window.localStorage.getItem(key);
             if (value) {
@@ -52,6 +59,7 @@ define([
 
         document_prefix: "struki.document.",
         saveDocument: function(doc) {
+            if (this.disabled) return;
             try {
                 var key = this.document_prefix + doc.getUUID() + "-" + doc.cid;
                 var value = doc.serialize();
@@ -62,29 +70,31 @@ define([
             }
         },
         removeDocument: function(doc) {
-            if (window.localStorage) {
+            if (this.disabled) return;
+            try {
                 var key = this.document_prefix + doc.getUUID() + "-" + doc.cid;
                 if (window.localStorage.getItem(key)) {
                     window.localStorage.removeItem(key);
                     this.render("Document <%= name %> autosave was removed", {'name': "<strong>" + doc.getName() + "</strong>"});
                 }
+            } catch(e) {
+                this.render("Document autosave could not be removed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "warning", 5000);
             }
         },
         restoreDocuments: function() {
-            if (window.localStorage && JSON.parse) {
-                for (var i = 0; i < window.localStorage.length; i++) {
+            if (this.disabled) return;
+            for (var i = 0; i < window.localStorage.length; i++) {
+                try {
                     var key = window.localStorage.key(i),
                         value = window.localStorage.getItem(key);
                     if (key.substring(0, this.document_prefix.length) === this.document_prefix) {
                         window.localStorage.removeItem(key);
-                        try {
-                            var json = JSON.parse(value);
-                            this.model.openDocumentFromJSON(json);
-                            this.render("Document <%= name %> autosave was loaded", {'name': "<strong>" + json.name + "</strong>"});
-                        } catch (e) {
-                            this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "error", 5000);
-                        }
+                        var json = JSON.parse(value);
+                        this.model.openDocumentFromJSON(json);
+                        this.render("Document <%= name %> autosave was loaded", {'name': "<strong>" + json.name + "</strong>"});
                     }
+                } catch (e) {
+                    this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "error", 5000);
                 }
             }
         },
