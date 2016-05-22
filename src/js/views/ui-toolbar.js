@@ -101,23 +101,25 @@ define([
         },
 
         getJSONDownalodLink: function(text) {
-            var self = this,
+            var self = this, blob,
                 json = this.model.get("active_document").serialize(),
                 filename = this.model.get("active_document").getName() + ".json",
                 URL = window.URL || window.webkitURL || window.mozURL || window.msURL,
                 saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
             if (Blob !== undefined && saveBlob) {
+                blob = this.JSONtoBlob(json);
                 return $("<a id='json_download'>" + text + " " + filename + "</a>").attr({
                     "href": "#",
                     "target": "_blank",
                     "download": filename
                 }).on("click", function() {
-                    saveBlob(self.JSONtoBlob(json), filename);
+                    saveBlob(blob, filename);
                     return false;
                 });
             } else if (Blob !== undefined && URL.createObjectURL) {
+                blob = this.JSONtoBlob(json);
                 return $("<a id='json_download'>" + text + " " + filename + "</a>").attr({
-                    "href": URL.createObjectURL(this.JSONtoBlob(json)),
+                    "href": URL.createObjectURL(blob),
                     "target": "_blank",
                     "download": filename
                 });
@@ -134,20 +136,23 @@ define([
             var self = this,
                 links = [];
             $(".ui-canvas canvas").each(function() {
-                var canvas = $(this)[0],
+                var blob,
+                    canvas = $(this)[0],
                     filename = $(this).data("name") + ".png",
                     URL = window.URL || window.webkitURL || window.mozURL || window.msURL,
                     saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
                 if (Blob !== undefined && saveBlob) {
+                    blob = self.CanvastoBlob(canvas, "image/png");
                     links.push($("<a id='png_download'>" + text + " " + filename + "</a>").attr({
                         'href': "#",
                     }).on("click", function() {
-                        saveBlob(self.CanvastoBlob(canvas, "image/png"), filename);
+                        saveBlob(blob, filename);
                         return false;
                     }));
                 } else if (Blob !== undefined && URL.createObjectURL) {
+                    blob = self.CanvastoBlob(canvas, "image/png");
                     links.push($("<a id='json_download'>" + text + " " + filename + "</a>").attr({
-                        "href": URL.createObjectURL(self.CanvastoBlob(canvas, "image/png")),
+                        "href": URL.createObjectURL(blob),
                         "target": "_blank",
                         "download": filename
                     }));
