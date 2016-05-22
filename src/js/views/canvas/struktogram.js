@@ -192,6 +192,7 @@ define([
                     y,
                     vars_width,
                     vars_height);
+                ctx.setLineDash([0]);
             }
 
             return this;
