@@ -33,6 +33,29 @@ define([
             return this.get("test_after");
         },
 
+        range: null,
+        evaluateRange: function(context) {
+            try {
+                if (this.range === null) {
+                    this.range = context.evaluateRange(this.getCondition());
+                    return this.range.ok;
+                } else {
+                    if (this.range.list.length > 0) {
+                        context.setVariableValue(this.range.var, this.range.list.shift());
+                        context.stepState();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } catch (e) {
+                if (context.isError(e)) this.trigger("errorstop", this);
+                if (context.isStop(e)) this.trigger("debugstop", this);
+                throw e;
+            }
+        },
+
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -61,28 +84,7 @@ define([
             }
         },
 
-        range: null,
-        evaluateRange: function(context) {
-            try {
-                if (this.range === null) {
-                    this.range = context.evaluateRange(this.getCondition());
-                    return this.range.ok;
-                } else {
-                    if (this.range.list.length > 0) {
-                        context.setVariableValue(this.range.var, this.range.list.shift());
-                        context.stepState();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            } catch (e) {
-                if (context.isError(e)) this.trigger("errorstop", this);
-                if (context.isStop(e)) this.trigger("debugstop", this);
-                throw e;
-            }
-        },
-
+        /** Evaluable */
         evaluate: function(context) {
             var variables,
                 sequence = this.getSequence();

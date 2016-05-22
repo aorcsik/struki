@@ -12,6 +12,11 @@ define([
             return this.get("type");
         },
 
+        toString: function() {
+            return this.getName() + ": " + this.getType();
+        },
+
+        /** Serializable */
         serialize: function() {
             return {
                 'name': this.getName(),
@@ -20,10 +25,6 @@ define([
         },
         deserialize: function(json) {
             this.set(json);
-        },
-
-        toString: function() {
-            return this.getName() + ": " + this.getType();
         }
     });
     return Variable;

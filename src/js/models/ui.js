@@ -7,16 +7,34 @@ define([
 ], function($, _, Backbone, Context, Document) {
     var UI = Backbone.Model.extend({
         defaults: {
+            /** Language settings */
             'locale': "en-US",
 
+            /** Layout settings */
             'editor_width':  [25, "%"],
             'output_width':  [50, "%" ],
             'output_height': [25, "%"],
             'canvas_zoom': 100,
 
+            /** Unsafe running flag */
             'unsafe': false,
+            /** Timed run step delay */
             'step_delay': 500,
-            'max_iterations': 10000
+            /** Maximum interations for safe running */
+            'max_iterations': 10000,
+
+            /** Open documents container */
+            'open_documents': null,
+            /** The active document reference */
+            'active_document': null,
+
+            /** The global context */
+            'context': null,
+            /** The output buffer */
+            'output_buffer': null,
+
+            /** Future history container */
+            'history': null
         },
         initialize: function() {
             var self = this;
@@ -25,9 +43,11 @@ define([
             this.set("history", {});
         },
 
+        /** Settings to be exported to local storage */
         settings_keys: ['locale', 'unsafe', 'step_delay', 'max_iterations',
                         'editor_width', 'output_width', 'output_height',
                         'canvas_zoom'],
+        /** Returns autosave settings */
         getSettings: function() {
             var self = this, settings = {};
             this.settings_keys.forEach(function(key) {
@@ -35,6 +55,7 @@ define([
             });
             return settings;
         },
+        /** Sets autosave settings */
         setSettings: function(new_settings) {
             var self = this, settings = {};
             this.settings_keys.forEach(function(key) {
@@ -45,17 +66,20 @@ define([
             this.set(settings);
         },
 
+        /** Creates a new document and opens it */
         newDocument: function(name) {
             var doc = new Document({"ui": this});
             this.openDocument(doc);
             return doc;
         },
+        /** Opens a document from JSON */
         openDocumentFromJSON: function(json) {
             var doc = new Document({"ui": this});
             doc.deserialize(json);
             this.openDocument(doc);
             return doc;
         },
+        /** Opens the parameter document */
         openDocument: function(doc) {
             var self = this,
                 active_doc = this.get("active_document");
@@ -79,6 +103,7 @@ define([
             this.resetContext();
             return doc;
         },
+        /** Closes the parameter document */
         closeDocument: function(doc) {
             var open_documents = this.get("open_documents").map(function(doc) { return doc; }),
                 idx = open_documents.indexOf(doc);
@@ -117,12 +142,15 @@ define([
             this.set("history", history);
         },
 
+        /** Update window size */
         updateWindowSize: function(window_width, window_height) {
             this.set({
                 'window_width': window_width,
                 'window_height': window_height
             });
         },
+
+        /** Layout getter functions */
         getWindowWidth: function() {
             return this.get("window_width");
         },
@@ -150,6 +178,7 @@ define([
         },
 
 
+        /** Resets the global context */
         resetContext: function() {
             var self = this,
                 context = new Context({'parent': this});
@@ -172,6 +201,7 @@ define([
             this.set("context", context);
         },
 
+        /** Starts the document evaluation */
         run: function(debug_step) {
             var context = this.get("context");
             context.set({"_state": 0, "_debug": debug_step});
@@ -184,14 +214,20 @@ define([
                 throw e;
             }
         },
+
+        /** Called when the evaluation is over */
         finishRun: function(result) {
             var doc = this.get("active_document");
             doc.set({'_last_run': (new Date()).getTime()});
             this.trigger("finished_run", this.get("context").asString(result));
         },
+
+        /** Empties output buffer */
         clearOutputBuffer: function() {
             this.set("output_buffer", []);
         },
+
+        /** Flushes output buffer */
         flushOutput: function() {
             var buffer = this.get("output_buffer");
             this.set("output_buffer", []);

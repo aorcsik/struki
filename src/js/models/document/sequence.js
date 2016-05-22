@@ -35,6 +35,7 @@ define([
             return this.removeListItem(command);
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -66,6 +67,7 @@ define([
             }
         },
 
+        /** Evaluable */
         evaluate: function(context) {
             var return_value = null,
                 commands = this.getCommands();

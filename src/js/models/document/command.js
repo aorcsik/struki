@@ -12,6 +12,7 @@ define([
             return this.get("code");
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -24,6 +25,7 @@ define([
             }
         },
 
+        /** Evaluable */
         evaluate: function(context) {
             return this.evaluateCode(context, this.getCode());
         }

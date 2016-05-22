@@ -51,6 +51,7 @@ define([
             return this.removeListItem(helper);
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -80,6 +81,8 @@ define([
                 self.addHelper(helper);
             });
         },
+
+        /** Evaluable */
         evaluate: function(context) {
             var main = this.getStruktogram(),
                 parameter_list = main.getParameters().map(function(parameter) {

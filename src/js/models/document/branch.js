@@ -25,6 +25,7 @@ define([
             return this.get("sequence");
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 "type": this._type,
@@ -48,6 +49,7 @@ define([
             }
         },
 
+        /** Evaluable */
         evaluate: function(context) {
             var condition = this.getCondition(),
                 result = {

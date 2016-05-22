@@ -6,10 +6,13 @@ define([
         this.locale = locale;
     }
 
+    /** Available languages */
     Localization.prototype.languages = [
         {'locale': "en-US", 'name': "English"},
         {'locale': "hu-HU", 'name': "Hungarian"}
     ];
+
+    /** The dictionary */
     Localization.prototype.dictionary = [
         {'en-US': "Language", 'hu-HU': "Nyelv"},
         {'en-US': "English", 'hu-HU': "angol"},
@@ -68,6 +71,7 @@ define([
 
     ];
 
+    /** Returns the localoized version of a string, if it is defined. */
     Localization.prototype.gettext = function(phrase, text_only, locale) {
         locale = locale || this.locale;
         var phrase_id = -1, localized_phrase = phrase;
@@ -92,6 +96,7 @@ define([
         else return "<span class='__localization' data-phrase='" + phrase_id + "'>" + localized_phrase + "</span>";
     };
 
+    /** Sets the localaization */
     Localization.prototype.setLocale = function (locale) {
         var self = this;
         this.locale = locale;

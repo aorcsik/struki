@@ -39,6 +39,7 @@ define([
             return this.removeListItem(branch);
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -66,6 +67,7 @@ define([
             }
         },
 
+        /** Evaluable */
         evaluate: function(context) {
             var result,
                 branches = this.getBranches();

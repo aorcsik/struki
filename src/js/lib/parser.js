@@ -3,6 +3,9 @@ define([
     'lib/parse_error'
 ], function(Expression, ParseError) {
 
+/** The Expression Parser
+    tokenizes the parameter code
+    parses the tokenized code */
 function Parser(code) {
     if (this.parser_cache[code]) {
         return this.parser_cache[code];
@@ -33,10 +36,13 @@ function Parser(code) {
     this.parser_cache[code] = this;
 }
 
+/** Reserved words that cannot be used in expressions */
 Parser.prototype.reserved_words = ["if", "else", "then", "while", "until", "for", "return", "var", "in", "_"];
 
+/** Parser cache for storing already parsed expressions */
 Parser.prototype.parser_cache = {};
 
+/** The token list, this list is used to match source code to tokens */
 Parser.prototype.token_patterns = [
     {type: "",             pattern: /\s+/},
     {type: "BOOL[%]",      pattern: /(I|H)/},
@@ -83,6 +89,7 @@ Parser.prototype.token_patterns = [
     {type: "VARIABLE[%]",  pattern: /[_a-zA-Z][_0-9a-zA-Z]*/}
 ];
 
+/** The expression list, these are the rules of the language */
 Parser.prototype.expression_patterns = [
     {pattern: /BOOL\[(\d+)\]/, operator: "bool", parameters: [1]},
     {pattern: /FLOAT\[(\d+)\]/, operator: "float", parameters: [1]},
@@ -129,6 +136,7 @@ Parser.prototype.expression_patterns = [
     {pattern: /EXPRESSION\[(\d+)\]OPERATOR_DECEXPRESSION\[(\d+)\]/, operator: "dec", parameters: [1, 2]}
 ];
 
+/** Recursive string parser, that recognizes valid string literals */
 Parser.prototype.stringParser = function(code, escaped) {
     var head = code[0],
         tail = code.slice(1);
@@ -141,6 +149,7 @@ Parser.prototype.stringParser = function(code, escaped) {
     }
 };
 
+/** The tokenizer, turns source code to token code */
 Parser.prototype.tokenize = function(code, last_token_type) {
     for (var i = 0; i < this.token_patterns.length; i++) {
         var token_pattern = this.token_patterns[i],
@@ -182,6 +191,7 @@ Parser.prototype.tokenize = function(code, last_token_type) {
     }
 };
 
+/** Parses an expression */
 Parser.prototype.parseExpression = function (code, expression_pattern) {
     var expression;
     var result = expression_pattern.pattern.exec(code);
@@ -201,6 +211,7 @@ Parser.prototype.parseExpression = function (code, expression_pattern) {
     return null;
 };
 
+/** Parses the tokenized code and builds the expression tree */
 Parser.prototype.parse = function(code) {
     for (var i = 0; i < this.expression_patterns.length; i++) {
         var updated_code = this.parseExpression(code, this.expression_patterns[i]);
@@ -224,6 +235,7 @@ Parser.prototype.parse = function(code) {
     return new Expression(null, "expression", [this.expression_counter - 1]);
 };
 
+/** Evaluates the parsed expression */
 Parser.prototype.evaluate = function(context) {
     return this.expressions[this.expression_counter - 1].evaluate(context, this.expressions, this.constants);
 };

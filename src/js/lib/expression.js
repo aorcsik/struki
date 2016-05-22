@@ -1,11 +1,18 @@
 define(['lib/compile_error'], function(CompileError) {
 
+/** The Expression object */
 function Expression(id, operator, params) {
+    /** expression id */
     this.id = id;
+
+    /** The type of expression */
     this.operator = operator;
+
+    /** The expression id's of the operands */
     this.params = params;
 }
 
+/** Evaluates the expression based on it's type and parameteres */
 Expression.prototype.evaluate = function(context, expressions, constants) {
     var a, b, c, array_index_expression, keys, value, func;
     if (this.operator == "expression") {
@@ -256,6 +263,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     throw new CompileError("cannot use " + this.operator + " operator here");
 };
 
+/** Recirsively evaluates a list set expression */
 Expression.prototype.evaluateListSet = function(list1, list2, context, expressions, constants) {
     var value, keys, variable;
     if (expressions[list1.params[0]].operator == "list") {
@@ -286,6 +294,7 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
     }
 };
 
+/** Recirsively evaluates a list expression */
 Expression.prototype.evaluateList = function(list, context, expressions, constants) {
     var sublist, flatlist = [];
     if (list.operator == "list") {
@@ -299,6 +308,7 @@ Expression.prototype.evaluateList = function(list, context, expressions, constan
     return {'list': flatlist};
 };
 
+/** Recirsively evaluates an array index expression */
 Expression.prototype.evaluateArrayIndex = function(expression, context, expressions, constants) {
     var keys;
     if (expressions[expression.params[0]].operator == "var") {

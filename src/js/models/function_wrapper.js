@@ -10,6 +10,7 @@ define([
             return this.get("func");
         },
 
+        /** Callable */
         call: function(context, parameters) {
             return this.getFunc().apply(context, parameters);
         }

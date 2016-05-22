@@ -38,6 +38,8 @@ define([
         isHelper: function() {
             return this.get("helper");
         },
+
+        /** A helper function for saving the struktogram */
         updateStruktogram: function(update) {
             if (update.variables) {
                 update.variables = update.variables.map(function(data) {
@@ -55,6 +57,7 @@ define([
             }, update));
         },
 
+        /** Serializable */
         serialize: function() {
             return {
                 'type': this._type,
@@ -91,10 +94,12 @@ define([
             }
         },
 
+        /** Evaluable */
         evaluate: function(context) {
             return this.getSequence().evaluate(context);
         },
 
+        /** Callable */
         call: function(parent_context, parameters) {
             var context = parent_context.newSubcontext(this.getName());
             try {
