@@ -61,27 +61,20 @@ define([
             }
         },
 
-        range_helper: null,
-        initRange: function(context) {
+        range: null,
+        evaluateRange: function(context) {
             try {
-                this.range_helper = -1;
-                return context.evaluateRange(this.getCondition());
-            } catch (e) {
-                if (context.isError(e)) this.trigger("errorstop", this);
-                if (context.isStop(e)) this.trigger("debugstop", this);
-                throw e;
-            }
-        },
-        evaluateRange: function(context, range) {
-            try {
-                this.range_helper++;
-                if (this.range_helper < range.list.length) {
-                    context.setVariable(range.var, range.list[this.range_helper]);
-                    context.stepState();
-                    return true;
+                if (this.range === null) {
+                    this.range = context.evaluateRange(this.getCondition());
+                    return this.range.ok;
                 } else {
-                    context.stepState();
-                    return false;
+                    if (this.range.list.length > 0) {
+                        context.setVariableValue(this.range.var, this.range.list.shift());
+                        context.stepState();
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             } catch (e) {
                 if (context.isError(e)) this.trigger("errorstop", this);
@@ -95,8 +88,8 @@ define([
                 sequence = this.getSequence();
             var return_value = null;
             if (this.isRange()) {
-                var range = this.initRange(context);
-                while (this.evaluateRange(context, range)) {
+                this.range = null;
+                while (this.evaluateRange(context)) {
                     return_value = sequence.evaluate(context);
                     if (return_value !== null) return return_value;
                 }

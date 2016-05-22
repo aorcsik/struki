@@ -48,7 +48,7 @@ define([
                     var param_code = $(this).val().replace(/(^\s+|\s+$)/g, "");
                     if (!param_code) throw new WatcherError("empty start parameter");
                     var param_result = (new Parser($(this).val())).evaluate(context);
-                    context.setVariable($(this).attr("name"), param_result);
+                    context.setVariableValue($(this).attr("name"), param_result);
                 });
                 this.saved_variables = $.extend(true, {}, context.get("variables"));
             } else {

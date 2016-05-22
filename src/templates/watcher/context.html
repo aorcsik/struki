@@ -16,7 +16,7 @@
                 </label>
             </td>
             <td>
-                <input id="variable_<%= name %>" name="<%= name %>" placeholder="Undefined" type="text" class="form-control" value="<%= context.getVariableAsString(name) %>">
+                <input id="variable_<%= name %>" name="<%= name %>" placeholder="Undefined" type="text" class="form-control" value="<%= context.getVariableValueAsString(name) %>">
             </td>
         </tr>
         <% } else { %>
@@ -28,7 +28,7 @@
                 </label>
             </td>
             <td class="context-data">
-                <%= context.getVariableAsString(name) %>
+                <%= context.getVariableValueAsString(name) %>
             </td>
         </tr>
         <% } %>

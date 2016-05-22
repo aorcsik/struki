@@ -34,7 +34,8 @@ require.config({
 require([
     'jquery',
     'qunit',
-    'tests/test_parser'
+    'tests/test_context',
+    'tests/test_expression_parser'
 ], function($, QUnit){
     QUnit.config.autostart = false;
     $(function() {

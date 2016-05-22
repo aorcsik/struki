@@ -7,14 +7,23 @@ define([
     'lib/compile_error',
     'models/function_wrapper'
 ], function($, _, Backbone, Parser, ParseError, CompileError, FunctionWrapper) {
+
+    /** This is a flag exception to stop evaluation. */
     function DebugStopException() {}
 
+    /** This exception is thrown, when context detects unsafe condition
+        like state counter reaches iteration limit. */
     function UnsafeException() {}
     UnsafeException.prototype.toString = function() {
         return "Too many iterations, possible infinite loop.";
     };
 
+    /** Context is the object that handles variables and functions in runtime.
+        Expression Parser can be reached through this. */
     var Context = Backbone.Model.extend({
+        'DebugStopException': DebugStopException,
+        'UnsafeException': UnsafeException,
+
         defaults: {
             'name': "global"
         },
@@ -27,6 +36,7 @@ define([
             });
         },
 
+        /** Getter functions */
         getName: function() {
             return this.get("name");
         },
@@ -37,41 +47,54 @@ define([
             return this.get("functions");
         },
 
+        /** Test if parameters is an error. */
         isError: function(exc) {
             return exc.constructor === ParseError ||
                    exc.constructor === CompileError;
         },
 
+        /** Test if parameter is a stop signal. */
         isStop: function(exc) {
             return exc.constructor === DebugStopException;
         },
 
+        /** Incremets state counter, stops evaluation and checks unsafe fonditions */
         stepState: function() {
-            var global_context = this.getGlobalContext();
-            global_context.set({"_state": global_context.get("_state") ? global_context.get("_state") + 1 : 1});
-            if (global_context.get("_state") >= global_context.get("parent").get("max_iterations")) {
-                throw new UnsafeException();
+            var global_context = this.getGlobalContext(),
+                state_counter = (global_context.get("_state") || 0) + 1,
+                debud_stop = global_context.get('_debug'),
+                ui = global_context.get("parent"),
+                unsafe = ui.get("unsafe"),
+                max_iterations = ui.get("max_iterations");
+            global_context.set({"_state": state_counter});
+            if (!unsafe && state_counter >= max_iterations) {
+                throw new this.UnsafeException();
             }
-            if (global_context.get('_debug') && global_context.get('_state') === global_context.get('_debug')) {
-                throw new DebugStopException();
+            if (debud_stop && state_counter === debud_stop) {
+                throw new this.DebugStopException();
             }
+            return state_counter;
         },
 
+        /** Returns string representation of struktogram values */
         asString: function(value) {
             var self = this;
             if (value !== null && value !== undefined) {
+                if (typeof value === "boolean") {
+                    return value ? "I" : "H";
+                }
                 if (typeof value === "number") {
                     return "" + value;
                 }
-                if (value.constructor === String) {
-                    return ("\"" + value.replace(/[\\"]/, "\\$1") + "\"").replace(/"/g, '&quot;');
+                if (typeof value === "string") {
+                    return ("\"" + value.replace(/([\\"])/g, "\\$1") + "\"").replace(/"/g, '&quot;');
                 }
-                if (value.constructor === Array) {
+                if (typeof value === "object" && value.constructor === Array) {
                     return "[" + value.map(function(item) {
                         return self.asString(item);
                     }).join(", ") + "]";
                 }
-                if (value.list !== undefined) {
+                if (typeof value === "object" && value.list !== undefined) {
                     return value.list.map(function(item) {
                         return self.asString(item);
                     }).join(", ");
@@ -80,6 +103,7 @@ define([
             return "";
         },
 
+        /** Defines a variable in the context */
         defineVariable: function(name, type, initial_value) {
             for (var x in Parser.prototype.reserved_words) {
                 if (Parser.prototype.reserved_words[x] === name) {
@@ -99,10 +123,11 @@ define([
                 "variables": variables
             });
             if (initial_value !== undefined) {
-                this.setVariable(name, initial_value);
+                this.setVariableValue(name, initial_value);
             }
         },
-        getVariable: function(name) {
+        /** Returns the value of a variable, if it is defined */
+        getVariableValue: function(name) {
             if (name == "_") {
                 throw new CompileError("_ has no value");
             }
@@ -110,17 +135,18 @@ define([
                 if (Math[name] !== undefined && Math[name].constructor !== Function) {
                     return Math[name];
                 }
-                throw new CompileError("undefined variable '" + name + "'");
+                throw new CompileError("undefined variable \"" + name + "\"");
             }
             return this.get("variables")[name];
         },
-        setVariable: function(name, value) {
+        /* Sets the value of a variable, if it is defined */
+        setVariableValue: function(name, value) {
             if (name == "_") {
                 return;  // sink
             }
             var variables = $.extend({}, this.get("variables"));
             if (variables[name] === undefined) {
-                throw new CompileError("undefined variable '" + name + "'");
+                throw new CompileError("undefined variable \"" + name + "\"");
             }
             var type = this.get("types")[name];
 
@@ -149,7 +175,8 @@ define([
                 "variables": variables
             });
         },
-        unsetVariable: function(name) {
+        /** deletes a variable in the context */
+        deleteVariable: function(name) {
             var variables = $.extend({}, this.get("variables"));
             if (variables[name] === undefined) {
                 throw new CompileError("undefined variable '" + name + "'");
@@ -157,9 +184,11 @@ define([
             delete variables[name];
             this.set({"variables": variables});
         },
-        getVariableAsString: function(name) {
-            return this.asString(this.getVariable(name));
+        /** returns variable value as string */
+        getVariableValueAsString: function(name) {
+            return this.asString(this.getVariableValue(name));
         },
+        /** Checks if parameter is an array */
         checkIfArray: function(array, name, throw_error) {
             if (typeof array !== "object") {
                 if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array, but a " + (typeof array));
@@ -170,6 +199,7 @@ define([
             }
             return true;
         },
+        /** Checks if parameter is an array or string */
         checkIfArrayOrString: function(array, name, throw_error) {
             if (typeof array !== "object" && typeof array !== "string") {
                 if (throw_error) throw new CompileError("type mismatch, " + name + " is not an Array or a String, but a " + (typeof array));
@@ -180,8 +210,9 @@ define([
             }
             return true;
         },
+        /** Return the value of an array index */
         getArrayValue: function(keys) {
-            var array = this.getVariable(keys[0]);
+            var array = this.getVariableValue(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
                 this.checkIfArray(array, name, true);
@@ -195,8 +226,9 @@ define([
             }
             return array[keys[i]];
         },
+        /** Sets the value of an array index */
         setArrayValue: function(keys, value) {
-            var array = this.getVariable(keys[0]);
+            var array = this.getVariableValue(keys[0]);
             var name = keys[0];
             for (var i = 1; i < keys.length - 1; i++) {
                 this.checkIfArray(array, name, true);
@@ -212,6 +244,9 @@ define([
             });
         },
 
+        /** Defines a function on the context, parameter can be
+             - JavaScript Function
+             - «Callable» object */
         defineFunction: function(name, func) {
             for (var x in Parser.prototype.reserved_words) {
                 if (Parser.prototype.reserved_words[x] === name) {
@@ -228,6 +263,7 @@ define([
             functions[name] = func;
             this.set({"functions": functions});
         },
+        /** Calls a function, if it's defined, with context as it's context */
         callFunction: function(name, params) {
             if (this.get("functions")[name] === undefined) {
                 if (Math[name] === undefined || Math[name].constructor !== Function) {
@@ -238,6 +274,7 @@ define([
             return this.get("functions")[name].call(this, params);
         },
 
+        /** Evaluates code expression */
         evaluateCode: function(code, ret) {
             ret = ret || false;
             if (code.match(/^\s*return\s*/, code)) {
@@ -249,24 +286,36 @@ define([
             this.stepState();
             return ret ? result : null;
         },
+        /** Evaluates range expression */
         evaluateRange: function(range_condition) {
             var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
-            if (match === null) {
-                throw new CompileError("invalid range expression");
+            if (match !== null) {
+                var elements = this.evaluateCode(match[3], true);
+                if (typeof elements === "object" && elements.constructor === Array) {
+                    var ok = false;
+                    if (elements.length > 0) {
+                        ok = true;
+                        this.setVariableValue(match[1], elements.shift());
+                    }
+                    return {
+                        'var': match[1],
+                        'elements': elements,
+                        'ok': ok
+                    };
+                }
             }
-            return {
-                'var': match[1],
-                'list': this.evaluateCode(match[3], true)
-            };
+            throw new CompileError("invalid range expression");
         },
 
+        /** Creates a new subscontext with the functions defined here.
+            The parent of the new subcontext will be this one. */
         newSubcontext: function(name) {
             var self = this;
             this.set("context", new Context({
                 "parent": this,
                 "name": this.getName() + ":" + name,
                 "types": $.extend({}, this.get("types")),
-                // "variables": $.extend({}, this.get("variables")),  // no global variable scope
+                "variables": {},  // no global variables, empty scope
                 "functions": $.extend({}, this.get("functions"))
             }));
             this.listenTo(this.get("context"), "change", function(e) {
@@ -274,9 +323,12 @@ define([
             });
             return this.get("context");
         },
+        /** Removes subcontext */
         removeSubcontext: function() {
             this.set("context", null);
         },
+
+        /** Returns the global context by recusively going up the contexts */
         getGlobalContext: function() {
             return this.getName() === "global" ? this : this.get("parent").getGlobalContext();
         }

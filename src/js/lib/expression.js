@@ -144,7 +144,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         else throw new CompileError("! operator requires boolean operand");
     }
     else if (this.operator == "var") {
-        return context.getVariable(this.params[0]);
+        return context.getVariableValue(this.params[0]);
     }
     else if (this.operator == "func") {
         if (expressions[this.params[0]].operator == "var") {
@@ -189,8 +189,8 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         if (expressions[this.params[0]].operator == "var") {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
-            c = context.getVariable(a);
-            if (typeof c === "number" && typeof b === "number") return context.setVariable(a, c + b);
+            c = context.getVariableValue(a);
+            if (typeof c === "number" && typeof b === "number") return context.setVariableValue(a, c + b);
             else throw new CompileError("+= operator requires number operands");
         }
         else if (expressions[this.params[0]].operator == "array_index") {
@@ -205,8 +205,8 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         if (expressions[this.params[0]].operator == "var") {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
-            c = context.getVariable(a);
-            if (typeof c === "number" && typeof b === "number") return context.setVariable(a, c - b);
+            c = context.getVariableValue(a);
+            if (typeof c === "number" && typeof b === "number") return context.setVariableValue(a, c - b);
             else throw new CompileError("+= operator requires number operands");
         }
         else if (expressions[this.params[0]].operator == "array_index") {
@@ -233,14 +233,14 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
         else if (expressions[this.params[0]].operator == "var") {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
-            return context.setVariable(a, b);
+            return context.setVariableValue(a, b);
         }
         else if (expressions[this.params[0]].operator == "array_push") {
             value = expressions[this.params[1]].evaluate(context, expressions, constants);
             array_index_expression = expressions[this.params[0]];
             if (expressions[array_index_expression.params[0]].operator == "var") {
                 a = expressions[array_index_expression.params[0]].params[0];
-                return context.getVariable(a).push(value);
+                return context.getVariableValue(a).push(value);
             } else if (expressions[array_index_expression.params[0]].operator == "array_index") {
                 keys = this.evaluateArrayIndex(expressions[array_index_expression.params[0]], context, expressions, constants);
                 return context.getArrayValue(keys).push(value);
@@ -265,7 +265,7 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
     } else if (expressions[list1.params[0]].operator == "var") {
         variable = expressions[list1.params[0]].params[0];
         value = list2[0];
-        context.setVariable(variable, value);
+        context.setVariableValue(variable, value);
     } else if (expressions[list1.params[0]].operator == "array_index") {
         keys = this.evaluateArrayIndex(expressions[list1.params[0]], context, expressions, constants);
         value = list2[0];
@@ -276,7 +276,7 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
     if (expressions[list1.params[1]].operator == "var") {
         variable = expressions[list1.params[1]].params[0];
         value = list2[list2.length - 1];
-        context.setVariable(variable, value);
+        context.setVariableValue(variable, value);
     } else if (expressions[list1.params[1]].operator == "array_index") {
         keys = this.evaluateArrayIndex(expressions[list1.params[1]], context, expressions, constants);
         value = list2[list2.length - 1];
