@@ -101,7 +101,8 @@ define([
         },
 
         getJSONDownalodLink: function(text) {
-            var json = this.model.get("active_document").serialize(),
+            var self = this,
+                json = this.model.get("active_document").serialize(),
                 filename = this.model.get("active_document").getName() + ".json",
                 URL = window.URL || window.webkitURL || window.mozURL || window.msURL,
                 saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
@@ -111,7 +112,7 @@ define([
                     "target": "_blank",
                     "download": filename
                 }).on("click", function() {
-                    saveBlob(this.JSONtoBlob(json), filename);
+                    saveBlob(self.JSONtoBlob(json), filename);
                     return false;
                 });
             } else if (Blob !== undefined && URL.createObjectURL) {
