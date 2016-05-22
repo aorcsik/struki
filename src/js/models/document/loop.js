@@ -40,8 +40,9 @@ define([
                     this.range = context.evaluateRange(this.getCondition());
                     return this.range.ok;
                 } else {
-                    if (this.range.list.length > 0) {
-                        context.setVariableValue(this.range.var, this.range.list.shift());
+                    console.log(this.range);
+                    if (this.range.elements.length > 0) {
+                        context.setVariableValue(this.range.var, this.range.elements.shift());
                         context.stepState();
                         return true;
                     } else {
