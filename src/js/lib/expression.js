@@ -1,4 +1,4 @@
-define(['lib/compile_error'], function(CompileError) {
+define(['lib/parse_error', 'lib/compile_error'], function(ParseError, CompileError) {
 
 /** The Expression object */
 function Expression(id, operator, params) {
@@ -268,8 +268,8 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
     var value, keys, variable;
     if (expressions[list1.params[0]].operator == "list") {
         this.evaluateListSet(expressions[list1.params[0]], list2.slice(0, -1), context, expressions, constants);
-    } else if (list2.length > 2) {
-        throw new CompileError("invalid list set expression, operand count does not match");
+    } else if (list2.length != 2) {
+        throw new ParseError("invalid list set expression, operand count does not match");
     } else if (expressions[list1.params[0]].operator == "var") {
         variable = expressions[list1.params[0]].params[0];
         value = list2[0];
@@ -279,7 +279,7 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
         value = list2[0];
         context.setArrayValue(keys, value);
     } else {
-        throw new CompileError("invalid list set expression, only variables or array indexes are allowed on the left side");
+        throw new ParseError("invalid list set expression, only variables or array indexes are allowed on the left side");
     }
     if (expressions[list1.params[1]].operator == "var") {
         variable = expressions[list1.params[1]].params[0];
@@ -290,7 +290,7 @@ Expression.prototype.evaluateListSet = function(list1, list2, context, expressio
         value = list2[list2.length - 1];
         context.setArrayValue(keys, value);
     } else {
-        throw new CompileError("invalid list set expression, only variables or array indexes are allowed on the left side");
+        throw new ParseError("invalid list set expression, only variables or array indexes are allowed on the left side");
     }
 };
 

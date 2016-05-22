@@ -269,7 +269,8 @@ define([
                     'context_only': false,
                     'contexttemp': this.contexttemp,
                     'context': this.model.get("context"),
-                    'button_states': this.button_states
+                    'button_states': this.button_states,
+                    'active_document': this.model.get("active_document")
                 }));
                 this.$el.find(".panel-heading a").each(function() {
                     var title = $(this).attr("title");

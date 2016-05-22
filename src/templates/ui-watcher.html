@@ -1,18 +1,20 @@
 <% if (!context_only) { %>
 <div class="panel panel-default unselectable">
     <div class="panel-heading">
-        <a href="javascript:void(0)" title="Reset" class="btn control-reset"><i class="material-icons">&#xE5D5;</i></a>
+        <a href="javascript:void(0)" title="Reset" class="btn control-reset<% if (!active_document) { %> disabled<% } %>"><i class="material-icons">&#xE5D5;</i></a>
         <div class="debug-counter">–</div>
-        <a href="javascript:void(0)" title="Run" class="btn control-run<% if (!button_states.next) { %> disabled<% } %><% if (!button_states.run && button_states.pause) { %> hide<% } %>"><i class="material-icons">&#xE037;</i></a>
-        <a href="javascript:void(0)" title="Pause" class="btn control-pause<% if (!button_states.pause) { %> hide<% } %>"><i class="material-icons">&#xE034;</i></a>
-        <a href="javascript:void(0)" title="Step back" class="btn control-back<% if (!button_states.back) { %> disabled<% } %>"><i class="material-icons">&#xE045;</i></a>
-        <a href="javascript:void(0)" title="Step forward" class="btn control-next<% if (!button_states.next) { %> disabled<% } %>"><i class="material-icons">&#xE044;</i></a>
+        <a href="javascript:void(0)" title="Run" class="btn control-run<% if (!button_states.next || !active_document) { %> disabled<% } %><% if (!button_states.run && button_states.pause) { %> hide<% } %>"><i class="material-icons">&#xE037;</i></a>
+        <a href="javascript:void(0)" title="Pause" class="btn control-pause<% if (!button_states.pause || !active_document) { %> hide<% } %>"><i class="material-icons">&#xE034;</i></a>
+        <a href="javascript:void(0)" title="Step back" class="btn control-back<% if (!button_states.back || !active_document) { %> disabled<% } %>"><i class="material-icons">&#xE045;</i></a>
+        <a href="javascript:void(0)" title="Step forward" class="btn control-next<% if (!button_states.next || !active_document) { %> disabled<% } %>"><i class="material-icons">&#xE044;</i></a>
     </div>
     <div class="panel-body">
 <% } %>
+<% if (active_document) { %>
 <table class="contexts">
 <%= contexttemp({'context': context, 'contexttemp': contexttemp, 'global': true, 'debug_step': this.debug_step}) %>
 </table>
+<% } %>
 <% if (!context_only) { %>
     </div>
 </div>
