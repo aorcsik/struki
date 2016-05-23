@@ -9,10 +9,10 @@
     <% for (var name in context.get("variables")) { %>
         <% if (global) { %>
         <tr class="form-group">
-            <td>
+            <td style="width: 30%">
                 <label for="variable_<%= name %>" class="control-label">
                     <i class="material-icons">&#xE154;</i>
-                    <%= name %>: <%= context.get("types")[name] %>
+                    <%= name %>:&nbsp;<%= context.get("types")[name] %>
                 </label>
             </td>
             <td>
@@ -21,10 +21,10 @@
         </tr>
         <% } else { %>
         <tr class="form-group <% if (context.get('changed') && context.get('changed')[name] == debug_step - 1) { %> active<% } %>">
-            <td>
+            <td style="width: 30%">
                 <label class="control-label">
                     <i class="material-icons">&#xE154;</i>
-                    <%= name %>: <%= context.get("types")[name] %>
+                    <%= name %>:&nbsp;<%= context.get("types")[name] %>
                 </label>
             </td>
             <td class="context-data">

@@ -262,7 +262,8 @@ define([
                 this.$el.find(".panel-body").html(this.template({
                     'context_only': true,
                     'contexttemp': this.contexttemp,
-                    'context': this.model.get("context")
+                    'context': this.model.get("context"),
+                    'active_document': this.model.get("active_document")
                 }));
             } else {
                 this.$el.html(this.template({
