@@ -16,7 +16,7 @@
                 </label>
             </td>
             <td>
-                <input id="variable_<%= name %>" name="<%= name %>" placeholder="Undefined" type="text" class="form-control" value="<%= context.getVariableValueAsString(name) %>">
+                <input id="variable_<%= name %>" name="<%= name %>" placeholder="NIL" type="text" class="form-control" value="<%= context.getVariableValueAsString(name, "") %>">
             </td>
         </tr>
         <% } else { %>

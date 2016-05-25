@@ -45,6 +45,7 @@ Parser.prototype.parser_cache = {};
 /** The token list, this list is used to match source code to tokens */
 Parser.prototype.token_patterns = [
     {type: "",             pattern: /\s+/},
+    {type: "NIL",          pattern: /NIL/},
     {type: "BOOL[%]",      pattern: /(I|H)/},
     {type: "FLOAT[%]",     pattern: /[0-9]*\.[0-9]+/},
     {type: "STRING[%]",    pattern: /"/},
@@ -91,6 +92,7 @@ Parser.prototype.token_patterns = [
 
 /** The expression list, these are the rules of the language */
 Parser.prototype.expression_patterns = [
+    {pattern: /NIL/, operator: "nil", parameters: []},
     {pattern: /BOOL\[(\d+)\]/, operator: "bool", parameters: [1]},
     {pattern: /FLOAT\[(\d+)\]/, operator: "float", parameters: [1]},
     {pattern: /STRING\[(\d+)\]/, operator: "string", parameters: [1]},

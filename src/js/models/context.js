@@ -77,30 +77,31 @@ define([
         },
 
         /** Returns string representation of struktogram values */
-        asString: function(value) {
+        asString: function(value, nil_string) {
             var self = this;
-            if (value !== null && value !== undefined) {
-                if (typeof value === "boolean") {
-                    return value ? "I" : "H";
-                }
-                if (typeof value === "number") {
-                    return "" + value;
-                }
-                if (typeof value === "string") {
-                    return ("\"" + value.replace(/([\\"])/g, "\\$1") + "\"").replace(/"/g, '&quot;');
-                }
-                if (typeof value === "object" && value.constructor === Array) {
-                    return "[" + value.map(function(item) {
-                        return self.asString(item);
-                    }).join(", ") + "]";
-                }
-                if (typeof value === "object" && value.list !== undefined) {
-                    return value.list.map(function(item) {
-                        return self.asString(item);
-                    }).join(", ");
-                }
+            if (value === null || value === undefined) {
+                return nil_string !== undefined ? nil_string : "NIL";
             }
-            return "";
+            if (typeof value === "boolean") {
+                return value ? "I" : "H";
+            }
+            if (typeof value === "number") {
+                return "" + value;
+            }
+            if (typeof value === "string") {
+                return ("\"" + value.replace(/([\\"])/g, "\\$1") + "\"").replace(/"/g, '&quot;');
+            }
+            if (typeof value === "object" && value.constructor === Array) {
+                return "[" + value.map(function(item) {
+                    return self.asString(item, nil_string);
+                }).join(", ") + "]";
+            }
+            if (typeof value === "object" && value.list !== undefined) {
+                return value.list.map(function(item) {
+                    return self.asString(item, nil_string);
+                }).join(", ");
+            }
+            throw new CompileError("Unrecognizable type: " + value);
         },
 
         /** Defines a variable in the context */
@@ -127,7 +128,7 @@ define([
             }
         },
         /** Returns the value of a variable, if it is defined */
-        getVariableValue: function(name, default_value) {
+        getVariableValue: function(name) {
             if (name == "_") {
                 throw new CompileError("_ has no value");
             }
@@ -137,9 +138,6 @@ define([
                     return Math[name];
                 }
                 throw new CompileError("undefined variable \"" + name + "\"");
-            }
-            if (value === null && default_value === undefined) {
-                throw new CompileError("variable \"" + name + "\" has no value");
             }
             return value;
         },
@@ -189,8 +187,8 @@ define([
             this.set({"variables": variables});
         },
         /** returns variable value as string */
-        getVariableValueAsString: function(name) {
-            return this.asString(this.getVariableValue(name, ""));
+        getVariableValueAsString: function(name, nil_string) {
+            return this.asString(this.getVariableValue(name), nil_string);
         },
         /** Checks if parameter is an array */
         checkIfArray: function(array, name, throw_error) {

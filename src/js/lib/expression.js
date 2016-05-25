@@ -34,6 +34,9 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     if (this.operator == "expression") {
         return expressions[this.params[0]].evaluate(context, expressions, constants);
     }
+    else if (this.operator == "nil") {
+        return null;
+    }
     else if (this.operator == "bool") {
         return constants[this.params[0]];
     }
