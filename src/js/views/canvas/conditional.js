@@ -100,13 +100,16 @@ define([
                     else this.lines[key] = this.branches[i].getLines()[key];
                 }
             }
-            var else_text = this.branches.length > 1 ? "else" : "";
-            this.else_branch.render(ctx, design, line, x + this.size.width, y, else_branch_fix_width, lines, else_text, null);
-            this.size.width += this.else_branch.getSize().width;
-            this.size.height = Math.max(this.size.height, this.else_branch.getSize().height);
-            for (key in this.else_branch.getLines()) {
-                if (this.lines[key]) this.lines[key] = Math.max(this.lines[key], this.else_branch.getLines()[key]);
-                else this.lines[key] = this.else_branch.getLines()[key];
+
+            if (this.branches.length == 1 || this.else_branch.branch_sequence.commands.length > 0) {
+                var else_text = this.branches.length > 1 ? "else" : "";
+                this.else_branch.render(ctx, design, line, x + this.size.width, y, else_branch_fix_width, lines, else_text, null);
+                this.size.width += this.else_branch.getSize().width;
+                this.size.height = Math.max(this.size.height, this.else_branch.getSize().height);
+                for (key in this.else_branch.getLines()) {
+                    if (this.lines[key]) this.lines[key] = Math.max(this.lines[key], this.else_branch.getLines()[key]);
+                    else this.lines[key] = this.else_branch.getLines()[key];
+                }
             }
 
             this.size.height = 0;
