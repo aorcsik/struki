@@ -58,6 +58,9 @@ define([
         {'en-US': "Are you sure, you want to delete this struktogram?", 'hu-HU': "Biztos, hogy törölni akarod ezt a struktogramot?"},
         {'en-US': "Are you sure, you want to close this document?", 'hu-HU': "Biztos, hogy be akarod zárni ezt a dokumentumot?"},
 
+        {'en-US': "Invalid struktogram name!", 'hu-HU': "Szabálytalan struktogram név!"},
+        {'en-US': "Invalid variable name!", 'hu-HU': "Szabálytalan változó név!"},
+
         {'en-US': "Application loaded", 'hu-HU': "Az alkalmazás betöltése kész"},
         {'en-US': "Application settings were saved", 'hu-HU': "Az alkalmazás beállítások mentése kész"},
         {'en-US': "Application settings were restored", 'hu-HU': "Az alkalmazás beállításai visszatöltése kész"},

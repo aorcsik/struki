@@ -67,34 +67,43 @@ define([
         },
 
         saveCommand: function(e) {
-            var name = this.$el.find("#" + this.model.cid + "_name").val().replace(/^\s+|\s+$/g, '');
-            this.model.updateStruktogram({
-                "name": name || this.model.getName(),
-                "parameters": this.$el.find(".parameters .form-group").map(function() {
-                    var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
-                        type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');
-                    if (name !== "" && type !== "")
-                        return {
-                            'name': name,
-                            'type': type
-                        };
-                    return null;
-                }).get().filter(function(item) {
-                    return item !== null;
-                }),
-                "variables": this.$el.find(".variables .form-group").map(function() {
-                    var name = $(this).find("input[name=variable_name]").val().replace(/^\s+|\s+$/g, ''),
-                        type = $(this).find("input[name=variable_type]").val().replace(/^\s+|\s+$/g, '');
-                    if (name !== "" && type !== "")
-                        return {
-                            'name': name,
-                            'type': type
-                        };
-                    return null;
-                }).get().filter(function(item) {
-                    return item !== null;
-                })
-            });
+            try {
+                var name = this.$el.find("#" + this.model.cid + "_name").val().replace(/^\s+|\s+$/g, '');
+                if (!name.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) throw "Invalid struktogram name!";
+                this.model.updateStruktogram({
+                    "name": name || this.model.getName(),
+                    "parameters": this.$el.find(".parameters .form-group").map(function() {
+                        var name = $(this).find("input[name=parameter_name]").val().replace(/^\s+|\s+$/g, ''),
+                            type = $(this).find("input[name=parameter_type]").val().replace(/^\s+|\s+$/g, '');
+                        if (name !== "" && type !== "") {
+                            if (!name.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) throw "Invalid variable name!";
+                            return {
+                                'name': name,
+                                'type': type
+                            };
+                        }
+                        return null;
+                    }).get().filter(function(item) {
+                        return item !== null;
+                    }),
+                    "variables": this.$el.find(".variables .form-group").map(function() {
+                        var name = $(this).find("input[name=variable_name]").val().replace(/^\s+|\s+$/g, ''),
+                            type = $(this).find("input[name=variable_type]").val().replace(/^\s+|\s+$/g, '');
+                        if (name !== "" && type !== "") {
+                            if (!name.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) throw "Invalid variable name!";
+                            return {
+                                'name': name,
+                                'type': type
+                            };
+                        }
+                        return null;
+                    }).get().filter(function(item) {
+                        return item !== null;
+                    })
+                });
+            } catch(exc) {
+                alert(Localization.gettext(exc, true));
+            }
             return false;
         },
 
