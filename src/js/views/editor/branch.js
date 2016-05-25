@@ -4,9 +4,10 @@ define([
     'underscore',
     'backbone',
     'lib/localization',
+    'interfaces/editable',
     'text!../../../templates/editor/branch.html'
-], function(require, $, _, Backbone, Localization, editorBranchTemplate){
-    var EditorBranchView = Backbone.View.extend({
+], function(require, $, _, Backbone, Localization, Editable, editorBranchTemplate){
+    var EditorBranchView = Backbone.View.extend(Editable).extend({
         tagName: "li",
         className: "branch",
         branch_sequence: null,

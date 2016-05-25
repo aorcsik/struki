@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'lib/localization',
+    'interfaces/editable',
     'text!../../../templates/editor/command.html'
-], function($, _, Backbone, Localization, editorCommandTemplate) {
-    var EditorCommandView = Backbone.View.extend({
+], function($, _, Backbone, Localization, Editable, editorCommandTemplate) {
+    var EditorCommandView = Backbone.View.extend(Editable).extend({
         tagName: "li",
         template: _.template(editorCommandTemplate),
         depth: 0,
@@ -54,6 +55,10 @@ define([
                 "_counter": this.model.get("_counter") ? this.model.get("_counter") + 1 : 1,
                 "_updated_at": (new Date()).getTime()
             });
+            return false;
+        },
+
+        addCommand: function(e) {
             return false;
         },
 

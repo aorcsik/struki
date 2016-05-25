@@ -4,10 +4,11 @@ define([
     'backbone',
     'lib/localization',
     'views/editor/sequence',
+    'interfaces/editable',
     'text!../../../templates/editor/variable.html',
     'text!../../../templates/editor/struktogram.html'
-], function($, _, Backbone, Localization, EditorSequenceView, editorVariableTemplate, editorStruktogramTemplate){
-    var EditorStruktogramView = Backbone.View.extend({
+], function($, _, Backbone, Localization, EditorSequenceView, Editable, editorVariableTemplate, editorStruktogramTemplate){
+    var EditorStruktogramView = Backbone.View.extend(Editable).extend({
         className: "struktogram",
         main_sequence: null,
         template: _.template(editorStruktogramTemplate),

@@ -4,9 +4,10 @@ define([
     'underscore',
     'backbone',
     'lib/localization',
+    'interfaces/editable',
     'text!../../../templates/editor/loop.html'
-], function(require, $, _, Backbone, Localization, editorLoopTemplate) {
-    var EditorLoopView = Backbone.View.extend({
+], function(require, $, _, Backbone, Localization, Editable, editorLoopTemplate) {
+    var EditorLoopView = Backbone.View.extend(Editable).extend({
         tagName: "li",
         className: "loop",
         loop_sequence: null,
