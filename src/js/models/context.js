@@ -127,17 +127,21 @@ define([
             }
         },
         /** Returns the value of a variable, if it is defined */
-        getVariableValue: function(name) {
+        getVariableValue: function(name, default_value) {
             if (name == "_") {
                 throw new CompileError("_ has no value");
             }
-            if (this.get("variables")[name] === undefined) {
+            var value = this.get("variables")[name];
+            if (value === undefined) {
                 if (Math[name] !== undefined && Math[name].constructor !== Function) {
                     return Math[name];
                 }
                 throw new CompileError("undefined variable \"" + name + "\"");
             }
-            return this.get("variables")[name];
+            if (value === null && default_value === undefined) {
+                throw new CompileError("variable \"" + name + "\" has no value");
+            }
+            return value;
         },
         /* Sets the value of a variable, if it is defined */
         setVariableValue: function(name, value) {
@@ -186,7 +190,7 @@ define([
         },
         /** returns variable value as string */
         getVariableValueAsString: function(name) {
-            return this.asString(this.getVariableValue(name));
+            return this.asString(this.getVariableValue(name, ""));
         },
         /** Checks if parameter is an array */
         checkIfArray: function(array, name, throw_error) {

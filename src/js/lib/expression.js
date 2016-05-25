@@ -12,9 +12,25 @@ function Expression(id, operator, params) {
     this.params = params;
 }
 
+Expression.prototype.isNumber = function(val) {
+    return typeof val === "number";
+};
+
+Expression.prototype.isString = function(val) {
+    return typeof val === "string";
+};
+
+Expression.prototype.isBoolean = function(val) {
+    return typeof val === "boolean";
+};
+
+Expression.prototype.isArray = function(val) {
+    return typeof val === "object" && val !== null && val.constructor === Array;
+};
+
 /** Evaluates the expression based on it's type and parameteres */
 Expression.prototype.evaluate = function(context, expressions, constants) {
-    var a, b, c, array_index_expression, keys, value, func;
+    var a, b, c, array_index_expression, keys, value, func, self = this;
     if (this.operator == "expression") {
         return expressions[this.params[0]].evaluate(context, expressions, constants);
     }
@@ -36,40 +52,40 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "sum") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a + b;
-        else if (a.constructor === Array && b.constructor === Array) return a.concat(b);
-        else if (a.constructor === String) return a + ("" + b);
-        else throw new CompileError("+ operator requires number, char, string or array operands");
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a + b;
+        else if (this.isString(a)) return a + ("" + b);
+        else if (this.isArray(a) && this.isArray(b)) return a.concat(b);
+        else throw new CompileError("+ operator requires number, string or array operands");
     }
     else if (this.operator == "sub") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a - b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a - b;
         else throw new CompileError("- operator requires number operands");
     }
     else if (this.operator == "pow") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return Math.pow(a, b);
+        if (this.isNumber(a) && typeof this.isNumber(b)) return Math.pow(a, b);
         else throw new CompileError("* operator requires number operands");
     }
     else if (this.operator == "mul") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a * b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a * b;
         else throw new CompileError("* operator requires number operands");
     }
     else if (this.operator == "div") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number")
+        if (this.isNumber(a) && typeof this.isNumber(b))
             if (b !== 0) return a / b;
             else throw new CompileError("division by zero");
         else throw new CompileError("/ operator requires number operands");
     } else if (this.operator == "mod") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number")
+        if (this.isNumber(a) && typeof this.isNumber(b))
             if (b !== 0) return a % b;
             else throw new CompileError("division by zero");
         else throw new CompileError("% operator requires number operands");
@@ -77,7 +93,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "rng") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") {
+        if (this.isNumber(a) && typeof this.isNumber(b)) {
             var i, range = [];
             if (a <= b) for (i = a; i <= b; i++) range.push(i);
             else for (i = a; i >= b; i--) range.push(i);
@@ -87,31 +103,31 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "gt") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a > b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a > b;
         else throw new CompileError("> operator requires number operands");
     }
     else if (this.operator == "gte") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a >= b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a >= b;
         else throw new CompileError(">= operator requires number operands");
     }
     else if (this.operator == "lt") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a < b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a < b;
         else throw new CompileError("< operator requires number operands");
     }
     else if (this.operator == "lte") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "number" && typeof b === "number") return a <= b;
+        if (this.isNumber(a) && typeof this.isNumber(b)) return a <= b;
         else throw new CompileError("<= operator requires number operands");
     }
     else if (this.operator == "eq") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (a.constructor === Array && b.constructor === Array) {
+        if (this.isArray(a) && this.isArray(b)) {
             return JSON.stringify(a) === JSON.stringify(b);
         } else if (typeof a === typeof b) {
             return a === b;
@@ -121,7 +137,7 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "ne") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (a.constructor === Array && b.constructor === Array) {
+        if (this.isArray(a) && this.isArray(b)) {
             return JSON.stringify(a) !== JSON.stringify(b);
         } else if (typeof a === typeof b) {
             return a !== b;
@@ -131,23 +147,23 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "and") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "boolean" && typeof b === "boolean") return a && b;
+        if (this.isBoolean(a) && this.isBoolean(b)) return a && b;
         else throw new CompileError("& operator requires boolean operands");
     }
     else if (this.operator == "or") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (typeof a === "boolean" && typeof b === "boolean") return a || b;
+        if (this.isBoolean(a) && this.isBoolean(b)) return a || b;
         else throw new CompileError("| operator requires boolean operands");
     }
     else if (this.operator == "neg") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
-        if (typeof a === "number") return -1 * a;
+        if (this.isNumber(a)) return -1 * a;
         else throw new CompileError("- operator requires number operand");
     }
     else if (this.operator == "not") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
-        if (typeof a === "boolean") return !a;
+        if (this.isBoolean(a)) return !a;
         else throw new CompileError("! operator requires boolean operand");
     }
     else if (this.operator == "var") {
@@ -180,9 +196,9 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
     else if (this.operator == "in_array") {
         a = expressions[this.params[0]].evaluate(context, expressions, constants);
         b = expressions[this.params[1]].evaluate(context, expressions, constants);
-        if (b.constructor === Array) {
+        if (this.isArray(b)) {
             return b.filter(function(item) {
-                if (a.constructor === Array && item.constructor === Array) {
+                if (self.isArray(a) && self.isArray(item)) {
                     return JSON.stringify(a) === JSON.stringify(item);
                 } else if (typeof a === typeof item) {
                     return a === item;
@@ -197,14 +213,14 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
             c = context.getVariableValue(a);
-            if (typeof c === "number" && typeof b === "number") return context.setVariableValue(a, c + b);
+            if (this.isNumber(c) && this.isNumber(b)) return context.setVariableValue(a, c + b);
             else throw new CompileError("+= operator requires number operands");
         }
         else if (expressions[this.params[0]].operator == "array_index") {
             a = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
             c = context.getArrayValue(a);
-            if (typeof c === "number" && typeof b === "number") return context.setArrayValue(a, c + b);
+            if (this.isNumber(c) && this.isNumber(b)) return context.setArrayValue(a, c + b);
         }
         throw new CompileError("left operand is not a valid variable, or array index");
     }
@@ -213,14 +229,14 @@ Expression.prototype.evaluate = function(context, expressions, constants) {
             a = expressions[this.params[0]].params[0];
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
             c = context.getVariableValue(a);
-            if (typeof c === "number" && typeof b === "number") return context.setVariableValue(a, c - b);
+            if (this.isNumber(c) && this.isNumber(b)) return context.setVariableValue(a, c - b);
             else throw new CompileError("+= operator requires number operands");
         }
         else if (expressions[this.params[0]].operator == "array_index") {
             a = this.evaluateArrayIndex(expressions[this.params[0]], context, expressions, constants);
             b = expressions[this.params[1]].evaluate(context, expressions, constants);
             c = context.getArrayValue(a);
-            if (typeof c === "number" && typeof b === "number") return context.setArrayValue(a, c - b);
+            if (this.isNumber(c) && this.isNumber(b)) return context.setArrayValue(a, c - b);
         }
         throw new CompileError("left operand is not a valid variable, or array index");
     }
