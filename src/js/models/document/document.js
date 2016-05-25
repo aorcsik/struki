@@ -70,7 +70,7 @@ define([
                 self.trigger('change', e);
             });
             this.set({
-                "uuid": json.uuid || uuid(),
+                "uuid": uuid(),
                 "name": json.name || "noname",
                 "struktogram": struktogram,
                 "list": []
