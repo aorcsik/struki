@@ -83,18 +83,27 @@ define([
         },
         restoreDocuments: function() {
             if (this.disabled) return;
-            for (var i = 0; i < window.localStorage.length; i++) {
+            var i, key, value, json, documents = [];
+            for (i = 0; i < window.localStorage.length; i++) {
                 try {
-                    var key = window.localStorage.key(i),
-                        value = window.localStorage.getItem(key);
+                    key = window.localStorage.key(i);
                     if (key.substring(0, this.document_prefix.length) === this.document_prefix) {
-                        window.localStorage.removeItem(key);
-                        var json = JSON.parse(value);
-                        this.model.openDocumentFromJSON(json);
-                        this.render("Document <%= name %> autosave was loaded", {'name': "<strong>" + json.name + "</strong>"});
+                        documents.push(key);
                     }
-                } catch (e) {
-                    this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + e + "</em>"}, "error", 5000);
+                } catch (exc) {
+                    this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + exc + "</em>"}, "error", 5000);
+                }
+            }
+            for (i = 0; i < documents.length; i++) {
+                try {
+                    key = documents[i];
+                    value = window.localStorage.getItem(key);
+                    json = JSON.parse(value);
+                    window.localStorage.removeItem(key);
+                    this.model.openDocumentFromJSON(json);
+                    this.render("Document <%= name %> autosave was loaded", {'name': "<strong>" + json.name + "</strong>"});
+                } catch (exc) {
+                    this.render("Document autosave load failed (<%= error %>)", {'error': "<em>" + exc + "</em>"}, "error", 5000);
                 }
             }
         },
