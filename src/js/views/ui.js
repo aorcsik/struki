@@ -7,9 +7,8 @@ define([
     'views/ui-editor',
     'views/ui-output',
     'views/ui-watcher',
-    'views/ui-canvas',
-    'text!../../examples/struki.json'
-], function($, _, Backbone, Localization, UIToolbarView, UIEditorView, UIOutputView, UIWatcherView, UICanvasView, exampleJSON){
+    'views/ui-canvas'
+], function($, _, Backbone, Localization, UIToolbarView, UIEditorView, UIOutputView, UIWatcherView, UICanvasView){
     var UIView = Backbone.View.extend({
         id: "content",
         events: {
