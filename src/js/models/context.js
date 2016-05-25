@@ -275,7 +275,7 @@ define([
         },
 
         /** Evaluates code expression */
-        evaluateCode: function(code, ret) {
+        evaluateCode: function(code, ret, no_step) {
             ret = ret || false;
             if (code.match(/^\s*return\s*/, code)) {
                 code = code.replace(/^\s*return\s*/, "", code);
@@ -283,20 +283,21 @@ define([
             }
             var parser = new Parser(code);
             var result = parser.evaluate(this);
-            this.stepState();
+            if (!no_step) this.stepState();
             return ret ? result : null;
         },
         /** Evaluates range expression */
         evaluateRange: function(range_condition) {
             var match = range_condition.match(/^\s*([_a-zA-Z][_a-zA-Z0-9]*)\s*(:=|in)\s*(.*)\s*$/);
             if (match !== null) {
-                var elements = this.evaluateCode(match[3], true);
+                var elements = this.evaluateCode(match[3], true, true);
                 if (typeof elements === "object" && elements.constructor === Array) {
                     var ok = false;
                     if (elements.length > 0) {
                         ok = true;
                         this.setVariableValue(match[1], elements.shift());
                     }
+                    this.stepState();
                     return {
                         'var': match[1],
                         'elements': elements,
