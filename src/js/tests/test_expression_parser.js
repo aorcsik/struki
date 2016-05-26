@@ -43,7 +43,7 @@ define([
 
         QUnit.test("Reserved words", function(assert) {
             var reserved_words = Parser.prototype.reserved_words.filter(function(word) {
-                return word !== "_" && word !== "in";
+                return word !== "_" && word !== "in" && word !== "I" && word !== "H" && word !== "NIL";
             }).forEach(function(word) {
                 assert.throws(function() {
                     (new Parser(word)).evaluate(context);

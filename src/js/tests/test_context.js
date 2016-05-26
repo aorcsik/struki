@@ -36,7 +36,7 @@ define([
             assert.equal(context.asString([1,2]), "[1, 2]", "Array: [1, 2]");
             assert.equal(context.asString("\"x\""), "&quot;\\&quot;x\\&quot;&quot;", "String: \"x\"");
             assert.equal(context.asString({'list': [1,2]}), "1, 2", "List: 1, 2");
-            assert.equal(context.asString(null), "", "Null: ");
+            assert.equal(context.asString(null), "NIL", "Null: NIL");
         });
 
         QUnit.test("Define variable", function(assert) {

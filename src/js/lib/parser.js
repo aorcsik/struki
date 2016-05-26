@@ -37,7 +37,7 @@ function Parser(code) {
 }
 
 /** Reserved words that cannot be used in expressions */
-Parser.prototype.reserved_words = ["if", "else", "then", "while", "until", "for", "return", "var", "in", "_"];
+Parser.prototype.reserved_words = ["if", "else", "then", "while", "until", "for", "return", "var", "in", "_", "I", "H", "NIL"];
 
 /** Parser cache for storing already parsed expressions */
 Parser.prototype.parser_cache = {};
