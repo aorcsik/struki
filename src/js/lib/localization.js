@@ -104,7 +104,9 @@ define([
         var self = this;
         this.locale = locale;
         $(".__localization").each(function() {
-            $(this).replaceWith($(self.gettext($(this).data("phrase"))));
+            var phrase_id = $(this).data("phrase"),
+                phrase = phrase_id > -1 ? phrase_id : $(this).text();
+            $(this).replaceWith($(self.gettext(phrase)));
         });
     };
 
