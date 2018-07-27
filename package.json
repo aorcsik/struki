@@ -26,7 +26,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "bower": "^1.7.9",
+    "bower": "^1.8.4",
     "node-static": "^0.7.7",
     "requirejs": "^2.2.0"
   }
