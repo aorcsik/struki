@@ -13,16 +13,47 @@
     <div class="navbar-collapse collapse navbar-inverse-collapse">
         <ul class="nav navbar-nav">
             <li><a href="javascript:void(0)" id="new_document"><i class="material-icons">&#xE2CC;</i> <%= L.gettext("New") %></a></li>
-            <li><a href="javascript:void(0)" id="open_document">
-                <i class="material-icons">&#xE2C4;</i> <%= L.gettext("Load") %></a>
-                <input type="file" name="open_file" id="open_docuemnt_input">
+            <li class="dropdown">
+                <a id="load_dropdown" href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="material-icons">&#xE2C4;</i> <%= L.gettext("Load") %>
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="javascript:void(0)" id="open_document">
+                        <i class="material-icons">&#xE2C4;</i> <%= L.gettext("Load document") %></a>
+                        <input type="file" name="open_file" id="open_docuemnt_input">
+                    </li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header"><%= L.gettext("Examples") %></li>
+                    <li><a href="examples/osszegzes.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> osszegzes.json</a>
+                    </li>
+                    <li><a href="examples/szamlalas.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> szamlalas.json</a>
+                    </li>
+                    <li><a href="examples/kivalasztas.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> kivalasztas.json</a>
+                    </li>
+                    <li><a href="examples/maximum_kivalasztas.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> maximum_kivalasztas.json</a>
+                    </li>
+                    <li><a href="examples/keres.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> keres.json</a>
+                    </li>
+                    <li><a href="examples/log_keres.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> log_keres.json</a>
+                    </li>
+                    <li><a href="examples/quicksort.json" class="open-example">
+                        <i class="material-icons">&#xE86F;</i> quicksort.json</a>
+                    </li>
+                </ul>
             </li>
             <li class="dropdown">
                 <a id="save_dropdown" href="javascript:void(0)" data-target="#" class="<% if (model.get('active_document')) { %>dropdown-toggle<% } else { %>disabled<% } %>" data-toggle="dropdown">
                     <i class="material-icons">&#xE2C6;</i> <%= L.gettext("Export") %>
                     <% if (model.get('active_document')) { %><b class="caret"></b><% } %>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu save-dropdown-menu">
                     <li class="divider"></li>
                 </ul>
             </li>

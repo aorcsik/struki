@@ -26,6 +26,8 @@ define([
         {'en-US': "Cancel", 'hu-HU': "Mégse"},
         {'en-US': "Save", 'hu-HU': "Mentés"},
         {'en-US': "Load", 'hu-HU': "Betöltés"},
+        {'en-US': "Load document", 'hu-HU': "Documentum betöltése"},
+        {'en-US': "Examples", 'hu-HU': "Példák"},
         {'en-US': "Export", 'hu-HU': "Exportálás"},
         {'en-US': "Help", 'hu-HU': "Súgó"},
         {'en-US': "Run", 'hu-HU': "Futtatás"},

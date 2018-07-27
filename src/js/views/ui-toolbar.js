@@ -14,6 +14,7 @@ define([
             "click #save_dropdown": "updateSaveLinks",
             "click #run_struktogram": "run",
             "click #nav_settings": "openSettings",
+            "click .open-example": "openExample",
             "change #open_docuemnt_input": "handleOpenDocument"
         },
         template: _.template(UIToolbarTemplate),
@@ -35,6 +36,16 @@ define([
 
         openDocumentDialog: function(e) {
             $(e.target).closest("li").find("input").click();
+        },
+
+        openExample: function(e) {
+            e.preventDefault();
+
+            var self = this
+            var exampleJSONPath = $(e.target).closest("a").attr("href");
+            $.getJSON(exampleJSONPath, function(result) {
+                self.model.openDocumentFromJSON(result);
+            });
         },
 
         handleOpenDocument: function(e) {
@@ -164,7 +175,7 @@ define([
         updateSaveLinks: function() {
             if (this.model.get("active_document")) {
                 var self = this,
-                    $menu = this.$el.find(".dropdown-menu");
+                    $menu = this.$el.find(".save-dropdown-menu");
                 $menu.find("li").remove();
                 $menu.append($("<li>").append(this.getJSONDownalodLink('<i class="material-icons">&#xE86F;</i>')));
                 $menu.append($("<li class='divider'></li>"));
