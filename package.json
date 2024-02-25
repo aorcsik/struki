@@ -1,5 +1,5 @@
 {
-  "name": "STRUKI",
+  "name": "struki",
   "version": "1.0.0",
   "description": "Struktogram Szerkesztő és Futtató Környezet",
   "bugs": {
@@ -10,7 +10,7 @@
   "author": {
     "name": "Antal Orcsik",
     "email": "aorcsik@gmail.com",
-    "url": "http://aorcsik.com"
+    "url": "https://aorcsik.com"
   },
   "main": "main",
   "repository": {
@@ -26,8 +26,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "bower": "^1.8.4",
-    "node-static": "^0.7.7",
+    "bower": "^1.8.8",
+    "node-static": "^0.7.11",
     "requirejs": "^2.2.0"
   }
 }
