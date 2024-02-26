@@ -2,6 +2,7 @@
 
 # build project
 node_modules/requirejs/bin/r.js -o src/js/build.js
+cp node_modules/requirejs/require.js docs/js/require.js
 
 # remove not needed files
 echo "Removing not needed files..."

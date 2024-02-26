@@ -1,8 +1,6 @@
 # Mac OS X hidden files
 .DS_Store
 
-src/js/require.js
-src/components/*
 node_modules/*
 
 npm-debug.log

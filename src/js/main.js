@@ -19,19 +19,19 @@ window.uuid = function() {
 require.config({
   paths: {
     text: [
-        '../components/requirejs-text/text'],
+        '../../node_modules/requirejs-text/text'],
     jquery: [
-        '../components/jquery/dist/jquery'],
+        '../../node_modules/jquery/dist/jquery'],
     jquery_ui: [
-        '../components/jquery-ui/jquery-ui'],
+        '../../node_modules/jquery-ui/dist/jquery-ui'],
     underscore: [
-        '../components/underscore/underscore'],
+        '../../node_modules/underscore/underscore'],
     backbone: [
-        '../components/backbone/backbone'],
+        '../../node_modules/backbone/backbone'],
     bootstrap: [
-        '../components/bootstrap/dist/js/bootstrap'],
+        '../../node_modules/bootstrap/dist/js/bootstrap'],
     bootstrap_material_design: [
-        '../components/bootstrap-material-design/dist/js/material'],
+        '../../node_modules/bootstrap-material-design/dist/js/material'],
     templates: '../' + 'templates'
   },
   shim: {

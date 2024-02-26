@@ -12,15 +12,15 @@ if (window.console === undefined) {
 require.config({
   paths: {
     text: [
-        '../components/requirejs-text/text'],
+        '../../node_modules/requirejs-text/text'],
     jquery: [
-        '../components/jquery/dist/jquery'],
+        '../../node_modules/jquery/dist/jquery'],
     underscore: [
-        '../components/underscore/underscore'],
+        '../../node_modules/underscore/underscore'],
     backbone: [
-        '../components/backbone/backbone'],
+        '../../node_modules/backbone/backbone'],
     qunit: [
-        '../components/qunit/qunit/qunit'],
+        '../../node_modules/qunit/qunit/qunit'],
     templates: '../' + 'templates'
   },
   shim: {
