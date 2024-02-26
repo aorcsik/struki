@@ -3,19 +3,19 @@
     <head>
         <meta charset="utf-8">
         <title>TEST &ndash; STRUKI | Struktogram Szerkesztő és Futtató Környezet</title>
-        <link rel="stylesheet" href="src/css/test.css" type="text/css">
+        <link rel="stylesheet" href="css/test.css" type="text/css">
     </head>
     <body>
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
         <script type="text/javascript">
         var require = {
-            baseUrl: "src/js" + "/",
+            baseUrl: "js" + "/",
             waitSeconds: 15,
             urlArgs : "new" + (new Date()).getTime(),
             deps : ['test']
         };
         </script>
-        <script src="node_modules/requirejs/require.js" defer></script>
+        <script src="js/require.js" defer></script>
     </body>
 </html>
