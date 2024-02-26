@@ -43,7 +43,7 @@ define([
 
             $(window).on("keyup", function(e) {
                 if (e.keyCode == 27) {
-                    if ($(".editing form").size() > 0) {
+                    if ($(".editing form").length > 0) {
                         $(".editing form")[0].reset();
                         $(".editing").removeClass("editing");
                     }

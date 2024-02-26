@@ -258,7 +258,7 @@ define([
         },
 
         render: function(full) {
-            if (!full && this.$el.find(".panel-body").size() > 0) {
+            if (!full && this.$el.find(".panel-body").length > 0) {
                 this.$el.find(".panel-body").html(this.template({
                     'context_only': true,
                     'contexttemp': this.contexttemp,
